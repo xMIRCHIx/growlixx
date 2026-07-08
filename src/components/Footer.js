@@ -19,6 +19,10 @@ export function renderFooter() {
 
   let footerTagline = 'Premium media. Flawless motion. Crafting visual identities for premium brands globally.';
 
+  let logoType = 'text';
+  let logoImgUrl = '';
+  let logoWidth = 120;
+
   try {
     const configLocal = JSON.parse(localStorage.getItem('growlix_landing_db') || '{}');
     if (configLocal.brandName) {
@@ -32,12 +36,19 @@ export function renderFooter() {
     whatsappNumber = configLocal.whatsappNumber || '917828950968';
     whatsappMessage = configLocal.whatsappMessage || 'Hello Growlix, I would like to inquire about your creative services.';
     footerTagline = configLocal.footerTagline || 'Premium media. Flawless motion. Crafting visual identities for premium brands globally.';
+    logoType = configLocal.logoType || 'text';
+    logoImgUrl = configLocal.logoImgUrl || '';
+    logoWidth = Number(configLocal.logoWidth) || 120;
   } catch (e) {}
+
+  const footerLogoContent = logoType === 'image' && logoImgUrl
+    ? `<img src="${logoImgUrl}" alt="${brandName}" style="height: auto; width: ${logoWidth * 1.5}px; max-width: 100%; display: block; margin: 0 auto;" id="footer-logo-img">`
+    : `<span class="footer-giant-logo font-syne">${brandName}</span>`;
 
   footerEl.innerHTML = `
     <div class="footer-container">
-      <div class="footer-logo-row">
-        <span class="footer-giant-logo font-syne">${brandName}</span>
+      <div class="footer-logo-row" style="display: flex; justify-content: center; align-items: center;">
+        ${footerLogoContent}
       </div>
 
       <div class="footer-links-row">

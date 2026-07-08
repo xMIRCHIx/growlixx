@@ -23,6 +23,9 @@ const LANDING_STORAGE_KEY = 'growlix_landing_db';
 const DEFAULT_LANDING_CONFIG = {
   brandName: "GROWLIX",
   brandSubtext: "",
+  logoType: "text",
+  logoImgUrl: "",
+  logoWidth: 120,
   heroTagline: "Award-Winning Creative Studio",
   heroTitle: "WE SHAPE <br> <span class=\"italic-serif text-accent\">Cinematic</span> <br> VISUAL STORIES",
   heroDescription: "Growlix is an elite creative agency handcrafting premium photography, videography, and bold brand identities that stand the test of time.",

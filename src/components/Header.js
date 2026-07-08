@@ -20,20 +20,30 @@ export function renderHeader(activePage) {
   // Read brand configuration dynamically
   let brandName = 'GROWLIX';
   let brandSubtext = '';
+  let logoType = 'text';
+  let logoImgUrl = '';
+  let logoWidth = 120;
+
   try {
     const configLocal = JSON.parse(localStorage.getItem('growlix_landing_db') || '{}');
     if (configLocal.brandName !== undefined) {
       brandName = configLocal.brandName;
       brandSubtext = configLocal.brandSubtext || '';
     }
+    logoType = configLocal.logoType || 'text';
+    logoImgUrl = configLocal.logoImgUrl || '';
+    logoWidth = Number(configLocal.logoWidth) || 120;
   } catch (e) {}
+
+  const logoContent = logoType === 'image' && logoImgUrl
+    ? `<img src="${logoImgUrl}" alt="${brandName}" style="height: auto; width: ${logoWidth}px; max-width: 100%; display: block;" id="nav-logo-img">`
+    : `<span class="logo-bold">${brandName}</span>${brandSubtext ? `<span class="logo-light">${brandSubtext}</span>` : ''}`;
 
   // Render the header HTML structure: Home | About | Services | Contact | Portfolio
   headerContainer.innerHTML = `
     <nav class="nav-container">
-      <a href="${isHomePage ? '#home' : '/index.html#home'}" class="logo magnetic" data-strength="15">
-        <span class="logo-bold">${brandName}</span>
-        ${brandSubtext ? `<span class="logo-light">${brandSubtext}</span>` : ''}
+      <a href="${isHomePage ? '#home' : '/index.html#home'}" class="logo magnetic" data-strength="15" style="display: flex; align-items: center;">
+        ${logoContent}
       </a>
       
       <ul class="nav-links">
@@ -78,8 +88,10 @@ export function renderHeader(activePage) {
   drawerAside.className = 'mobile-menu-drawer';
   drawerAside.id = 'mobile-menu-drawer';
   drawerAside.innerHTML = `
-    <div class="drawer-header">
-      <span class="logo-bold">${brandName}</span>
+    <div class="drawer-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+      <a href="${isHomePage ? '#home' : '/index.html#home'}" class="logo" style="margin-left: 0; display: flex; align-items: center; pointer-events: none;">
+        ${logoContent}
+      </a>
       <button class="drawer-close" id="drawer-close" aria-label="Close Menu">&times;</button>
     </div>
     <ul class="drawer-links">

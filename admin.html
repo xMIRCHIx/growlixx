@@ -202,6 +202,30 @@
                         <label for="brand-subtext-val">Brand Subtext (Logo Light Text)</label>
                         <input type="text" id="brand-subtext-val" placeholder="e.g. DIGITAL (leave blank to hide)">
                       </div>
+                      <div class="form-group" style="grid-column: span 2;">
+                        <label for="logo-type-val">Logo Type</label>
+                        <select id="logo-type-val" style="width: 100%; padding: 0.8rem; border-radius: 6px; background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.08);">
+                          <option value="text">Text Logo (e.g. GROWLIX)</option>
+                          <option value="image">Image Logo (Upload custom graphic)</option>
+                        </select>
+                      </div>
+                      <div class="form-group" id="logo-upload-group" style="display: none; grid-column: span 2;">
+                        <label for="logo-img-val">Upload Logo Image</label>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                          <input type="text" id="logo-img-val" placeholder="Image URL will appear here" style="flex-grow: 1;">
+                          <label class="btn-upload-label">
+                            <span>Upload Logo</span>
+                            <input type="file" accept="image/*" class="admin-file-uploader" data-target="logo-img-val" style="display: none;">
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group" id="logo-width-group" style="display: none; grid-column: span 2;">
+                        <label for="logo-width-val">Logo Width (pixels)</label>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                          <input type="range" id="logo-width-val" min="50" max="300" step="5" value="120" style="flex-grow: 1;">
+                          <span id="logo-width-display" style="font-weight: bold; min-width: 50px;">120px</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 

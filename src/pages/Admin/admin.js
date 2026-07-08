@@ -362,6 +362,35 @@ async function loadLandingConfig() {
   // Populate general settings
   setInputVal('brand-name-val', config.brandName || 'GROWLIX');
   setInputVal('brand-subtext-val', config.brandSubtext || '');
+  setInputVal('logo-type-val', config.logoType || 'text');
+  setInputVal('logo-img-val', config.logoImgUrl || '');
+  setInputVal('logo-width-val', config.logoWidth || 120);
+  
+  // Set slider text value
+  const widthDisplay = document.getElementById('logo-width-display');
+  if (widthDisplay) widthDisplay.textContent = `${config.logoWidth || 120}px`;
+
+  // Toggle dynamic fields visibility on load
+  const logoTypeSelect = document.getElementById('logo-type-val');
+  const logoUploadGroup = document.getElementById('logo-upload-group');
+  const logoWidthGroup = document.getElementById('logo-width-group');
+  if (logoTypeSelect) {
+    const toggleLogoGroups = () => {
+      const isImg = logoTypeSelect.value === 'image';
+      if (logoUploadGroup) logoUploadGroup.style.display = isImg ? 'block' : 'none';
+      if (logoWidthGroup) logoWidthGroup.style.display = isImg ? 'block' : 'none';
+    };
+    toggleLogoGroups();
+    logoTypeSelect.onchange = toggleLogoGroups;
+  }
+
+  const logoWidthSlider = document.getElementById('logo-width-val');
+  if (logoWidthSlider && widthDisplay) {
+    logoWidthSlider.oninput = () => {
+      widthDisplay.textContent = `${logoWidthSlider.value}px`;
+    };
+  }
+
   setInputVal('whatsapp-number-val', config.whatsappNumber || '917828950968');
   setInputVal('whatsapp-message-val', config.whatsappMessage || 'Hello Growlix, I would like to inquire about your creative services.');
   setInputVal('social-instagram-val', config.socialInstagram || '');
@@ -452,6 +481,9 @@ async function loadLandingConfig() {
       const updatedConfig = {
         brandName: getInputVal('brand-name-val'),
         brandSubtext: getInputVal('brand-subtext-val'),
+        logoType: getInputVal('logo-type-val'),
+        logoImgUrl: getInputVal('logo-img-val'),
+        logoWidth: Number(getInputVal('logo-width-val')) || 120,
         whatsappNumber: getInputVal('whatsapp-number-val'),
         whatsappMessage: getInputVal('whatsapp-message-val'),
         socialInstagram: getInputVal('social-instagram-val'),
