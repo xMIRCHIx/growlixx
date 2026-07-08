@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growlix Digital — Builder Hub Admin</title>
+  <meta name="description" content="Configure and manage the Growlix Digital creative agency portfolio and sections contents.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Style Sheets -->
+  <link rel="stylesheet" href="/src/styles/global.css">
+  <link rel="stylesheet" href="/src/styles/admin_login.css">
+</head>
+<body>
+
+  <!-- Hardcoded Transition Overlay to prevent unrendered flashes -->
+  <div id="page-transition-overlay"></div>
+
+  <!-- 1. LOGIN GATE OVERLAY -->
+  <div id="admin-login-overlay" class="admin-login-overlay">
+    <div class="login-card">
+      <div class="login-logo">GROWLIX<span>DIGITAL</span></div>
+      <p class="login-subtitle">Builder Hub Security Access Gate</p>
+      
+      <div id="login-error" class="login-error-msg">Invalid credentials. Please try again.</div>
+      
+      <form id="login-form" class="login-form">
+        <div class="form-group">
+          <label for="admin-username">Username</label>
+          <input type="text" id="admin-username" required placeholder="Enter username">
+        </div>
+        <div class="form-group">
+          <label for="admin-password">Password</label>
+          <input type="password" id="admin-password" required placeholder="Enter password">
+        </div>
+        <button type="submit" class="btn-primary" style="margin-top: 1rem; width: 100%; justify-content: center;">
+          <span>Login Dashboard</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Smooth Scroll Wrapper for Lenis -->
+  <div id="scroll-wrapper">
+    <main>
+
+      <!-- ADMIN DASHBOARD CONTAINER -->
+      <section class="admin-dashboard-section">
+        <div class="admin-container">
+          
+          <!-- Admin header controls -->
+          <div class="admin-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; margin-bottom: 3rem; flex-wrap: wrap;">
+            <div class="admin-title-wrap">
+              <h1 class="admin-main-title" style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem;">Growlix Builder Hub</h1>
+              <p class="admin-tagline" style="color: var(--text-secondary); font-size: 0.95rem;">Configure agency details, capabilities, and visual catalog dynamically</p>
+            </div>
+            
+             <div class="admin-actions" style="display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap;">
+               <span class="db-status-pill offline" id="db-status-badge">
+                 <span class="status-dot"></span>
+                 <span>Connecting...</span>
+               </span>
+               <a href="/index.html" class="btn-back-archive btn-magnetic" style="display: inline-flex; align-items: center; border-bottom: 1px solid currentColor; font-weight: 500; padding-bottom: 2px;">
+                 <span>View Live Site</span>
+               </a>
+               <button id="btn-mobile-logout" style="background: transparent; border: none; color: #d93838; font-weight: 700; cursor: pointer; border-bottom: 1px solid currentColor; padding-bottom: 2px; font-size: 0.9rem; font-family: var(--font-sans); display: none;">
+                 <span>Sign Out</span>
+               </button>
+             </div>
+          </div>
+
+          <!-- Main Sidebar Tab Layout Grid -->
+          <div class="admin-dashboard-container">
+            
+            <!-- Left Navigation Sidebar -->
+            <aside class="admin-sidebar">
+              <button class="admin-nav-item active" data-panel="dashboard">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">Overview</span>
+              </button>
+              <button class="admin-nav-item" data-panel="landing-config">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label">Config</span>
+              </button>
+              <button class="admin-nav-item" data-panel="portfolio-manager">
+                <span class="nav-icon">📁</span>
+                <span class="nav-label">Portfolio</span>
+              </button>
+              <button class="admin-nav-item" data-panel="inquiries-manager">
+                <span class="nav-icon">📬</span>
+                <span class="nav-label">Inquiries</span>
+              </button>
+              <button class="admin-nav-item" data-panel="settings">
+                <span class="nav-icon">🛠️</span>
+                <span class="nav-label">Settings</span>
+              </button>
+              <button class="admin-nav-item" id="btn-logout" style="margin-top: 2rem; color: #d93838; border-color: rgba(217, 56, 56, 0.1);">
+                <span class="nav-icon">🚪</span>
+                <span class="nav-label">Sign Out</span>
+              </button>
+            </aside>
+
+            <!-- Right Content Panels -->
+            <div class="admin-content-area">
+              
+              <!-- Tab Panel 0: Dashboard Overview -->
+              <div class="admin-panel active" id="panel-dashboard">
+                <div class="panel-header">
+                  <h2 class="panel-title">Dashboard Overview</h2>
+                  <div style="font-size: 0.9rem; color: var(--text-secondary);">Here's what's happening at Growlix today.</div>
+                </div>
+                
+                <!-- Metrics Grid -->
+                <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; margin-top: 1.5rem;">
+                  <div class="metric-card" style="background: #ffffff; padding: 1.8rem; border-radius: 0.8rem; border: 1px solid rgba(18,18,18,0.06); display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-soft);">
+                    <div>
+                      <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-weight: 600;">Total Showcase Items</span>
+                      <h4 id="metric-total-projects" style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; margin: 0.3rem 0 0 0;">0</h4>
+                    </div>
+                    <div style="font-size: 2rem; color: var(--accent);">📁</div>
+                  </div>
+                  <div class="metric-card" style="background: #ffffff; padding: 1.8rem; border-radius: 0.8rem; border: 1px solid rgba(18,18,18,0.06); display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-soft);">
+                    <div>
+                      <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-weight: 600;">Featured Items</span>
+                      <h4 id="metric-featured-projects" style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; margin: 0.3rem 0 0 0;">0</h4>
+                    </div>
+                    <div style="font-size: 2rem; color: var(--accent);">⭐</div>
+                  </div>
+                  <div class="metric-card" style="background: #ffffff; padding: 1.8rem; border-radius: 0.8rem; border: 1px solid rgba(18,18,18,0.06); display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-soft);">
+                    <div>
+                      <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-weight: 600;">Customer Enquiries</span>
+                      <h4 id="metric-total-queries" style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; margin: 0.3rem 0 0 0;">0</h4>
+                    </div>
+                    <div style="font-size: 2rem; color: var(--accent);">✉️</div>
+                  </div>
+                </div>
+
+                <div class="dashboard-split-layout">
+                  <!-- Left side: Quick Actions -->
+                  <div class="quick-actions-panel" style="background: #ffffff; padding: 2rem; border-radius: 0.8rem; border: 1px solid rgba(18,18,18,0.06); box-shadow: var(--shadow-soft);">
+                    <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-top: 0; margin-bottom: 1.5rem;">Quick Actions</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                      <button class="btn-primary" id="btn-quick-add" style="width: 100%; justify-content: center; height: 48px; border-radius: 2rem;">
+                        <span>+ Add Creative Piece</span>
+                      </button>
+                      <button class="btn-secondary" id="btn-quick-settings" style="width: 100%; justify-content: center; height: 48px; border: 1px solid rgba(18,18,18,0.1); background: transparent; color: var(--text-primary); font-weight: 600; cursor: pointer; border-radius: 2rem; font-size: 0.88rem; display: flex; align-items: center;">
+                        <span>Site Settings</span>
+                      </button>
+                      <button class="btn-secondary" id="btn-quick-refresh" style="width: 100%; justify-content: center; height: 48px; border: 1px solid rgba(18,18,18,0.1); background: transparent; color: var(--text-primary); font-weight: 600; cursor: pointer; border-radius: 2rem; font-size: 0.88rem; display: flex; align-items: center;">
+                        <span>Refresh Cache Data</span>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Right side: Recent Booking Queries -->
+                  <div class="recent-queries-panel" style="background: #ffffff; padding: 2rem; border-radius: 0.8rem; border: 1px solid rgba(18,18,18,0.06); box-shadow: var(--shadow-soft); overflow-x: auto;">
+                    <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-top: 0; margin-bottom: 1.5rem;">Recent Inquiries</h3>
+                    <table class="admin-table" style="width: 100%; min-width: 500px; border-collapse: collapse; text-align: left;">
+                      <thead>
+                        <tr style="border-bottom: 1px solid rgba(18,18,18,0.08);">
+                          <th style="padding: 0.8rem; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Name</th>
+                          <th style="padding: 0.8rem; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Type</th>
+                          <th style="padding: 0.8rem; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Date / Details</th>
+                          <th style="padding: 0.8rem; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Message</th>
+                          <th style="padding: 0.8rem; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; text-align: right;">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="admin-queries-table-body">
+                        <tr>
+                          <td colspan="5" style="text-align: center; padding: 2rem; color: #777;">Loading customer inquiries...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab Panel 1: Landing Configurations -->
+              <div class="admin-panel" id="panel-landing-config">
+                <div class="panel-header">
+                  <h2 class="panel-title">Landing Configurations</h2>
+                  <button class="btn-primary" id="btn-config-save">
+                    <span>Save Layout Configs</span>
+                  </button>
+                </div>
+                
+                <form id="landing-config-form" class="contact-form" style="gap: 1.5rem !important;">
+                  
+                  <!-- HERO SECTION CONFIG -->
+                  <div class="config-group-card">
+                    <h3 class="config-group-title">Hero Section Details</h3>
+                    <div class="form-group">
+                      <label for="hero-tagline-val">Hero Tagline Subtitle</label>
+                      <input type="text" id="hero-tagline-val" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="hero-title-val">Hero Main Title (Supports HTML/Line-breaks)</label>
+                      <input type="text" id="hero-title-val" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="hero-desc-val">Hero Description text</label>
+                      <textarea id="hero-desc-val" required rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="hero-bgimg-val">Hero Background Image Path / URL</label>
+                      <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <input type="text" id="hero-bgimg-val" required style="flex-grow: 1;">
+                        <label class="btn-upload-label">
+                          <span>Upload</span>
+                          <input type="file" accept="image/*" class="admin-file-uploader" data-target="hero-bgimg-val" style="display: none;">
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ABOUT SECTION CONFIG -->
+                  <div class="config-group-card">
+                    <h3 class="config-group-title">About Us Section</h3>
+                    <div class="form-group">
+                      <label for="about-subtitle-val">About Subtitle Tag</label>
+                      <input type="text" id="about-subtitle-val" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="about-title-val">About Main Title Text</label>
+                      <input type="text" id="about-title-val" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="about-lead-val">About Lead Paragraph (Bold text)</label>
+                      <textarea id="about-lead-val" required rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="about-body-val">About Body Paragraph Details</label>
+                      <textarea id="about-body-val" required rows="3"></textarea>
+                    </div>
+                    
+                    <div class="grid-cols-2">
+                      <div class="form-group">
+                        <label for="about-stat1num-val">Stat 1 Numeric Limit</label>
+                        <input type="text" id="about-stat1num-val" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="about-stat1label-val">Stat 1 Label Name</label>
+                        <input type="text" id="about-stat1label-val" required>
+                      </div>
+                    </div>
+                    
+                    <div class="grid-cols-2">
+                      <div class="form-group">
+                        <label for="about-stat2num-val">Stat 2 Numeric Limit</label>
+                        <input type="text" id="about-stat2num-val" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="about-stat2label-val">Stat 2 Label Name</label>
+                        <input type="text" id="about-stat2label-val" required>
+                      </div>
+                    </div>
+                    
+                    <div class="grid-cols-2">
+                      <div class="form-group">
+                        <label for="about-stat3num-val">Stat 3 Numeric Limit</label>
+                        <input type="text" id="about-stat3num-val" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="about-stat3label-val">Stat 3 Label Name</label>
+                        <input type="text" id="about-stat3label-val" required>
+                      </div>
+                    </div>
+
+                    <div class="grid-cols-2" style="margin-top: 1rem;">
+                      <div class="form-group">
+                        <label for="about-collage-main-val">Collage Main Image URL</label>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                          <input type="text" id="about-collage-main-val" required style="flex-grow: 1;">
+                          <label class="btn-upload-label">
+                            <span>Upload</span>
+                            <input type="file" accept="image/*" class="admin-file-uploader" data-target="about-collage-main-val" style="display: none;">
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="about-collage-sub-val">Collage Secondary Image URL</label>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                          <input type="text" id="about-collage-sub-val" required style="flex-grow: 1;">
+                          <label class="btn-upload-label">
+                            <span>Upload</span>
+                            <input type="file" accept="image/*" class="admin-file-uploader" data-target="about-collage-sub-val" style="display: none;">
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- SERVICES SECTION CONFIG -->
+                  <div class="config-group-card">
+                    <h3 class="config-group-title">Services Capabilities</h3>
+                    
+                    <div class="grid-cols-2" style="margin-bottom: 1.5rem;">
+                      <div class="form-group">
+                        <label for="services-subtitle-val">Capabilities Subtitle</label>
+                        <input type="text" id="services-subtitle-val" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="services-title-val">Capabilities Heading Title</label>
+                        <input type="text" id="services-title-val" required>
+                      </div>
+                    </div>
+                    
+                    <!-- Service 1 -->
+                    <div style="border-bottom: 1px solid rgba(18,18,18,0.06); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+                      <h4 style="margin: 0 0 1rem 0; font-size: 1rem;">Capability #1</h4>
+                      <div class="grid-cols-2">
+                        <div class="form-group">
+                          <label for="service1-title-val">Service 1 Title</label>
+                          <input type="text" id="service1-title-val" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="service1-num-val">Service 1 Order Num (e.g. 01/)</label>
+                          <input type="text" id="service1-num-val" required>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="service1-desc-val">Service 1 Description</label>
+                        <textarea id="service1-desc-val" required rows="2"></textarea>
+                      </div>
+                      <div class="grid-cols-2">
+                        <div class="form-group">
+                          <label for="service1-tags-val">Tags List (Comma-separated)</label>
+                          <input type="text" id="service1-tags-val" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="service1-img-val">Preview Image URL</label>
+                          <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="text" id="service1-img-val" required style="flex-grow: 1;">
+                            <label class="btn-upload-label">
+                              <span>Upload</span>
+                              <input type="file" accept="image/*" class="admin-file-uploader" data-target="service1-img-val" style="display: none;">
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div style="border-bottom: 1px solid rgba(18,18,18,0.06); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+                      <h4 style="margin: 0 0 1rem 0; font-size: 1rem;">Capability #2</h4>
+                      <div class="grid-cols-2">
+                        <div class="form-group">
+                          <label for="service2-title-val">Service 2 Title</label>
+                          <input type="text" id="service2-title-val" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="service2-num-val">Service 2 Order Num (e.g. 02/)</label>
+                          <input type="text" id="service2-num-val" required>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="service2-desc-val">Service 2 Description</label>
+                        <textarea id="service2-desc-val" required rows="2"></textarea>
+                      </div>
+                      <div class="grid-cols-2">
+                        <div class="form-group">
+                          <label for="service2-tags-val">Tags List (Comma-separated)</label>
+                          <input type="text" id="service2-tags-val" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="service2-img-val">Preview Image URL</label>
+                          <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="text" id="service2-img-val" required style="flex-grow: 1;">
+                            <label class="btn-upload-label">
+                              <span>Upload</span>
+                              <input type="file" accept="image/*" class="admin-file-uploader" data-target="service2-img-val" style="display: none;">
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div style="border-bottom: 1px solid rgba(18,18,18,0.06); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+                      <h4 style="margin: 0 0 1rem 0; font-size: 1rem;">Capability #3</h4>
+                      <div class="grid-cols-2">
+                        <div class="form-group">
+                          <label for="service3-title-val">Service 3 Title</label>
+                          <input type="text" id="service3-title-val" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="service3-num-val">Service 3 Order Num (e.g. 03/)</label>
+                          <input type="text" id="service3-num-val" required>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="service3-desc-val">Service 3 Description</label>
+                        <textarea id="service3-desc-val" required rows="2"></textarea>
+                      </div>
+                      <div class="grid-cols-2">
+                        <div class="form-group">
+                          <label for="service3-tags-val">Tags List (Comma-separated)</label>
+                          <input type="text" id="service3-tags-val" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="service3-img-val">Preview Image URL</label>
+                          <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="text" id="service3-img-val" required style="flex-grow: 1;">
+                            <label class="btn-upload-label">
+                              <span>Upload</span>
+                              <input type="file" accept="image/*" class="admin-file-uploader" data-target="service3-img-val" style="display: none;">
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Service 4 -->
+                    <div style="border-bottom: 1px solid rgba(18,18,18,0.06); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+                      <h4 style="margin: 0 0 1rem 0; font-size: 1rem;">Capability #4</h4>
+                      <div class="grid-cols-2">
+                        <div class="form-group">
+                          <label for="service4-title-val">Service 4 Title</label>
+                          <input type="text" id="service4-title-val" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="service4-num-val">Service 4 Order Num (e.g. 04/)</label>
+                          <input type="text" id="service4-num-val" required>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="service4-desc-val">Service 4 Description</label>
+                        <textarea id="service4-desc-val" required rows="2"></textarea>
+                      </div>
+                      <div class="grid-cols-2">
+                        <div class="form-group">
+                          <label for="service4-tags-val">Tags List (Comma-separated)</label>
+                          <input type="text" id="service4-tags-val" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="service4-img-val">Preview Image URL</label>
+                          <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="text" id="service4-img-val" required style="flex-grow: 1;">
+                            <label class="btn-upload-label">
+                              <span>Upload</span>
+                              <input type="file" accept="image/*" class="admin-file-uploader" data-target="service4-img-val" style="display: none;">
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Service 5 -->
+                    <div style="border-bottom: 1px solid rgba(18,18,18,0.06); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+                      <h4 style="margin: 0 0 1rem 0; font-size: 1rem;">Capability #5</h4>
+                      <div class="grid-cols-2">
+                        <div class="form-group">
+                          <label for="service5-title-val">Service 5 Title</label>
+                          <input type="text" id="service5-title-val" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="service5-num-val">Service 5 Order Num (e.g. 05/)</label>
+                          <input type="text" id="service5-num-val" required>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="service5-desc-val">Service 5 Description</label>
+                        <textarea id="service5-desc-val" required rows="2"></textarea>
+                      </div>
+                      <div class="grid-cols-2">
+                        <div class="form-group">
+                          <label for="service5-tags-val">Tags List (Comma-separated)</label>
+                          <input type="text" id="service5-tags-val" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="service5-img-val">Preview Image URL</label>
+                          <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="text" id="service5-img-val" required style="flex-grow: 1;">
+                            <label class="btn-upload-label">
+                              <span>Upload</span>
+                              <input type="file" accept="image/*" class="admin-file-uploader" data-target="service5-img-val" style="display: none;">
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Service 6 -->
+                    <div>
+                      <h4 style="margin: 0 0 1rem 0; font-size: 1rem;">Capability #6</h4>
+                      <div class="grid-cols-2">
+                        <div class="form-group">
+                          <label for="service6-title-val">Service 6 Title</label>
+                          <input type="text" id="service6-title-val" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="service6-num-val">Service 6 Order Num (e.g. 06/)</label>
+                          <input type="text" id="service6-num-val" required>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="service6-desc-val">Service 6 Description</label>
+                        <textarea id="service6-desc-val" required rows="2"></textarea>
+                      </div>
+                      <div class="grid-cols-2">
+                        <div class="form-group">
+                          <label for="service6-tags-val">Tags List (Comma-separated)</label>
+                          <input type="text" id="service6-tags-val" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="service6-img-val">Preview Image URL</label>
+                          <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="text" id="service6-img-val" required style="flex-grow: 1;">
+                            <label class="btn-upload-label">
+                              <span>Upload</span>
+                              <input type="file" accept="image/*" class="admin-file-uploader" data-target="service6-img-val" style="display: none;">
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- CONTACT SECTION CONFIG -->
+                  <div class="config-group-card">
+                    <h3 class="config-group-title">Contact Us Info</h3>
+                    <div class="form-group">
+                      <label for="contact-email-val">Agency Contact Email Address</label>
+                      <input type="email" id="contact-email-val" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="contact-location-val">Agency Location List (Separate with slashes)</label>
+                      <input type="text" id="contact-location-val" required>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+
+              <!-- Tab Panel 2: Portfolio Manager Table -->
+              <div class="admin-panel" id="panel-portfolio-manager">
+                <div class="panel-header">
+                  <h2 class="panel-title">Portfolio Catalog</h2>
+                  <button class="btn-primary" id="btn-project-add">
+                    <span>Add Creative Piece</span>
+                  </button>
+                </div>
+                
+                <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                  <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                    Manage showcase items. Homepage displays only 6 featured pieces.
+                  </div>
+                  <div>
+                    <label for="filter-category" style="font-size: 0.8rem; font-weight: 700; margin-right: 0.5rem; text-transform: uppercase;">Filter Category</label>
+                    <select id="filter-category" style="padding: 0.5rem 1rem; border-radius: 4px; border: 1px solid rgba(18,18,18,0.1); background-color: #faf9f6; outline: none; font-size: 0.85rem;">
+                      <option value="all">All Categories</option>
+                      <option value="Photography">Photography</option>
+                      <option value="Videography">Videography</option>
+                      <option value="Video Editing">Video Editing</option>
+                      <option value="Brand Identity">Brand Identity</option>
+                      <option value="Graphic Design">Graphic Design</option>
+                      <option value="Social Media Marketing">Social Media Marketing</option>
+                      <option value="Website Development">Website Development</option>
+                      <option value="Software Development">Software Development</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Projects Table Wrap -->
+                <div class="admin-table-wrap">
+                  <table class="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Thumbnail</th>
+                        <th>Title / Client</th>
+                        <th>Category</th>
+                        <th>Featured</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-projects-table-body">
+                      <!-- Populated dynamically via admin.js -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Tab Panel 3: Settings & Diagnostics -->
+              <div class="admin-panel" id="panel-settings">
+                <div class="panel-header">
+                  <h2 class="panel-title">Diagnostics & Diagnostics Tools</h2>
+                </div>
+                
+                <div class="settings-section-card">
+                  <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;">Supabase Synchronizer</h3>
+                  <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+                    Perform connection checks directly with the Postgres API endpoint. If table sync reports errors, execute seed functions to build seed values.
+                  </p>
+                  
+                  <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn-primary" id="btn-check-db">
+                      <span>Test DB Connection</span>
+                    </button>
+                    <button class="btn-primary btn-magnetic" id="btn-admin-reset-db" style="background-color: #d93838; border-color: #d93838;">
+                      <span>Seed Database</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="settings-section-card">
+                  <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;">Security Access Credentials</h3>
+                  <p style="color: var(--text-secondary); margin-bottom: 0; font-size: 0.9rem;">
+                    Default Builder Access Code: <strong>admin</strong> / <strong>admin</strong>. To secure access, configure network environment configs.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Tab Panel 4: Customer Inquiries Manager -->
+              <div class="admin-panel" id="panel-inquiries-manager">
+                <div class="panel-header" style="margin-bottom: 2rem;">
+                  <h2 class="panel-title">Customer Inquiries</h2>
+                  <div style="font-size: 0.9rem; color: var(--text-secondary);">Browse, search, and manage all contact requests and booked creative briefings.</div>
+                </div>
+
+                <!-- Search and Filtering controls -->
+                <div class="inquiries-filter-bar" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; background: #ffffff; padding: 1.2rem; border-radius: 0.8rem; border: 1px solid rgba(18,18,18,0.06); box-shadow: var(--shadow-soft);">
+                  <div style="flex-grow: 1; display: flex; align-items: center; gap: 0.5rem; background: #faf9f6; padding: 0.2rem 1rem; border-radius: 2rem; border: 1px solid rgba(18,18,18,0.08);">
+                    <span style="opacity: 0.5;">🔍</span>
+                    <input type="text" id="inquiry-search-input" placeholder="Search inquiries by client name, email, or message contents..." style="border: none; background: transparent; width: 100%; height: 38px; outline: none; font-family: var(--font-sans); font-size: 0.88rem;">
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <label for="inquiry-filter-type" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); white-space: nowrap;">Type:</label>
+                    <select id="inquiry-filter-type" style="padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(18,18,18,0.1); background-color: #ffffff; outline: none; font-family: var(--font-sans); font-size: 0.85rem; cursor: pointer;">
+                      <option value="all">All Inquiries</option>
+                      <option value="contact">Contact Messages</option>
+                      <option value="booking">Appointment Bookings</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Complete Inquiries Data Grid -->
+                <div style="background: #ffffff; padding: 2rem; border-radius: 0.8rem; border: 1px solid rgba(18,18,18,0.06); box-shadow: var(--shadow-soft); overflow-x: auto;">
+                  <table class="admin-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.92rem;">
+                    <thead>
+                      <tr style="border-bottom: 2px solid rgba(18,18,18,0.08); font-weight: 700;">
+                        <th style="padding: 1rem; color: var(--text-secondary); text-transform: uppercase; font-size: 0.78rem;">Submission Date</th>
+                        <th style="padding: 1rem; color: var(--text-secondary); text-transform: uppercase; font-size: 0.78rem;">Client Name</th>
+                        <th style="padding: 1rem; color: var(--text-secondary); text-transform: uppercase; font-size: 0.78rem;">Contact Email</th>
+                        <th style="padding: 1rem; color: var(--text-secondary); text-transform: uppercase; font-size: 0.78rem;">Inquiry Type</th>
+                        <th style="padding: 1rem; color: var(--text-secondary); text-transform: uppercase; font-size: 0.78rem;">Scheduled Date / Event Details</th>
+                        <th style="padding: 1rem; color: var(--text-secondary); text-transform: uppercase; font-size: 0.78rem;">Message / Goals</th>
+                        <th style="padding: 1rem; color: var(--text-secondary); text-transform: uppercase; font-size: 0.78rem; text-align: right;">Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody id="full-inquiries-table-body">
+                      <tr>
+                        <td colspan="7" style="text-align: center; padding: 3rem; color: #777;">Loading customer inquiries...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div> <!-- End .admin-container -->
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- PORTFOLIO EDIT MODAL OVERLAY -->
+  <div class="admin-modal-overlay" id="project-modal">
+    <div class="admin-modal-box">
+      <div class="modal-header">
+        <h3 class="panel-title" id="modal-title-display">Add Portfolio Piece</h3>
+        <button class="modal-close-btn" id="btn-modal-close">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <form id="project-modal-form" class="contact-form" style="gap: 1.2rem !important;">
+          <input type="hidden" id="modal-project-id">
+          
+          <div class="grid-cols-2">
+            <div class="form-group">
+              <label for="modal-project-title">Project Title</label>
+              <input type="text" id="modal-project-title" required placeholder="e.g. Elegance in Motion">
+            </div>
+            <div class="form-group">
+              <label for="modal-project-client">Client Partner (Optional)</label>
+              <input type="text" id="modal-project-client" placeholder="e.g. Maison Couture">
+            </div>
+          </div>
+
+          <div class="grid-cols-2">
+            <div class="form-group">
+              <label for="modal-project-category">Category Showcase</label>
+              <select id="modal-project-category" required style="padding: 0.85rem 1.15rem; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.12); background-color: #faf9f6; font-family: var(--font-sans); outline: none;">
+                <option value="Photography">Photography</option>
+                <option value="Videography">Videography</option>
+                <option value="Video Editing">Video Editing</option>
+                <option value="Brand Identity">Brand Identity</option>
+                <option value="Graphic Design">Graphic Design</option>
+                <option value="Social Media Marketing">Social Media Marketing</option>
+                <option value="Website Development">Website Development</option>
+                <option value="Software Development">Software Development</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="modal-project-thumbnail">Card Thumbnail Image Path / URL (Optional)</label>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="text" id="modal-project-thumbnail" placeholder="e.g. /src/assets/portfolio_photography.png" style="flex-grow: 1;">
+                <label class="btn-upload-label">
+                  <span>Upload</span>
+                  <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-project-thumbnail" style="display: none;">
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- DYNAMIC INPUT FIELDS CORRESPONDING TO CATEGORIES -->
+          
+          <!-- Videography / Video Editing Dynamic Inputs -->
+          <div class="category-input-group" id="group-video-inputs">
+            <div class="form-group">
+              <label for="modal-project-videoUrl">Video File Path / YouTube Link URL</label>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="text" id="modal-project-videoUrl" placeholder="e.g. https://www.w3schools.com/html/mov_bbb.mp4" style="flex-grow: 1;">
+                <label class="btn-upload-label">
+                  <span>Upload</span>
+                  <input type="file" accept="video/*" class="admin-file-uploader" data-target="modal-project-videoUrl" style="display: none;">
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Web / Software Development Dynamic Inputs -->
+          <div class="category-input-group" id="group-web-inputs">
+            <div class="form-group">
+              <label for="modal-project-demoUrl">Live Project Demo URL</label>
+              <input type="text" id="modal-project-demoUrl" placeholder="e.g. https://clientwebsite.com">
+            </div>
+          </div>
+
+          <!-- Photography / Design Gallery Dynamic Inputs -->
+          <div class="category-input-group" id="group-gallery-inputs">
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                <label for="modal-project-gallery" style="margin: 0;">Gallery Images URLs (Comma-separated)</label>
+                <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem;">
+                  <span>+ Upload Image</span>
+                  <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-project-gallery" data-mode="append" style="display: none;">
+                </label>
+              </div>
+              <textarea id="modal-project-gallery" rows="2" placeholder="e.g. /src/assets/portfolio_photography.png, /src/assets/about_studio.png"></textarea>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-project-shortDescription">Visual Card Subtitle (Short Summary)</label>
+            <input type="text" id="modal-project-shortDescription" required placeholder="e.g. Curated high-fashion campaign edit">
+          </div>
+
+          <div class="form-group">
+            <label for="modal-project-detailedDescription">Detailed Case Study Description</label>
+            <textarea id="modal-project-detailedDescription" required rows="3" placeholder="Explain the project scope, artistic targets, etc."></textarea>
+          </div>
+
+          <div class="grid-cols-2">
+            <div class="form-group">
+              <label for="modal-project-displayOrder">Display Order Index (Sorting)</label>
+              <input type="number" id="modal-project-displayOrder" required value="1">
+            </div>
+            <div class="form-group">
+              <label for="modal-project-status">Publish Status</label>
+              <select id="modal-project-status" required style="padding: 0.85rem 1.15rem; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.12); background-color: #faf9f6; font-family: var(--font-sans); outline: none;">
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="flex-direction: row !important; gap: 0.8rem !important; align-items: center; margin-top: 0.5rem;">
+            <input type="checkbox" id="modal-project-featured" style="width: 20px !important; height: 20px !important; cursor: pointer;">
+            <label for="modal-project-featured" style="margin: 0 !important; cursor: pointer; text-transform: none; font-size: 0.88rem; color: var(--text-primary);">Feature this project on the homepage</label>
+          </div>
+
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn-magnetic" id="btn-modal-cancel" style="border: 1px solid rgba(18,18,18,0.1); padding: 0.65rem 1.5rem; background: transparent; color: var(--text-primary); font-size: 0.85rem; font-weight: 600; border-radius: 2rem; cursor: pointer;">Cancel</button>
+        <button type="button" class="btn-primary" id="btn-modal-save">
+          <span>Save Showcase Item</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Entry Module -->
+  <script type="module" src="/src/pages/Admin/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growlix Digital — Premium Creative Agency</title>
+  <meta name="description" content="Award-winning creative agency specializing in Photography, Videography, Brand Identity, and Digital Development. Handcrafted visual stories that stick.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Style Sheet -->
+  <link rel="stylesheet" href="/src/styles/global.css">
+</head>
+<body>
+
+  <!-- Hardcoded Transition Overlay to prevent unrendered flashes -->
+  <div id="page-transition-overlay"></div>
+
+  <!-- Reusable Header Nav Container -->
+  <header class="main-header header-transparent" id="main-header"></header>
+
+  <!-- Smooth Scroll Wrapper for Lenis -->
+  <div id="scroll-wrapper">
+    <main>
+      
+      <!-- 1. HERO SECTION -->
+      <section id="home" class="hero-section scroll-section">
+        <div class="hero-bg-media">
+          <img src="/src/assets/hero_concept.png" alt="Growlix Cinematic Background" class="hero-bg-img" id="hero-bg-media-img">
+          <div class="hero-bg-overlay"></div>
+        </div>
+        <div class="hero-container">
+          <div class="hero-content">
+            <div class="hero-tagline-wrap">
+              <span class="hero-tagline" id="hero-tagline-text">Award-Winning Creative Studio</span>
+            </div>
+            <h1 class="hero-title reveal-text" id="hero-title-text">
+              WE SHAPE <br>
+              <span class="italic-serif text-accent">Cinematic</span> <br>
+              VISUAL STORIES
+            </h1>
+            <p class="hero-description fade-up" id="hero-desc-text">
+              Growlix Digital is an elite creative agency handcrafting premium photography, videography, and bold brand identities that stand the test of time.
+            </p>
+            <div class="hero-cta-wrap fade-up">
+              <a href="#booking" class="btn-primary">
+                <span>Book Appointment</span>
+                <span class="btn-ripple"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. ABOUT US STORY CARD -->
+      <section id="about" class="about-section scroll-section section-card-wrapper">
+        <div class="about-container">
+          <div class="about-header">
+            <span class="section-subtitle" id="about-subtitle-text">ABOUT GROWLIX</span>
+            <h2 class="section-title split-words" id="about-title-text">Defining the Next Era of Luxury Media.</h2>
+          </div>
+          
+          <div class="about-grid">
+            <div class="about-text-col">
+              <p class="lead-paragraph fade-in-up" id="about-lead-text">
+                We don’t believe in templated aesthetics. Every project we undertake is handcrafted from the ground up, blending cutting-edge cinematic videography, high-fashion editorial photography, and premium digital design.
+              </p>
+              <p class="body-paragraph fade-in-up" id="about-body-text">
+                Based globally and working with forward-thinking visionaries, we elevate brands into experiences. Our design is minimal; our execution is loud. We live at the intersection of aesthetic brilliance and flawless motion design.
+              </p>
+              
+              <!-- Stats grid -->
+              <div class="stats-grid">
+                <div class="stat-item fade-in-up">
+                  <span class="stat-number" id="about-stat1-num" data-count="150">0</span><span class="stat-plus">+</span>
+                  <p class="stat-label" id="about-stat1-label">Projects Completed</p>
+                </div>
+                <div class="stat-item fade-in-up">
+                  <span class="stat-number" id="about-stat2-num" data-count="12">0</span><span class="stat-plus"></span>
+                  <p class="stat-label" id="about-stat2-label">Industry Awards</p>
+                </div>
+                <div class="stat-item fade-in-up">
+                  <span class="stat-number" id="about-stat3-num" data-count="99">0</span><span class="stat-plus">%</span>
+                  <p class="stat-label" id="about-stat3-label">Client Satisfaction</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="about-media-col">
+              <div class="about-collage">
+                <div class="collage-item collage-main mask-reveal">
+                  <img src="/src/assets/about_studio.png" alt="Creative Studio Workspace" class="zoom-img" id="about-collage-main-img">
+                </div>
+                <div class="collage-item collage-sub mask-reveal-delay">
+                  <img src="/src/assets/portfolio_photography.png" alt="High Fashion Photography Collage" class="zoom-img" id="about-collage-sub-img">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. VISION & MISSION CARD -->
+      <section class="vision-mission-section scroll-section section-card-wrapper" style="background-color: var(--bg-secondary);">
+        <div class="about-container">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 4rem;">
+            <div class="fade-in-up">
+              <span class="section-subtitle">THE VISION</span>
+              <h3 style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem;">Visual Timelessness</h3>
+              <p style="color: var(--text-secondary); line-height: 1.7;">
+                To create graphics and motion media that stand out in a crowded digital marketplace. We make visual stories that hold luxury standards, ensuring our client partners maintain long-term equity and prestigious presence.
+              </p>
+            </div>
+            <div class="fade-in-up">
+              <span class="section-subtitle">THE MISSION</span>
+              <h3 style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem;">Handcrafted Standards</h3>
+              <p style="color: var(--text-secondary); line-height: 1.7;">
+                We refuse automated templates and cheap assets. From specialized sensor calibrations and cinema captures to writing high-performance WebGL codebases, we ensure everything matches a pristine, bespoke, handcrafted standard.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. SERVICES CAPABILITIES CARD -->
+      <section id="services" class="services-section scroll-section section-card-wrapper">
+        <div class="services-container">
+          <div class="services-header animate-header">
+            <span class="section-subtitle" id="services-subtitle-text">OUR CAPABILITIES</span>
+            <h2 class="section-title" id="services-title-text">Handcrafted Services.</h2>
+          </div>
+          
+          <div class="services-list" id="services-list-container">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. BENTO grid ADVANTAGE CARD -->
+      <section id="why" class="why-section scroll-section section-card-wrapper">
+        <div class="why-container">
+          <div style="margin-bottom: 3.5rem;">
+            <span class="section-subtitle" id="bento-subtitle-text">WHY GROWLIX</span>
+            <h2 class="section-title" id="bento-title-text">Bespoke Visual Dominance.</h2>
+          </div>
+          
+          <div class="bento-grid">
+            <div class="bento-item bento-intro fade-in-up">
+              <span class="bento-num" id="bento-num-1">01/</span>
+              <h3 id="bento-title-1">High-Caliber Cinematic Rigs</h3>
+              <p id="bento-desc-1">We operate RED Raptor and Hasselblad medium format sensors to ensure dynamic ranges and tones are captured with ultimate fidelity.</p>
+            </div>
+            <div class="bento-item bento-feature-1 fade-in-up">
+              <span class="bento-num" id="bento-num-2">02/</span>
+              <h3 id="bento-title-2">Hand-Colored Precision</h3>
+              <p id="bento-desc-2">No standard LUTs. We write custom grading matrices tailored for every brand project.</p>
+            </div>
+            <div class="bento-item bento-detail fade-in-up">
+              <span class="bento-num" id="bento-num-3">03/</span>
+              <h3 id="bento-title-3">Interactive Edge</h3>
+              <p id="bento-desc-3">GSAP high-fidelity layout transitions matching studio-grade visual portfolios.</p>
+            </div>
+            <div class="bento-item bento-wide fade-in-up">
+              <span class="bento-num" id="bento-num-4">04/</span>
+              <h3 id="bento-title-4">Fast-Paced Editorial Delivery</h3>
+              <p id="bento-desc-4">Engineered to launch within tight marketing windows while preserving high-end luxury editorial requirements.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. CREATIVE PROCESS CARD -->
+      <section id="process" class="process-section scroll-section section-card-wrapper">
+        <div class="process-container">
+          <div style="margin-bottom: 3.5rem;">
+            <span class="section-subtitle" id="process-subtitle-text">OUR WORKFLOW</span>
+            <h2 class="section-title" id="process-title-text">The Production Journey.</h2>
+          </div>
+
+          <div class="process-progress-bar-wrap">
+            <div class="process-progress-bar" id="process-scroll-bar"></div>
+          </div>
+
+          <div class="process-horizontal-wrapper" id="process-scroll-wrapper">
+            <div class="process-horizontal-scroll" id="process-horizontal-scroll">
+              
+              <div class="process-step">
+                <span class="step-number" id="process-step1-num">01</span>
+                <h4 class="step-title" id="process-step1-title">Discovery Brief</h4>
+                <p class="step-desc" id="process-step1-desc">We align on campaign milestones, brand voice guidelines, and target key performance goals.</p>
+                <div class="step-bar"></div>
+              </div>
+
+              <div class="process-step">
+                <span class="step-number" id="process-step2-num">02</span>
+                <h4 class="step-title" id="process-step2-title">Pre-Production</h4>
+                <p class="step-desc" id="process-step2-desc">Moodboarding, scene compositions, talent scouting, and detailed script mockups.</p>
+                <div class="step-bar"></div>
+              </div>
+
+              <div class="process-step">
+                <span class="step-number" id="process-step3-num">03</span>
+                <h4 class="step-title" id="process-step3-title">The Shoot Day</h4>
+                <p class="step-desc" id="process-step3-desc">Multi-cam cinema captures, sensor calibrations, and lighting architect work.</p>
+                <div class="step-bar"></div>
+              </div>
+
+              <div class="process-step">
+                <span class="step-number" id="process-step4-num">04</span>
+                <h4 class="step-title" id="process-step4-title">Post & Grading</h4>
+                <p class="step-desc" id="process-step4-desc">Frame cutting, sound designs, customized LUT color grading, and asset exports.</p>
+                <div class="step-bar"></div>
+              </div>
+
+              <div class="process-step">
+                <span class="step-number" id="process-step5-num">05</span>
+                <h4 class="step-title" id="process-step5-title">Deploy & Review</h4>
+                <p class="step-desc" id="process-step5-desc">Deploy campaign visuals across web, commercial portals, and review results.</p>
+                <div class="step-bar-end"></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. COMPANY TIMELINE ROADMAP CARD -->
+      <section class="company-timeline-section scroll-section section-card-wrapper">
+        <div class="about-container">
+          <div class="timeline-header" style="text-align: center; margin-bottom: 5rem;">
+            <span class="section-subtitle">OUR ROADMAP</span>
+            <h2 class="section-title" style="margin: 0 auto;">Milestones of Creative Growth.</h2>
+          </div>
+
+          <div class="editorial-timeline" style="position: relative; max-width: 800px; margin: 0 auto;">
+            <div class="timeline-line" style="position: absolute; left: 50%; transform: translateX(-50%); top: 0; bottom: 0; width: 1px; background: rgba(18,18,18,0.1);"></div>
+            
+            <div class="timeline-node fade-in-up" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem; position: relative;">
+              <div style="width: 45%; text-align: right;">
+                <span class="font-accent" style="color: var(--accent); font-weight: 700; font-size: 1.2rem;">2021</span>
+                <h4 style="font-family: var(--font-display); font-weight: 700; margin-top: 0.5rem;">The Launch</h4>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Founded in London as a boutique high-fashion photography studio with 3 visual directors.</p>
+              </div>
+              <div style="width: 10px; height: 10px; background: var(--accent); border-radius: 50%; z-index: 2; position: absolute; left: 50%; transform: translateX(-50%);"></div>
+              <div style="width: 45%;"></div>
+            </div>
+
+            <div class="timeline-node fade-in-up" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem; position: relative;">
+              <div style="width: 45%;"></div>
+              <div style="width: 10px; height: 10px; background: var(--accent); border-radius: 50%; z-index: 2; position: absolute; left: 50%; transform: translateX(-50%);"></div>
+              <div style="width: 45%; text-align: left;">
+                <span class="font-accent" style="color: var(--accent); font-weight: 700; font-size: 1.2rem;">2023</span>
+                <h4 style="font-family: var(--font-display); font-weight: 700; margin-top: 0.5rem;">Vanguard Cinema</h4>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Acquired high-performance cinema rigs and established our motion department in Los Angeles.</p>
+              </div>
+            </div>
+
+            <div class="timeline-node fade-in-up" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem; position: relative;">
+              <div style="width: 45%; text-align: right;">
+                <span class="font-accent" style="color: var(--accent); font-weight: 700; font-size: 1.2rem;">2025</span>
+                <h4 style="font-family: var(--font-display); font-weight: 700; margin-top: 0.5rem;">Interactive Fusion</h4>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Integrated frontend design stacks, delivering bespoke interactive websites with custom asset flows.</p>
+              </div>
+              <div style="width: 10px; height: 10px; background: var(--accent); border-radius: 50%; z-index: 2; position: absolute; left: 50%; transform: translateX(-50%);"></div>
+              <div style="width: 45%;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- 9. TESTIMONIALS DRAG CAROUSEL CARD -->
+      <section id="testimonials" class="testimonials-section scroll-section section-card-wrapper">
+        <div class="testimonials-container">
+          <div class="testimonials-header">
+            <span class="section-subtitle" id="testimonials-subtitle-text">THEIR VOICE</span>
+            <h2 class="section-title" id="testimonials-title-text">Client Testimonials.</h2>
+          </div>
+
+          <!-- Draggable Testimonials Carousel -->
+          <div class="testimonials-carousel-wrapper" id="testimonials-carousel-wrapper">
+            <div class="testimonials-carousel" id="testimonials-carousel">
+              <!-- Dynamically populated testimonial-cards -->
+            </div>
+          </div>
+          <div class="carousel-instruction">
+            <span>[ Click and Drag to Slide ]</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. CONTACT FORM & INFO CARD -->
+      <section id="contact" class="contact-section scroll-section section-card-wrapper" style="padding-top: 5rem;">
+        <div class="contact-container">
+          <div class="contact-header" style="margin-bottom: 3.5rem;">
+            <span class="section-subtitle" id="contact-subtitle-text">GET IN TOUCH</span>
+            <h2 class="section-title" id="contact-title-text">Inquiries & Details.</h2>
+          </div>
+          
+          <div class="contact-grid">
+            <div class="contact-info">
+              <p class="contact-pitch" id="contact-pitch-text">Have a project that requires visual excellence and interactive edge? Fill out the form or reach out directly to learn how we can elevate your brand.</p>
+              
+              <div class="contact-details">
+                <div class="contact-detail-item fade-in-up">
+                  <span class="detail-label">Email:</span>
+                  <a href="mailto:hello@growlix.digital" class="detail-link" id="contact-email-link">hello@growlix.digital</a>
+                </div>
+                <div class="contact-detail-item fade-in-up">
+                  <span class="detail-label">Location:</span>
+                  <span class="detail-value" id="contact-location-text">London / Los Angeles / Tokyo</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="contact-form-wrap">
+              <form class="contact-form" id="contact-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="form-name">Name</label>
+                    <input type="text" id="form-name" required placeholder="Enter your name">
+                  </div>
+                  <div class="form-group">
+                    <label for="form-email">Email</label>
+                    <input type="email" id="form-email" required placeholder="Enter your email">
+                  </div>
+                </div>
+
+                <div class="form-group select-group">
+                  <label class="select-label">Service Required</label>
+                  <div class="select-options" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.8rem; width: 100%;">
+                    <label class="checkbox-option">
+                      <input type="checkbox" name="interest" value="Social Media Marketing">
+                      <span>Social Media Marketing</span>
+                    </label>
+                    <label class="checkbox-option">
+                      <input type="checkbox" name="interest" value="Web Dev / App Dev">
+                      <span>Web & App Dev</span>
+                    </label>
+                    <label class="checkbox-option">
+                      <input type="checkbox" name="interest" value="Video Editing">
+                      <span>Video Editing</span>
+                    </label>
+                    <label class="checkbox-option">
+                      <input type="checkbox" name="interest" value="Graphics Design">
+                      <span>Graphics Design</span>
+                    </label>
+                    <label class="checkbox-option">
+                      <input type="checkbox" name="interest" value="Brand Identity">
+                      <span>Brand Identity</span>
+                    </label>
+                    <label class="checkbox-option">
+                      <input type="checkbox" name="interest" value="Photography / Videography">
+                      <span>Photography / Videography</span>
+                    </label>
+                  </div>
+                </div>
+
+                 <div class="form-group">
+                   <label for="form-message">About Your Project</label>
+                   <textarea id="form-message" required placeholder="Tell us about your visual objectives and project needs..." rows="4"></textarea>
+                 </div>
+
+                <button type="submit" class="btn-submit btn-magnetic">
+                  <span>Send Inquiry</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="submit-arrow">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
+              </form>
+              <div class="form-success-message" id="form-success">
+                <h3>Message Sent.</h3>
+                <p>We'll respond to your creative inquiry within 24 hours.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11. INTERACTIVE APPOINTMENT CALENDAR SCHEDULER CARD -->
+      <section id="booking" class="booking-section scroll-section section-card-wrapper">
+        <div class="booking-container" style="text-align: left;">
+          
+          <div class="booking-header">
+            <span class="booking-tag font-accent" id="booking-subtitle-text">START A CAMPAIGN</span>
+            <h2 class="booking-title" style="margin: 0;" id="booking-title-text">Book an Appointment</h2>
+            <p style="color: var(--text-secondary); margin-top: 0.5rem; max-width: 600px;">
+              Select a date on the calendar, pick a convenient time slot, and write a brief description of your visual goals. Our design directors will review it instantly.
+            </p>
+          </div>
+
+          <div class="booking-scheduler-grid">
+            <!-- Left Panel: Form details and Time Slot Pickers -->
+            <div class="scheduler-form-panel">
+              <form class="booking-form contact-form" id="appointment-booking-form">
+                
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="booking-client-name">Your Name</label>
+                    <input type="text" id="booking-client-name" required placeholder="Enter your name">
+                  </div>
+                  <div class="form-group">
+                    <label for="booking-client-email">Your Email</label>
+                    <input type="email" id="booking-client-email" required placeholder="Enter your email">
+                  </div>
+                </div>
+
+                <!-- Selected Date Indicator -->
+                <div class="form-group" style="margin-top: 1rem;">
+                  <label for="booking-selected-date-display" class="slots-label" style="margin-bottom: 0.2rem;">Selected Appointment Date</label>
+                  <input type="text" id="booking-selected-date-display" value="Please select a date on the calendar..." readonly style="cursor: default; font-weight: 700; color: var(--accent) !important; background-color: #faf9f6 !important;">
+                </div>
+
+                <!-- Interactive Time Slots Select Chips -->
+                <div style="margin-top: 1rem;">
+                  <span class="slots-label">Select Time Slot</span>
+                  <div class="slots-grid" id="booking-time-slots-grid">
+                    <div class="slot-chip" data-time="10:00 AM">10:00 AM</div>
+                    <div class="slot-chip" data-time="11:30 AM">11:30 AM</div>
+                    <div class="slot-chip" data-time="01:00 PM">01:00 PM</div>
+                    <div class="slot-chip" data-time="02:30 PM">02:30 PM</div>
+                    <div class="slot-chip" data-time="04:00 PM">04:00 PM</div>
+                    <div class="slot-chip" data-time="05:30 PM">05:30 PM</div>
+                  </div>
+                </div>
+
+                 <div class="form-group">
+                   <label for="booking-client-desc">Project Goals & Description</label>
+                   <textarea id="booking-client-desc" required placeholder="Describe your campaign goals, project scope, and creative needs..." rows="3"></textarea>
+                 </div>
+
+                <button type="submit" class="btn-booking-action btn-magnetic" style="margin-top: 1.5rem;">
+                  <span>Schedule Appointment</span>
+                </button>
+              </form>
+
+              <!-- Success Notification container -->
+              <div class="booking-success-wrap" id="appointment-success-container">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="width: 64px; height: 64px; margin-bottom: 1.5rem;">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                <h3 style="font-family:var(--font-display); font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">Appointment Requested</h3>
+                <p style="color:var(--text-secondary); max-width:400px; margin-bottom: 2rem;">
+                  We have successfully scheduled your creative briefing for <span id="success-confirmed-datetime" style="font-weight:700; color:var(--accent);">July 10, 2026 at 10:00 AM</span>. A calendar invitation email has been sent.
+                </p>
+                <button type="button" class="btn-submit btn-magnetic" id="btn-reset-booking-scheduler" style="margin: 0 auto;">
+                  <span>Book Another Slot</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Panel: Calendar Card -->
+            <div class="scheduler-calendar-panel">
+              <div class="calendar-card">
+                <div class="calendar-header">
+                  <button type="button" class="calendar-nav-btn" id="prev-month-btn">&larr;</button>
+                  <div class="calendar-month-title" id="calendar-month-year">July 2026</div>
+                  <button type="button" class="calendar-nav-btn" id="next-month-btn">&rarr;</button>
+                </div>
+                <div class="calendar-weekdays">
+                  <div>Su</div>
+                  <div>Mo</div>
+                  <div>Tu</div>
+                  <div>We</div>
+                  <div>Th</div>
+                  <div>Fr</div>
+                  <div>Sa</div>
+                </div>
+                <div class="calendar-days" id="calendar-days-grid">
+                  <!-- Generated dynamically via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 8. FEATURED PORTFOLIO GRID CARD -->
+      <section id="featured-portfolio" class="work-section scroll-section section-card-wrapper">
+        <div class="work-container">
+          <div class="work-header">
+            <span class="section-subtitle">SELECTED WORK</span>
+            <h2 class="section-title">Featured Creative Pieces.</h2>
+          </div>
+
+          <!-- Featured Projects Grid -->
+          <div class="portfolio-grid" id="featured-portfolio-grid">
+            <!-- Dynamically populated via JS -->
+          </div>
+
+          <!-- Redirect to Full Portfolio Page -->
+          <div class="load-more-container" style="display: flex; justify-content: center; margin-top: 5rem;">
+            <a href="/portfolio.html" class="btn-primary">
+              <span>View Full Portfolio</span>
+              <span class="btn-ripple"></span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Reusable Footer Container -->
+    <footer id="main-footer" class="editorial-footer"></footer>
+  </div>
+
+  <!-- LIGHTBOX MEDIA POPUP OVERLAY -->
+  <div id="media-lightbox-modal" class="lightbox-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(10, 10, 10, 0.98); z-index: 10000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.4s ease; pointer-events: none;">
+    <button id="btn-lightbox-close" style="position: absolute; top: 1.5rem; right: 1.5rem; background: transparent; border: none; color: #ffffff; font-size: 3rem; line-height: 1; cursor: pointer; z-index: 10100; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">&times;</button>
+    
+    <div class="lightbox-content-container" style="position: relative; max-width: 90%; max-height: 85%; width: 1200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 1rem;">
+      <!-- Media Area -->
+      <div id="lightbox-media-container" style="width: 100%; display: flex; justify-content: center; align-items: center; background: #000; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+        <!-- Embedded dynamically -->
+      </div>
+      
+      <!-- Info Area -->
+      <div id="lightbox-info-container" style="color: #ffffff; text-align: center; font-family: var(--font-primary); width: 100%; max-width: 800px;">
+        <span id="lightbox-category" style="font-size: 0.75rem; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; font-family: var(--font-sans); font-weight: 600;">CATEGORY</span>
+        <h3 id="lightbox-title" style="margin: 0.4rem 0; font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: #ffffff;">Project Title</h3>
+        <p id="lightbox-description" style="margin: 0.6rem 0 0 0; color: #cccccc; font-size: 0.95rem; line-height: 1.6; font-family: var(--font-sans);">Project description content...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Entry Module -->
+  <script type="module" src="/src/pages/Home/home.js"></script>
+</body>
+</html>
