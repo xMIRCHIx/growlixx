@@ -359,6 +359,10 @@ async function loadDashboardOverview() {
 async function loadLandingConfig() {
   const config = await db.getLandingConfig();
 
+  // Populate general settings
+  setInputVal('brand-name-val', config.brandName || 'GROWLIX');
+  setInputVal('brand-subtext-val', config.brandSubtext || '');
+
   // Populate hero section inputs
   setInputVal('hero-tagline-val', config.heroTagline);
   setInputVal('hero-title-val', config.heroTitle);
@@ -438,6 +442,8 @@ async function loadLandingConfig() {
       showToast("Saving landing configs...");
       
       const updatedConfig = {
+        brandName: getInputVal('brand-name-val'),
+        brandSubtext: getInputVal('brand-subtext-val'),
         heroTagline: getInputVal('hero-tagline-val'),
         heroTitle: getInputVal('hero-title-val'),
         heroDescription: getInputVal('hero-desc-val'),

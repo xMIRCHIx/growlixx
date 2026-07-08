@@ -7,10 +7,19 @@ export function renderFooter() {
   const footerEl = document.getElementById('main-footer');
   if (!footerEl) return;
 
+  // Read brand configuration dynamically
+  let brandName = 'GROWLIX';
+  try {
+    const configLocal = JSON.parse(localStorage.getItem('growlix_landing_db') || '{}');
+    if (configLocal.brandName) {
+      brandName = configLocal.brandName;
+    }
+  } catch (e) {}
+
   footerEl.innerHTML = `
     <div class="footer-container">
       <div class="footer-logo-row">
-        <span class="footer-giant-logo font-syne">GROWLIX</span>
+        <span class="footer-giant-logo font-syne">${brandName}</span>
       </div>
 
       <div class="footer-links-row">
@@ -18,7 +27,7 @@ export function renderFooter() {
           <p class="footer-brand-tagline">
             Premium media. Flawless motion. Crafting visual identities for premium brands globally.
           </p>
-          <span class="footer-copyright">© 2026 Growlix Digital. Handcrafted.</span>
+          <span class="footer-copyright">© 2026 ${brandName}. Handcrafted.</span>
         </div>
 
         <div class="footer-col-nav">

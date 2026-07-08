@@ -17,12 +17,23 @@ export function renderHeader(activePage) {
   const portfolioPath = '/portfolio.html';
   const bookingPath = isHomePage ? '#booking' : '/index.html#booking';
 
+  // Read brand configuration dynamically
+  let brandName = 'GROWLIX';
+  let brandSubtext = '';
+  try {
+    const configLocal = JSON.parse(localStorage.getItem('growlix_landing_db') || '{}');
+    if (configLocal.brandName !== undefined) {
+      brandName = configLocal.brandName;
+      brandSubtext = configLocal.brandSubtext || '';
+    }
+  } catch (e) {}
+
   // Render the header HTML structure: Home | About | Services | Contact | Portfolio
   headerContainer.innerHTML = `
     <nav class="nav-container">
       <a href="${isHomePage ? '#home' : '/index.html#home'}" class="logo magnetic" data-strength="15">
-        <span class="logo-bold">GROWLIX</span>
-        <span class="logo-light">DIGITAL</span>
+        <span class="logo-bold">${brandName}</span>
+        ${brandSubtext ? `<span class="logo-light">${brandSubtext}</span>` : ''}
       </a>
       
       <ul class="nav-links">
@@ -68,7 +79,7 @@ export function renderHeader(activePage) {
   drawerAside.id = 'mobile-menu-drawer';
   drawerAside.innerHTML = `
     <div class="drawer-header">
-      <span class="logo-bold">GROWLIX</span>
+      <span class="logo-bold">${brandName}</span>
       <button class="drawer-close" id="drawer-close" aria-label="Close Menu">&times;</button>
     </div>
     <ul class="drawer-links">

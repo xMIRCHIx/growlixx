@@ -21,9 +21,11 @@ const LANDING_STORAGE_KEY = 'growlix_landing_db';
 
 // High-quality seeded default landing configs
 const DEFAULT_LANDING_CONFIG = {
+  brandName: "GROWLIX",
+  brandSubtext: "",
   heroTagline: "Award-Winning Creative Studio",
   heroTitle: "WE SHAPE <br> <span class=\"italic-serif text-accent\">Cinematic</span> <br> VISUAL STORIES",
-  heroDescription: "Growlix Digital is an elite creative agency handcrafting premium photography, videography, and bold brand identities that stand the test of time.",
+  heroDescription: "Growlix is an elite creative agency handcrafting premium photography, videography, and bold brand identities that stand the test of time.",
   heroBgImg: "/src/assets/hero_concept.png",
 
   aboutSubtitle: "ABOUT GROWLIX",
