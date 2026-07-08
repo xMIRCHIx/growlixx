@@ -787,10 +787,13 @@ img {
   .service-card-desc {
     display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
+    /* autoprefixer: ignore next */
     -webkit-box-orient: vertical !important;
     overflow: hidden !important;
+    text-overflow: ellipsis !important;
     font-size: 0.75rem !important;
     line-height: 1.4 !important;
+    max-height: 2.8em !important; /* Max height to enforce 2 lines exactly */
     color: var(--text-secondary) !important;
     margin-bottom: 0 !important;
     padding: 0 0.8rem 0.8rem 0.8rem !important;
