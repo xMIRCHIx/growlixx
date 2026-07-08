@@ -3551,9 +3551,12 @@ img {
 
 @media (max-width: 768px) {
   .section-card-wrapper {
-    margin: 2rem 3% !important;
-    padding: 3rem 4% !important;
-    border-radius: 1.2rem !important;
+    margin: 1.5rem 0 !important;
+    padding: 2.5rem 0 !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    box-shadow: none !important;
   }
 }
 

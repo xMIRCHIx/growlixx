@@ -815,6 +815,86 @@ function initAppointmentScheduler() {
   renderCalendar();
 }
 
+function initServicesModal() {
+  const serviceCards = document.querySelectorAll('.service-card');
+  const modal = document.getElementById('service-detail-modal');
+  const closeBtn = document.getElementById('service-modal-close');
+  
+  if (!modal || !closeBtn) return;
+
+  const modalImg = document.getElementById('service-modal-img');
+  const modalTitle = document.getElementById('service-modal-title');
+  const modalNum = document.getElementById('service-modal-num');
+  const modalDesc = document.getElementById('service-modal-desc');
+  const modalTags = document.getElementById('service-modal-tags');
+
+  serviceCards.forEach(card => {
+    // Add visual pointer cursor on mobile to show it is clickable
+    card.style.cursor = 'pointer';
+    
+    card.addEventListener('click', () => {
+      // Check if mobile view (width < 768px)
+      if (window.innerWidth >= 768) {
+        return;
+      }
+
+      // Populate details
+      const imgEl = card.querySelector('.service-card-img');
+      const titleEl = card.querySelector('.service-card-title');
+      const numEl = card.querySelector('.service-card-num');
+      const descEl = card.querySelector('.service-card-desc');
+      const tagsList = card.querySelectorAll('.service-card-tag');
+
+      if (modalImg) modalImg.src = imgEl ? imgEl.src : '';
+      if (modalTitle) modalTitle.textContent = titleEl ? titleEl.textContent : '';
+      if (modalNum) modalNum.textContent = numEl ? numEl.textContent : '';
+      if (modalDesc) modalDesc.textContent = descEl ? descEl.textContent : '';
+
+      if (modalTags) {
+        modalTags.innerHTML = '';
+        tagsList.forEach(tag => {
+          const li = document.createElement('li');
+          li.className = 'service-card-tag';
+          li.style.fontSize = '0.72rem';
+          li.style.fontWeight = '600';
+          li.style.textTransform = 'uppercase';
+          li.style.backgroundColor = 'var(--bg-secondary)';
+          li.style.padding = '0.3rem 0.6rem';
+          li.style.borderRadius = '4px';
+          li.textContent = tag.textContent;
+          modalTags.appendChild(li);
+        });
+      }
+
+      // Open Modal
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.style.opacity = '1';
+        modal.style.pointerEvents = 'auto';
+        const content = modal.querySelector('.service-modal-content');
+        if (content) content.style.transform = 'scale(1)';
+      }, 50);
+    });
+  });
+
+  const closeModal = () => {
+    modal.style.opacity = '0';
+    modal.style.pointerEvents = 'none';
+    const content = modal.querySelector('.service-modal-content');
+    if (content) content.style.transform = 'scale(0.9)';
+    setTimeout(() => {
+      modal.style.display = 'none';
+    }, 400);
+  };
+
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+}
+
 // Bootstrapping
 window.addEventListener('DOMContentLoaded', () => {
   initPage('home');
@@ -822,5 +902,6 @@ window.addEventListener('DOMContentLoaded', () => {
     initHomeAnimations();
     initContactForm();
     initAppointmentScheduler();
+    initServicesModal();
   });
 });
