@@ -45,6 +45,7 @@ export function renderHeader(activePage) {
         <button class="mobile-menu-toggle" id="menu-toggle" aria-label="Toggle Menu">
           <span></span>
           <span></span>
+          <span></span>
         </button>
       </div>
     </nav>

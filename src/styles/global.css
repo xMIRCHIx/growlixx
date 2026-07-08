@@ -757,8 +757,30 @@ img {
 
 @media (max-width: 768px) {
   .services-list {
-    grid-template-columns: 1fr !important;
-    gap: 1.5rem !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.8rem !important;
+  }
+  .service-card {
+    padding: 1.2rem !important;
+  }
+  .service-card-img-wrap {
+    height: 120px !important;
+    margin-bottom: 1rem !important;
+  }
+  .service-card-title {
+    font-size: 1.1rem !important;
+  }
+  .service-card-desc {
+    font-size: 0.82rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 1rem !important;
+  }
+  .service-card-tags {
+    padding-top: 0.8rem !important;
+  }
+  .service-card-tag {
+    font-size: 0.65rem !important;
+    padding: 0.2rem 0.4rem !important;
   }
 }
 
@@ -1939,6 +1961,18 @@ img {
    ========================================================================== */
 
 @media (max-width: 992px) {
+  .nav-links {
+    display: none !important;
+  }
+  
+  .nav-actions #header-cta {
+    display: none !important;
+  }
+  
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+
   .hero-section {
     height: auto;
     min-height: 100vh;
@@ -2030,6 +2064,51 @@ img {
 }
 
 @media (max-width: 768px) {
+  /* Remove useless side spacing and reduce section spacing */
+  .hero-container,
+  .about-container,
+  .services-container,
+  .work-container,
+  .why-container,
+  .process-container,
+  .testimonials-container,
+  .faq-container,
+  .contact-container,
+  .booking-container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .scroll-section {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+
+  /* Bento 2 columns grid on mobile */
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.8rem !important;
+  }
+
+  .bento-item {
+    grid-column: span 1 !important;
+    padding: 1.2rem !important;
+  }
+
+  .bento-item h3 {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .bento-item p {
+    font-size: 0.82rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .bento-num {
+    margin-bottom: 0.8rem !important;
+  }
+
   .service-collapsed-row {
     align-items: flex-start;
   }
