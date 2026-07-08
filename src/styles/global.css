@@ -2208,6 +2208,7 @@ img {
   color: var(--color-black) !important;
 }
 .main-header.header-subpage .btn-book {
+  background-color: transparent !important;
   border-color: var(--color-black) !important;
   color: var(--color-black) !important;
 }
