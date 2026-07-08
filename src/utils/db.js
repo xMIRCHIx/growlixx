@@ -35,6 +35,7 @@ const DEFAULT_LANDING_CONFIG = {
   socialLinkedIn: "",
   whatsappNumber: "917828950968",
   whatsappMessage: "Hello Growlix, I would like to inquire about your creative services.",
+  footerTagline: "Premium media. Flawless motion. Crafting visual identities for premium brands globally.",
 
   aboutSubtitle: "ABOUT GROWLIX",
   aboutTitle: "Defining the Next Era of Luxury Media.",

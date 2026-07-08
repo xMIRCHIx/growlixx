@@ -369,6 +369,7 @@ async function loadLandingConfig() {
   setInputVal('social-dribbble-val', config.socialDribbble || '');
   setInputVal('social-vimeo-val', config.socialVimeo || '');
   setInputVal('social-linkedin-val', config.socialLinkedIn || '');
+  setInputVal('footer-tagline-val', config.footerTagline || 'Premium media. Flawless motion. Crafting visual identities for premium brands globally.');
 
   // Populate hero section inputs
   setInputVal('hero-tagline-val', config.heroTagline);
@@ -458,6 +459,7 @@ async function loadLandingConfig() {
         socialDribbble: getInputVal('social-dribbble-val'),
         socialVimeo: getInputVal('social-vimeo-val'),
         socialLinkedIn: getInputVal('social-linkedin-val'),
+        footerTagline: getInputVal('footer-tagline-val'),
         heroTagline: getInputVal('hero-tagline-val'),
         heroTitle: getInputVal('hero-title-val'),
         heroDescription: getInputVal('hero-desc-val'),

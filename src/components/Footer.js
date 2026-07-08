@@ -17,6 +17,8 @@ export function renderFooter() {
   let whatsappNumber = '917828950968';
   let whatsappMessage = 'Hello Growlix, I would like to inquire about your creative services.';
 
+  let footerTagline = 'Premium media. Flawless motion. Crafting visual identities for premium brands globally.';
+
   try {
     const configLocal = JSON.parse(localStorage.getItem('growlix_landing_db') || '{}');
     if (configLocal.brandName) {
@@ -29,6 +31,7 @@ export function renderFooter() {
     linkedin = configLocal.socialLinkedIn || '#';
     whatsappNumber = configLocal.whatsappNumber || '917828950968';
     whatsappMessage = configLocal.whatsappMessage || 'Hello Growlix, I would like to inquire about your creative services.';
+    footerTagline = configLocal.footerTagline || 'Premium media. Flawless motion. Crafting visual identities for premium brands globally.';
   } catch (e) {}
 
   footerEl.innerHTML = `
@@ -40,7 +43,7 @@ export function renderFooter() {
       <div class="footer-links-row">
         <div class="footer-col-brand">
           <p class="footer-brand-tagline">
-            Premium media. Flawless motion. Crafting visual identities for premium brands globally.
+            ${footerTagline}
           </p>
           <span class="footer-copyright">© 2026 ${brandName}. Handcrafted.</span>
         </div>
