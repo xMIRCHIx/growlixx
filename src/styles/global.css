@@ -3584,4 +3584,53 @@ img {
   margin-bottom: 2.2rem !important;
 }
 
+/* Floating WhatsApp Contact Button */
+.whatsapp-float {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: #25D366;
+  color: #ffffff !important;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 30px rgba(37, 211, 102, 0.35);
+  z-index: 99999;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  cursor: pointer;
+  padding: 0 !important;
+}
+
+.whatsapp-float:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 35px rgba(37, 211, 102, 0.55);
+  color: #ffffff !important;
+}
+
+.whatsapp-float svg {
+  width: 28px;
+  height: 28px;
+  transition: transform 0.4s ease;
+}
+
+.whatsapp-float:hover svg {
+  transform: scale(1.08) rotate(10deg);
+}
+
+@media (max-width: 768px) {
+  .whatsapp-float {
+    bottom: 5.5rem !important; /* Stand above the admin mobile bottom nav-bar */
+    right: 1.2rem !important;
+    width: 48px;
+    height: 48px;
+  }
+  .whatsapp-float svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
 

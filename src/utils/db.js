@@ -27,6 +27,14 @@ const DEFAULT_LANDING_CONFIG = {
   heroTitle: "WE SHAPE <br> <span class=\"italic-serif text-accent\">Cinematic</span> <br> VISUAL STORIES",
   heroDescription: "Growlix is an elite creative agency handcrafting premium photography, videography, and bold brand identities that stand the test of time.",
   heroBgImg: "/src/assets/hero_concept.png",
+  
+  socialInstagram: "",
+  socialBehance: "",
+  socialDribbble: "",
+  socialVimeo: "",
+  socialLinkedIn: "",
+  whatsappNumber: "917828950968",
+  whatsappMessage: "Hello Growlix, I would like to inquire about your creative services.",
 
   aboutSubtitle: "ABOUT GROWLIX",
   aboutTitle: "Defining the Next Era of Luxury Media.",

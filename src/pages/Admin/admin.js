@@ -362,6 +362,13 @@ async function loadLandingConfig() {
   // Populate general settings
   setInputVal('brand-name-val', config.brandName || 'GROWLIX');
   setInputVal('brand-subtext-val', config.brandSubtext || '');
+  setInputVal('whatsapp-number-val', config.whatsappNumber || '917828950968');
+  setInputVal('whatsapp-message-val', config.whatsappMessage || 'Hello Growlix, I would like to inquire about your creative services.');
+  setInputVal('social-instagram-val', config.socialInstagram || '');
+  setInputVal('social-behance-val', config.socialBehance || '');
+  setInputVal('social-dribbble-val', config.socialDribbble || '');
+  setInputVal('social-vimeo-val', config.socialVimeo || '');
+  setInputVal('social-linkedin-val', config.socialLinkedIn || '');
 
   // Populate hero section inputs
   setInputVal('hero-tagline-val', config.heroTagline);
@@ -444,6 +451,13 @@ async function loadLandingConfig() {
       const updatedConfig = {
         brandName: getInputVal('brand-name-val'),
         brandSubtext: getInputVal('brand-subtext-val'),
+        whatsappNumber: getInputVal('whatsapp-number-val'),
+        whatsappMessage: getInputVal('whatsapp-message-val'),
+        socialInstagram: getInputVal('social-instagram-val'),
+        socialBehance: getInputVal('social-behance-val'),
+        socialDribbble: getInputVal('social-dribbble-val'),
+        socialVimeo: getInputVal('social-vimeo-val'),
+        socialLinkedIn: getInputVal('social-linkedin-val'),
         heroTagline: getInputVal('hero-tagline-val'),
         heroTitle: getInputVal('hero-title-val'),
         heroDescription: getInputVal('hero-desc-val'),
