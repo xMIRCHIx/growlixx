@@ -3646,4 +3646,11 @@ body.lightbox-active {
   overflow: hidden !important; /* Freeze background page scroll */
 }
 
+/* Ensure modal content containers can scroll if they are larger than the viewport */
+.service-modal-content, .lightbox-content-container {
+  max-height: 85vh !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
 

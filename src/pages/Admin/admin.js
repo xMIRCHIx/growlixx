@@ -602,7 +602,7 @@ function renderProjectsToTable(list) {
     return `
       <tr>
         <td>
-          <img src="${item.thumbnail || '/src/assets/portfolio_photography.png'}" class="table-thumb" alt="">
+          <img src="${item.thumbnail || `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23121212'/><text x='50' y='55' fill='white' font-family='sans-serif' font-weight='bold' font-size='32' text-anchor='middle'>${item.title.substring(0,2).toUpperCase()}</text></svg>`}" class="table-thumb" alt="">
         </td>
         <td>
           <div style="font-weight: 700; color: var(--text-primary);">${item.title}</div>
@@ -785,8 +785,16 @@ async function handleSaveProject() {
       thumbnailPath = `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
     }
   }
+  // 3. If it's a website project and has a demoUrl, extract screenshot automatically!
+  else if (demoUrl) {
+    let cleanUrl = demoUrl.trim();
+    if (!/^https?:\/\//i.test(cleanUrl)) {
+      cleanUrl = 'https://' + cleanUrl;
+    }
+    thumbnailPath = `https://image.thum.io/get/width/1280/crop/800/${cleanUrl}`;
+  }
 
-  // 3. Category fallback defaults if still empty - removed to keep empty for luxury text placeholder
+  // 4. Default fallback if still empty
   if (!thumbnailPath) {
     thumbnailPath = '';
   }
@@ -995,10 +1003,29 @@ async function cleanupBrokenPlaceholderAssets() {
   try {
     let cleaned = false;
     for (const proj of loadedProjects) {
-      if (proj.thumbnail && proj.thumbnail.startsWith('/src/assets/')) {
-        proj.thumbnail = '';
-        proj.coverImage = '';
-        await db.updateProject(proj.id, { thumbnail: '', coverImage: '' });
+      let needsUpdate = false;
+      let newThumb = proj.thumbnail || '';
+      
+      // 1. If it starts with legacy placeholder path, clear it
+      if (newThumb.startsWith('/src/assets/')) {
+        newThumb = '';
+        needsUpdate = true;
+      }
+      
+      // 2. If it is empty, but has a demoUrl, generate the live thum.io screenshot!
+      if (!newThumb && proj.demoUrl) {
+        let cleanUrl = proj.demoUrl.trim();
+        if (!/^https?:\/\//i.test(cleanUrl)) {
+          cleanUrl = 'https://' + cleanUrl;
+        }
+        newThumb = `https://image.thum.io/get/width/1280/crop/800/${cleanUrl}`;
+        needsUpdate = true;
+      }
+
+      if (needsUpdate) {
+        proj.thumbnail = newThumb;
+        proj.coverImage = newThumb;
+        await db.updateProject(proj.id, { thumbnail: newThumb, coverImage: newThumb });
         cleaned = true;
       }
     }
