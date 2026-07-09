@@ -43,7 +43,6 @@ const modalFieldFeatured = document.getElementById('modal-project-featured');
 // Dynamic modal groups
 const groupVideoInputs = document.getElementById('group-video-inputs');
 const groupWebInputs = document.getElementById('group-web-inputs');
-const groupGalleryInputs = document.getElementById('group-gallery-inputs');
 const modalFieldVideoUrl = document.getElementById('modal-project-videoUrl');
 const modalFieldDemoUrl = document.getElementById('modal-project-demoUrl');
 const modalFieldGallery = document.getElementById('modal-project-gallery');
@@ -732,15 +731,12 @@ function toggleDynamicFields() {
   // Deactivate all dynamic input panels
   groupVideoInputs.classList.remove('active');
   groupWebInputs.classList.remove('active');
-  groupGalleryInputs.classList.remove('active');
 
   // Activate matching panel based on Selected Category
   if (category === 'Videography' || category === 'Video Editing') {
     groupVideoInputs.classList.add('active');
   } else if (category === 'Website Development' || category === 'Software Development') {
     groupWebInputs.classList.add('active');
-  } else if (category === 'Photography' || category === 'Graphic Design' || category === 'Brand Identity' || category === 'Social Media Marketing') {
-    groupGalleryInputs.classList.add('active');
   }
 }
 
@@ -763,8 +759,31 @@ async function handleSaveProject() {
 
   // Fallback defaults for optional inputs
   const clientName = client || 'Creative Concept';
+
+  // Handle dynamic field assignments
+  const videoUrl = (category === 'Videography' || category === 'Video Editing') ? modalFieldVideoUrl.value.trim() : '';
+  const demoUrl = (category === 'Website Development' || category === 'Software Development') ? modalFieldDemoUrl.value.trim() : '';
   
-  let thumbnailPath = thumbnail;
+  // Read gallery raw values (always active/visible for all categories!)
+  const galleryRaw = modalFieldGallery.value.trim();
+  const gallery = galleryRaw ? galleryRaw.split(',').map(u => u.trim()).filter(Boolean) : [];
+
+  // Fallback defaults and automatic thumbnail extraction
+  let thumbnailPath = '';
+  
+  // 1. If any images exist in gallery, take the first one as thumbnail cover!
+  if (gallery.length > 0) {
+    thumbnailPath = gallery[0];
+  } 
+  // 2. If it is a video, check if it's YouTube and extract thumbnail automatically!
+  else if (videoUrl) {
+    const ytMatch = videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+    if (ytMatch && ytMatch[1]) {
+      thumbnailPath = `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
+    }
+  }
+
+  // 3. Category fallback defaults if still empty
   if (!thumbnailPath) {
     if (category === 'Videography' || category === 'Video Editing') {
       thumbnailPath = '/src/assets/portfolio_videography.png';
@@ -776,12 +795,6 @@ async function handleSaveProject() {
       thumbnailPath = '/src/assets/portfolio_photography.png';
     }
   }
-
-  // Handle dynamic field assignments
-  const videoUrl = (category === 'Videography' || category === 'Video Editing') ? modalFieldVideoUrl.value.trim() : '';
-  const demoUrl = (category === 'Website Development' || category === 'Software Development') ? modalFieldDemoUrl.value.trim() : '';
-  const galleryRaw = (category === 'Photography' || category === 'Graphic Design' || category === 'Brand Identity' || category === 'Social Media Marketing') ? modalFieldGallery.value.trim() : '';
-  const gallery = galleryRaw ? galleryRaw.split(',').map(u => u.trim()).filter(Boolean) : [];
 
   const projectData = {
     title,
@@ -796,7 +809,7 @@ async function handleSaveProject() {
     videoUrl,
     demoUrl,
     gallery,
-    coverImage: thumbnailPath, // Fallback cover
+    coverImage: thumbnailPath, // Set cover image to the same thumbnail
     completionDate: new Date().toISOString().substring(0, 10)
   };
 

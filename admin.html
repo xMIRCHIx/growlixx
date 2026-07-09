@@ -776,30 +776,19 @@
             </div>
           </div>
 
-          <div class="grid-cols-2">
-            <div class="form-group">
-              <label for="modal-project-category">Category Showcase</label>
-              <select id="modal-project-category" required style="padding: 0.85rem 1.15rem; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.12); background-color: #faf9f6; font-family: var(--font-sans); outline: none;">
-                <option value="Photography">Photography</option>
-                <option value="Videography">Videography</option>
-                <option value="Video Editing">Video Editing</option>
-                <option value="Brand Identity">Brand Identity</option>
-                <option value="Graphic Design">Graphic Design</option>
-                <option value="Social Media Marketing">Social Media Marketing</option>
-                <option value="Website Development">Website Development</option>
-                <option value="Software Development">Software Development</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="modal-project-thumbnail">Card Thumbnail Image Path / URL (Optional)</label>
-              <div style="display: flex; gap: 0.5rem; align-items: center;">
-                <input type="text" id="modal-project-thumbnail" placeholder="e.g. /src/assets/portfolio_photography.png" style="flex-grow: 1;">
-                <label class="btn-upload-label">
-                  <span>Upload</span>
-                  <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-project-thumbnail" style="display: none;">
-                </label>
-              </div>
-            </div>
+          <div class="form-group">
+            <label for="modal-project-category">Category Showcase</label>
+            <select id="modal-project-category" required style="padding: 0.85rem 1.15rem; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.12); background-color: #faf9f6; font-family: var(--font-sans); outline: none; width: 100%;">
+              <option value="Photography">Photography</option>
+              <option value="Videography">Videography</option>
+              <option value="Video Editing">Video Editing</option>
+              <option value="Brand Identity">Brand Identity</option>
+              <option value="Graphic Design">Graphic Design</option>
+              <option value="Social Media Marketing">Social Media Marketing</option>
+              <option value="Website Development">Website Development</option>
+              <option value="Software Development">Software Development</option>
+            </select>
+            <input type="hidden" id="modal-project-thumbnail">
           </div>
 
           <!-- DYNAMIC INPUT FIELDS CORRESPONDING TO CATEGORIES -->
@@ -826,18 +815,16 @@
             </div>
           </div>
 
-          <!-- Photography / Design Gallery Dynamic Inputs -->
-          <div class="category-input-group" id="group-gallery-inputs">
-            <div class="form-group">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
-                <label for="modal-project-gallery" style="margin: 0;">Gallery Images URLs (Comma-separated)</label>
-                <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem;">
-                  <span>+ Upload Image</span>
-                  <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-project-gallery" data-mode="append" style="display: none;">
-                </label>
-              </div>
-              <textarea id="modal-project-gallery" rows="2" placeholder="e.g. /src/assets/portfolio_photography.png, /src/assets/about_studio.png"></textarea>
+          <!-- Project Images & Gallery (Always Visible for All Categories!) -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+              <label for="modal-project-gallery" style="margin: 0; font-weight: 600;">Project Images & Gallery (First image becomes main Cover/Thumbnail)</label>
+              <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem;">
+                <span>+ Upload Image</span>
+                <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-project-gallery" data-mode="append" style="display: none;">
+              </label>
             </div>
+            <textarea id="modal-project-gallery" rows="2" placeholder="e.g. /src/assets/portfolio_photography.png, /src/assets/about_studio.png"></textarea>
           </div>
 
           <div class="form-group">
