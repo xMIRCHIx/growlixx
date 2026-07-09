@@ -3634,4 +3634,16 @@ img {
   }
 }
 
+/* Reusable Lightbox Scroll and Overlay fixes */
+.lightbox-overlay {
+  overflow-y: auto !important; /* Enable overlay vertical scroll */
+  align-items: flex-start !important; /* Allow scroll padding alignment */
+  padding: 3rem 1.5rem !important; /* Add space on top and bottom */
+  -webkit-overflow-scrolling: touch;
+}
+
+body.lightbox-active {
+  overflow: hidden !important; /* Freeze background page scroll */
+}
+
 

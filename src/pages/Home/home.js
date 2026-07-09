@@ -312,6 +312,7 @@ function openMediaLightbox(project) {
 
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
+  document.body.classList.add('lightbox-active');
   
   gsap.fromTo(modal, 
     { opacity: 0 }, 
@@ -327,6 +328,7 @@ function openMediaLightbox(project) {
         modal.style.display = 'none';
         modal.style.pointerEvents = 'none';
         document.body.style.overflow = '';
+        document.body.classList.remove('lightbox-active');
         mediaContainer.innerHTML = '';
       }
     });
@@ -827,6 +829,21 @@ function initServicesModal() {
   const modalNum = document.getElementById('service-modal-num');
   const modalDesc = document.getElementById('service-modal-desc');
   const modalTags = document.getElementById('service-modal-tags');
+  const portfolioBtn = document.getElementById('service-modal-portfolio-btn');
+
+  const serviceCategoryMapping = {
+    'Web Dev & App Dev': 'Website Development',
+    'Web Dev': 'Website Development',
+    'Website Development': 'Website Development',
+    'Video Editing': 'Video Editing',
+    'Social Media Marketing': 'Social Media Marketing',
+    'Graphics Design': 'Graphic Design',
+    'Graphic Design': 'Graphic Design',
+    'Brand Identity': 'Brand Identity',
+    'Photography & Videography': 'Photography',
+    'Photography': 'Photography',
+    'Videography': 'Videography'
+  };
 
   serviceCards.forEach(card => {
     // Add visual pointer cursor on mobile to show it is clickable
@@ -845,10 +862,17 @@ function initServicesModal() {
       const descEl = card.querySelector('.service-card-desc');
       const tagsList = card.querySelectorAll('.service-card-tag');
 
+      const titleText = titleEl ? titleEl.textContent.trim() : '';
       if (modalImg) modalImg.src = imgEl ? imgEl.src : '';
-      if (modalTitle) modalTitle.textContent = titleEl ? titleEl.textContent : '';
+      if (modalTitle) modalTitle.textContent = titleText;
       if (modalNum) modalNum.textContent = numEl ? numEl.textContent : '';
       if (modalDesc) modalDesc.textContent = descEl ? descEl.textContent : '';
+
+      // Bind Visit Portfolio redirect link based on clicked service
+      if (portfolioBtn) {
+        const targetCategory = serviceCategoryMapping[titleText] || 'All';
+        portfolioBtn.href = `/portfolio.html?category=${encodeURIComponent(targetCategory)}`;
+      }
 
       if (modalTags) {
         modalTags.innerHTML = '';
@@ -866,8 +890,9 @@ function initServicesModal() {
         });
       }
 
-      // Open Modal
+      // Open Modal and Lock body scrolling
       modal.style.display = 'flex';
+      document.body.classList.add('lightbox-active');
       setTimeout(() => {
         modal.style.opacity = '1';
         modal.style.pointerEvents = 'auto';
@@ -882,6 +907,7 @@ function initServicesModal() {
     modal.style.pointerEvents = 'none';
     const content = modal.querySelector('.service-modal-content');
     if (content) content.style.transform = 'scale(0.9)';
+    document.body.classList.remove('lightbox-active');
     setTimeout(() => {
       modal.style.display = 'none';
     }, 400);

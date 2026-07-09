@@ -34,7 +34,7 @@ async function renderPortfolioContent() {
   const list = await db.getProjects();
   allProjects = list.filter(p => p.status === 'published');
 
-  // Determine available categories and pick the first one
+  // Determine available categories
   const projectCategories = [...new Set(allProjects.map(p => p.category))];
   const orderedCategories = [];
   
@@ -49,7 +49,13 @@ async function renderPortfolioContent() {
     }
   });
 
-  if (orderedCategories.length > 0) {
+  // Read requested category query parameter from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlCategory = urlParams.get('category');
+
+  if (urlCategory && projectCategories.includes(urlCategory)) {
+    activeFilter = urlCategory;
+  } else if (orderedCategories.length > 0) {
     activeFilter = orderedCategories[0];
   } else {
     activeFilter = '';
@@ -319,6 +325,7 @@ function openMediaLightbox(project) {
 
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
+  document.body.classList.add('lightbox-active');
   
   gsap.fromTo(modal, 
     { opacity: 0 }, 
@@ -334,6 +341,7 @@ function openMediaLightbox(project) {
         modal.style.display = 'none';
         modal.style.pointerEvents = 'none';
         document.body.style.overflow = '';
+        document.body.classList.remove('lightbox-active');
         mediaContainer.innerHTML = '';
       }
     });
