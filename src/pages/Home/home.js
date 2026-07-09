@@ -132,10 +132,14 @@ async function renderHomeContent() {
           ? `<video src="${project.videoUrl}" loop muted playsinline class="portfolio-hover-video" style="position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0; transition: opacity 0.4s ease; pointer-events: none; z-index: 1;"></video>`
           : '';
 
+        const imgMarkup = project.thumbnail
+          ? `<img src="${project.thumbnail}" alt="${project.title}" class="portfolio-img">`
+          : `<div class="portfolio-img-placeholder" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a1a1a 0%, #121212 100%); color: rgba(255,255,255,0.15); font-family: var(--font-display); font-size: 3rem; font-weight: 800; text-transform: uppercase;">${project.title.substring(0, 2)}</div>`;
+
         return `
           <div class="portfolio-item ${sizeClass} fade-in-up" data-id="${project.id}" style="cursor: pointer;">
             <div class="portfolio-img-container">
-              <img src="${project.thumbnail}" alt="${project.title}" class="portfolio-img">
+              ${imgMarkup}
               ${videoMarkup}
               <div class="portfolio-overlay">
                 <div class="portfolio-overlay-content">

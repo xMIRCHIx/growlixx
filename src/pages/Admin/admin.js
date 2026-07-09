@@ -82,6 +82,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 7. Load portfolio table rows
   await loadPortfolioTable();
 
+  // 7.1. Clean up old placeholder assets from database records
+  await cleanupBrokenPlaceholderAssets();
+
   // 7.5. Load dashboard overview data
   await loadDashboardOverview();
 
@@ -783,17 +786,9 @@ async function handleSaveProject() {
     }
   }
 
-  // 3. Category fallback defaults if still empty
+  // 3. Category fallback defaults if still empty - removed to keep empty for luxury text placeholder
   if (!thumbnailPath) {
-    if (category === 'Videography' || category === 'Video Editing') {
-      thumbnailPath = '/src/assets/portfolio_videography.png';
-    } else if (category === 'Website Development' || category === 'Software Development') {
-      thumbnailPath = '/src/assets/portfolio_web.png';
-    } else if (category === 'Brand Identity') {
-      thumbnailPath = '/src/assets/portfolio_branding.png';
-    } else {
-      thumbnailPath = '/src/assets/portfolio_photography.png';
-    }
+    thumbnailPath = '';
   }
 
   const projectData = {
@@ -991,4 +986,26 @@ function filterInquiries() {
   });
 
   renderInquiriesTable(filtered);
+}
+
+/**
+ * Cleanup function to remove old template image assets from live Supabase table
+ */
+async function cleanupBrokenPlaceholderAssets() {
+  try {
+    let cleaned = false;
+    for (const proj of loadedProjects) {
+      if (proj.thumbnail && proj.thumbnail.startsWith('/src/assets/')) {
+        proj.thumbnail = '';
+        proj.coverImage = '';
+        await db.updateProject(proj.id, { thumbnail: '', coverImage: '' });
+        cleaned = true;
+      }
+    }
+    if (cleaned) {
+      await loadPortfolioTable();
+    }
+  } catch (e) {
+    console.warn("Failed placeholder clean-up:", e);
+  }
 }
