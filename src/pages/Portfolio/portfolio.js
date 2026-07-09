@@ -228,7 +228,15 @@ function setupCardInteractions(container, projects) {
 
     item.addEventListener('click', () => {
       if (project) {
-        openMediaLightbox(project);
+        if (project.demoUrl) {
+          let cleanUrl = project.demoUrl.trim();
+          if (!/^https?:\/\//i.test(cleanUrl)) {
+            cleanUrl = 'https://' + cleanUrl;
+          }
+          window.open(cleanUrl, '_blank');
+        } else {
+          openMediaLightbox(project);
+        }
       }
     });
 
