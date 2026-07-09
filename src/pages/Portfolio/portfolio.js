@@ -326,6 +326,7 @@ function openMediaLightbox(project) {
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
   document.body.classList.add('lightbox-active');
+  if (window.lenis) window.lenis.stop();
   
   gsap.fromTo(modal, 
     { opacity: 0 }, 
@@ -342,6 +343,7 @@ function openMediaLightbox(project) {
         modal.style.pointerEvents = 'none';
         document.body.style.overflow = '';
         document.body.classList.remove('lightbox-active');
+        if (window.lenis) window.lenis.start();
         mediaContainer.innerHTML = '';
       }
     });

@@ -313,6 +313,7 @@ function openMediaLightbox(project) {
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
   document.body.classList.add('lightbox-active');
+  if (window.lenis) window.lenis.stop();
   
   gsap.fromTo(modal, 
     { opacity: 0 }, 
@@ -329,6 +330,7 @@ function openMediaLightbox(project) {
         modal.style.pointerEvents = 'none';
         document.body.style.overflow = '';
         document.body.classList.remove('lightbox-active');
+        if (window.lenis) window.lenis.start();
         mediaContainer.innerHTML = '';
       }
     });
@@ -893,6 +895,7 @@ function initServicesModal() {
       // Open Modal and Lock body scrolling
       modal.style.display = 'flex';
       document.body.classList.add('lightbox-active');
+      if (window.lenis) window.lenis.stop();
       setTimeout(() => {
         modal.style.opacity = '1';
         modal.style.pointerEvents = 'auto';
@@ -908,6 +911,7 @@ function initServicesModal() {
     const content = modal.querySelector('.service-modal-content');
     if (content) content.style.transform = 'scale(0.9)';
     document.body.classList.remove('lightbox-active');
+    if (window.lenis) window.lenis.start();
     setTimeout(() => {
       modal.style.display = 'none';
     }, 400);
