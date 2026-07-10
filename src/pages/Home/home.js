@@ -134,8 +134,9 @@ async function renderHomeContent() {
 
         const resolvedThumb = resolveProjectThumbnail(project);
         const imgMarkup = resolvedThumb
-          ? `<img src="${resolvedThumb}" alt="${project.title}" class="portfolio-img">`
-          : `<div class="portfolio-img-placeholder" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a1a1a 0%, #121212 100%); color: rgba(255,255,255,0.15); font-family: var(--font-display); font-size: 3rem; font-weight: 800; text-transform: uppercase;">${project.title.substring(0, 2)}</div>`;
+          ? `<img src="${resolvedThumb}" alt="${project.title}" class="portfolio-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+             <div class="portfolio-img-placeholder" style="width: 100%; height: 100%; display: none; align-items: center; justify-content: center; background: linear-gradient(135deg, #1c1c1c 0%, #0d0d0d 100%); border: 1px solid rgba(255,255,255,0.05); color: var(--accent); font-family: var(--font-display); font-size: 3rem; font-weight: 800; text-transform: uppercase;">${project.title.substring(0, 2)}</div>`
+          : `<div class="portfolio-img-placeholder" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1c1c1c 0%, #0d0d0d 100%); border: 1px solid rgba(255,255,255,0.05); color: var(--accent); font-family: var(--font-display); font-size: 3rem; font-weight: 800; text-transform: uppercase;">${project.title.substring(0, 2)}</div>`;
 
         return `
           <div class="portfolio-item ${sizeClass} fade-in-up" data-id="${project.id}" style="cursor: pointer;">
@@ -310,7 +311,14 @@ function openMediaLightbox(project) {
         });
       }
     } else if (images.length === 1) {
-      mediaContainer.innerHTML = `<img src="${images[0]}" style="max-width: 100%; max-height: 60vh; object-fit: contain; border-radius: 4px;">`;
+      mediaContainer.innerHTML = `
+        <div class="lightbox-img-wrapper" style="width: 1000px; height: 560px; max-width: 100%; display: flex; align-items: center; justify-content: center; position: relative;">
+          <img src="${images[0]}" style="max-width: 100%; max-height: 60vh; object-fit: contain; border-radius: 4px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="lightbox-img-fallback" style="display: none; width: 100%; height: 100%; min-height: 350px; align-items: center; justify-content: center; background: linear-gradient(135deg, #1c1c1c 0%, #0d0d0d 100%); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; color: var(--accent); font-family: var(--font-display); font-size: 5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">
+            ${project.title.substring(0, 2)}
+          </div>
+        </div>
+      `;
     } else {
       mediaContainer.innerHTML = `<div style="color: #777; padding: 4rem;">No preview media available</div>`;
     }
