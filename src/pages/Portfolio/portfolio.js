@@ -174,8 +174,9 @@ function renderGridItems() {
       ? `<video src="${project.videoUrl}" loop muted playsinline class="portfolio-hover-video" style="position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0; transition: opacity 0.4s ease; pointer-events: none; z-index: 1;"></video>`
       : '';
 
-    const imgMarkup = project.thumbnail
-      ? `<img src="${project.thumbnail}" alt="${project.title}" class="portfolio-img">`
+    const resolvedThumb = resolveProjectThumbnail(project);
+    const imgMarkup = resolvedThumb
+      ? `<img src="${resolvedThumb}" alt="${project.title}" class="portfolio-img">`
       : `<div class="portfolio-img-placeholder" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a1a1a 0%, #121212 100%); color: rgba(255,255,255,0.15); font-family: var(--font-display); font-size: 3rem; font-weight: 800; text-transform: uppercase;">${project.title.substring(0, 2)}</div>`;
 
     return `
@@ -283,7 +284,8 @@ function openMediaLightbox(project) {
       mediaContainer.innerHTML = `<video src="${project.videoUrl}" controls autoplay style="max-width: 100%; max-height: 60vh; border-radius: 4px;"></video>`;
     }
   } else {
-    const images = [project.thumbnail, ...(project.gallery || [])].filter(Boolean);
+    const resolvedThumb = resolveProjectThumbnail(project);
+    const images = [resolvedThumb, ...(project.gallery || [])].filter(Boolean);
     if (images.length > 1) {
       let currentSlide = 0;
       mediaContainer.innerHTML = `
@@ -482,3 +484,23 @@ window.addEventListener('DOMContentLoaded', () => {
     ScrollTrigger.refresh();
   });
 });
+
+function resolveProjectThumbnail(project) {
+  let thumb = project.thumbnail || '';
+  if (!thumb || thumb.startsWith('/src/assets/')) {
+    if (project.videoUrl) {
+      const ytMatch = project.videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+      if (ytMatch && ytMatch[1]) {
+        return `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
+      }
+    } else if (project.demoUrl) {
+      let cleanUrl = project.demoUrl.trim();
+      if (!/^https?:\/\//i.test(cleanUrl)) {
+        cleanUrl = 'https://' + cleanUrl;
+      }
+      return `https://image.thum.io/get/width/1280/crop/800/${cleanUrl}`;
+    }
+    return '';
+  }
+  return thumb;
+}
