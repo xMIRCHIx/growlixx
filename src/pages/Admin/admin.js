@@ -31,21 +31,10 @@ const projectModalForm = document.getElementById('project-modal-form');
 // Project Modal Fields
 const modalFieldId = document.getElementById('modal-project-id');
 const modalFieldTitle = document.getElementById('modal-project-title');
-const modalFieldClient = document.getElementById('modal-project-client');
 const modalFieldCategory = document.getElementById('modal-project-category');
 const modalFieldThumbnail = document.getElementById('modal-project-thumbnail');
-const modalFieldShortDesc = document.getElementById('modal-project-shortDescription');
-const modalFieldDetailedDesc = document.getElementById('modal-project-detailedDescription');
-const modalFieldDisplayOrder = document.getElementById('modal-project-displayOrder');
-const modalFieldStatus = document.getElementById('modal-project-status');
-const modalFieldFeatured = document.getElementById('modal-project-featured');
-
-// Dynamic modal groups
-const groupVideoInputs = document.getElementById('group-video-inputs');
-const groupWebInputs = document.getElementById('group-web-inputs');
-const modalFieldVideoUrl = document.getElementById('modal-project-videoUrl');
-const modalFieldDemoUrl = document.getElementById('modal-project-demoUrl');
-const modalFieldGallery = document.getElementById('modal-project-gallery');
+const modalFieldLink = document.getElementById('modal-project-link');
+const modalFieldDescription = document.getElementById('modal-project-description');
 
 // DOM Elements - Settings Diagnostics
 const testDbBtn = document.getElementById('btn-check-db');
@@ -93,7 +82,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeProjectModal);
   if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeProjectModal);
   if (modalSaveBtn) modalSaveBtn.addEventListener('click', handleSaveProject);
-  if (modalFieldCategory) modalFieldCategory.addEventListener('change', toggleDynamicFields);
   if (filterCategorySelect) filterCategorySelect.addEventListener('change', filterProjects);
 
   // 9. Bind Settings controls
@@ -687,7 +675,6 @@ async function handleDeleteProject(id) {
  */
 async function openProjectModal(id = null) {
   projectModalForm.reset();
-  toggleDynamicFields();
 
   if (id) {
     // Edit mode
@@ -697,26 +684,14 @@ async function openProjectModal(id = null) {
 
     modalFieldId.value = proj.id;
     modalFieldTitle.value = proj.title;
-    modalFieldClient.value = proj.client;
     modalFieldCategory.value = proj.category;
     modalFieldThumbnail.value = proj.thumbnail;
-    modalFieldShortDesc.value = proj.shortDescription || '';
-    modalFieldDetailedDesc.value = proj.detailedDescription || '';
-    modalFieldDisplayOrder.value = proj.displayOrder || 1;
-    modalFieldStatus.value = proj.status || 'published';
-    modalFieldFeatured.checked = proj.featured === true || proj.featured === 'true';
-
-    // Populate category dynamic values
-    modalFieldVideoUrl.value = proj.videoUrl || '';
-    modalFieldDemoUrl.value = proj.demoUrl || '';
-    modalFieldGallery.value = Array.isArray(proj.gallery) ? proj.gallery.join(', ') : '';
-
-    toggleDynamicFields();
+    modalFieldLink.value = proj.videoUrl || proj.demoUrl || '';
+    modalFieldDescription.value = proj.detailedDescription || proj.shortDescription || '';
   } else {
     // Add mode
     modalTitleDisplay.textContent = "Add Showcase Item";
     modalFieldId.value = '';
-    modalFieldDisplayOrder.value = loadedProjects.length + 1;
   }
 
   projectModal.classList.add('active');
@@ -732,65 +707,45 @@ function closeProjectModal() {
   if (window.lenis) window.lenis.start();
 }
 
-function toggleDynamicFields() {
-  const category = modalFieldCategory.value;
-
-  // Deactivate all dynamic input panels
-  groupVideoInputs.classList.remove('active');
-  groupWebInputs.classList.remove('active');
-
-  // Activate matching panel based on Selected Category
-  if (category === 'Videography' || category === 'Video Editing') {
-    groupVideoInputs.classList.add('active');
-  } else if (category === 'Website Development' || category === 'Software Development') {
-    groupWebInputs.classList.add('active');
-  }
-}
-
 async function handleSaveProject() {
   const id = modalFieldId.value.trim();
   const title = modalFieldTitle.value.trim();
-  const client = modalFieldClient.value.trim();
   const category = modalFieldCategory.value;
-  const thumbnail = modalFieldThumbnail.value.trim();
-  const shortDescription = modalFieldShortDesc.value.trim();
-  const detailedDescription = modalFieldDetailedDesc.value.trim();
-  const displayOrder = Number(modalFieldDisplayOrder.value) || 1;
-  const status = modalFieldStatus.value;
-  const featured = modalFieldFeatured.checked;
+  const projectLink = modalFieldLink.value.trim();
+  const description = modalFieldDescription.value.trim();
 
   if (!title) {
     alert("Please fill in the project title.");
     return;
   }
 
-  // Fallback defaults for optional inputs
-  const clientName = client || 'Creative Concept';
+  // Parse project link to determine videoUrl vs demoUrl
+  let videoUrl = '';
+  let demoUrl = '';
 
-  // Handle dynamic field assignments
-  const videoUrl = (category === 'Videography' || category === 'Video Editing') ? modalFieldVideoUrl.value.trim() : '';
-  const demoUrl = (category === 'Website Development' || category === 'Software Development') ? modalFieldDemoUrl.value.trim() : '';
-  
-  // Read gallery raw values (always active/visible for all categories!)
-  const galleryRaw = modalFieldGallery.value.trim();
-  const gallery = galleryRaw ? galleryRaw.split(',').map(u => u.trim()).filter(Boolean) : [];
+  if (projectLink) {
+    const isVideo = projectLink.includes('youtube.com') || 
+                    projectLink.includes('youtu.be') || 
+                    projectLink.includes('vimeo.com') || 
+                    projectLink.endsWith('.mp4') || 
+                    projectLink.endsWith('.webm') || 
+                    projectLink.endsWith('.mov');
+    if (isVideo) {
+      videoUrl = projectLink;
+    } else {
+      demoUrl = projectLink;
+    }
+  }
 
   // Fallback defaults and automatic thumbnail extraction
   let thumbnailPath = '';
   
-  // 1. If any images exist in gallery, take the first one as thumbnail cover!
-  if (gallery.length > 0) {
-    thumbnailPath = gallery[0];
-  } 
-  // 2. If it is a video, check if it's YouTube and extract thumbnail automatically!
-  else if (videoUrl) {
+  if (videoUrl) {
     const ytMatch = videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
     if (ytMatch && ytMatch[1]) {
       thumbnailPath = `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
     }
-  }
-  // 3. If it's a website project and has a demoUrl, extract screenshot automatically!
-  else if (demoUrl) {
+  } else if (demoUrl) {
     let cleanUrl = demoUrl.trim();
     if (!/^https?:\/\//i.test(cleanUrl)) {
       cleanUrl = 'https://' + cleanUrl;
@@ -798,25 +753,20 @@ async function handleSaveProject() {
     thumbnailPath = `https://image.thum.io/get/width/1280/crop/800/${cleanUrl}`;
   }
 
-  // 4. Default fallback if still empty
-  if (!thumbnailPath) {
-    thumbnailPath = '';
-  }
-
   const projectData = {
     title,
-    client: clientName,
+    client: 'Creative Concept',
     category,
     thumbnail: thumbnailPath,
-    shortDescription,
-    detailedDescription,
-    displayOrder,
-    status,
-    featured,
+    shortDescription: description,
+    detailedDescription: description,
+    displayOrder: 1,
+    status: 'published',
+    featured: false,
     videoUrl,
     demoUrl,
-    gallery,
-    coverImage: thumbnailPath, // Set cover image to the same thumbnail
+    gallery: [],
+    coverImage: thumbnailPath,
     completionDate: new Date().toISOString().substring(0, 10)
   };
 
@@ -1016,8 +966,16 @@ async function cleanupBrokenPlaceholderAssets() {
         needsUpdate = true;
       }
       
-      // 2. If it is empty, but has a demoUrl, generate the live thum.io screenshot!
-      if (!newThumb && proj.demoUrl) {
+      // 2. If it is empty, but has a videoUrl, generate the youtube thumbnail!
+      if (!newThumb && proj.videoUrl) {
+        const ytMatch = proj.videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+        if (ytMatch && ytMatch[1]) {
+          newThumb = `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
+          needsUpdate = true;
+        }
+      }
+      // 3. If it is empty, but has a demoUrl, generate the live thum.io screenshot!
+      else if (!newThumb && proj.demoUrl) {
         let cleanUrl = proj.demoUrl.trim();
         if (!/^https?:\/\//i.test(cleanUrl)) {
           cleanUrl = 'https://' + cleanUrl;

@@ -764,16 +764,11 @@
       <div class="modal-body" data-lenis-prevent>
         <form id="project-modal-form" class="contact-form" style="gap: 1.2rem !important;">
           <input type="hidden" id="modal-project-id">
+          <input type="hidden" id="modal-project-thumbnail">
           
-          <div class="grid-cols-2">
-            <div class="form-group">
-              <label for="modal-project-title">Project Title</label>
-              <input type="text" id="modal-project-title" required placeholder="e.g. Elegance in Motion">
-            </div>
-            <div class="form-group">
-              <label for="modal-project-client">Client Partner (Optional)</label>
-              <input type="text" id="modal-project-client" placeholder="e.g. Maison Couture">
-            </div>
+          <div class="form-group">
+            <label for="modal-project-title">Project Title</label>
+            <input type="text" id="modal-project-title" required placeholder="e.g. Elegance in Motion">
           </div>
 
           <div class="form-group">
@@ -788,74 +783,17 @@
               <option value="Website Development">Website Development</option>
               <option value="Software Development">Software Development</option>
             </select>
-            <input type="hidden" id="modal-project-thumbnail">
-          </div>
-
-          <!-- DYNAMIC INPUT FIELDS CORRESPONDING TO CATEGORIES -->
-          
-          <!-- Videography / Video Editing Dynamic Inputs -->
-          <div class="category-input-group" id="group-video-inputs">
-            <div class="form-group">
-              <label for="modal-project-videoUrl">Video File Path / YouTube Link URL</label>
-              <div style="display: flex; gap: 0.5rem; align-items: center;">
-                <input type="text" id="modal-project-videoUrl" placeholder="e.g. https://www.w3schools.com/html/mov_bbb.mp4" style="flex-grow: 1;">
-                <label class="btn-upload-label">
-                  <span>Upload</span>
-                  <input type="file" accept="video/*" class="admin-file-uploader" data-target="modal-project-videoUrl" style="display: none;">
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- Web / Software Development Dynamic Inputs -->
-          <div class="category-input-group" id="group-web-inputs">
-            <div class="form-group">
-              <label for="modal-project-demoUrl">Live Project Demo URL</label>
-              <input type="text" id="modal-project-demoUrl" placeholder="e.g. https://clientwebsite.com">
-            </div>
-          </div>
-
-          <!-- Project Images & Gallery (Always Visible for All Categories!) -->
-          <div class="form-group">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
-              <label for="modal-project-gallery" style="margin: 0; font-weight: 600;">Project Images & Gallery (First image becomes main Cover/Thumbnail)</label>
-              <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem;">
-                <span>+ Upload Image</span>
-                <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-project-gallery" data-mode="append" style="display: none;">
-              </label>
-            </div>
-            <textarea id="modal-project-gallery" rows="2" placeholder="e.g. /src/assets/portfolio_photography.png, /src/assets/about_studio.png"></textarea>
           </div>
 
           <div class="form-group">
-            <label for="modal-project-shortDescription">Visual Card Subtitle (Short Summary)</label>
-            <input type="text" id="modal-project-shortDescription" required placeholder="e.g. Curated high-fashion campaign edit">
+            <label for="modal-project-link">Project Link (Website URL or YouTube video link)</label>
+            <input type="text" id="modal-project-link" placeholder="e.g. https://cinevo.in or https://www.youtube.com/watch?v=...">
           </div>
 
           <div class="form-group">
-            <label for="modal-project-detailedDescription">Detailed Case Study Description</label>
-            <textarea id="modal-project-detailedDescription" required rows="3" placeholder="Explain the project scope, artistic targets, etc."></textarea>
+            <label for="modal-project-description">Project Description</label>
+            <textarea id="modal-project-description" required rows="4" placeholder="Explain the project scope, client details, artistic goals, etc."></textarea>
           </div>
-
-          <div class="grid-cols-2">
-            <div class="form-group">
-              <label for="modal-project-displayOrder">Display Order Index (Sorting)</label>
-              <input type="number" id="modal-project-displayOrder" required value="1">
-            </div>
-            <div class="form-group">
-              <label for="modal-project-status">Publish Status</label>
-              <select id="modal-project-status" required style="padding: 0.85rem 1.15rem; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.12); background-color: #faf9f6; font-family: var(--font-sans); outline: none;">
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group" style="flex-direction: row !important; gap: 0.8rem !important; align-items: center; margin-top: 0.5rem;">
-            <input type="checkbox" id="modal-project-featured" style="width: 20px !important; height: 20px !important; cursor: pointer;">
-            <label for="modal-project-featured" style="margin: 0 !important; cursor: pointer; text-transform: none; font-size: 0.88rem; color: var(--text-primary);">Feature this project on the homepage</label>
-          </div>
-
         </form>
       </div>
       

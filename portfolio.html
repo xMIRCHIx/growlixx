@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Growlix Digital — Selected Portfolio Archive</title>
-  <meta name="description" content="Explore the creative case studies, photography, videography, and digital web development campaigns handcrafted by Growlix Digital.">
-  
+  <meta name="description"
+    content="Explore the creative case studies, photography, videography, and digital web development campaigns handcrafted by Growlix Digital.">
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+
   <!-- Style Sheet -->
   <link rel="stylesheet" href="/src/styles/global.css">
 </head>
+
 <body>
 
   <!-- Hardcoded Transition Overlay to prevent unrendered flashes -->
@@ -27,11 +32,14 @@
     <main>
 
       <!-- PORTFOLIO ARCHIVE SECTION -->
-      <section class="portfolio-archive-section scroll-section" style="padding-top: 11rem !important; padding-bottom: 6rem !important; padding-left: 5% !important; padding-right: 5% !important; max-width: 1400px; margin: 0 auto; width: 100%;">
-        
+      <section class="portfolio-archive-section scroll-section"
+        style="padding-top: 11rem !important; padding-bottom: 6rem !important; padding-left: 5% !important; padding-right: 5% !important; max-width: 1400px; margin: 0 auto; width: 100%;">
+
         <!-- Back navigation link -->
         <div class="archive-back-btn-wrap" style="margin-bottom: 1.5rem; text-align: left;">
-          <a href="/index.html" class="btn-back-archive" style="margin-bottom: 0; display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; transition: color 0.3s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-secondary)'">
+          <a href="/index.html" class="btn-back-archive"
+            style="margin-bottom: 0; display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; transition: color 0.3s;"
+            onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-secondary)'">
             <span style="font-size: 1.2rem; line-height: 1;">&lsaquo;</span> Back to Home
           </a>
         </div>
@@ -42,12 +50,16 @@
         </div>
 
         <!-- Filters and Search Bar Row -->
-        <div class="filter-controls-container fade-up" style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2.5rem;">
-          
+        <div class="filter-controls-container fade-up"
+          style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2.5rem;">
+
           <!-- Search Bar -->
           <div class="search-bar-wrap" style="max-width: 600px; width: 100%; position: relative; margin: 0 auto;">
-            <input type="text" id="portfolio-search-input" placeholder="Search projects by client, keyword or technology..." style="width: 100%; padding: 1rem 1.5rem 1rem 3rem; border: 1px solid rgba(18,18,18,0.1); border-radius: 2rem; background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-sans); font-size: 0.95rem; transition: border-color 0.3s;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none;">
+            <input type="text" id="portfolio-search-input"
+              placeholder="Search projects by client, keyword or technology..."
+              style="width: 100%; padding: 1rem 1.5rem 1rem 3rem; border: 1px solid rgba(18,18,18,0.1); border-radius: 2rem; background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-sans); font-size: 0.95rem; transition: border-color 0.3s;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              style="width: 18px; height: 18px; position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none;">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
@@ -65,7 +77,8 @@
         </div>
 
         <!-- Load More / Pagination -->
-        <div class="load-more-container" id="portfolio-load-more-wrap" style="display: flex; justify-content: center; margin-top: 5rem; margin-bottom: 2rem;">
+        <div class="load-more-container" id="portfolio-load-more-wrap"
+          style="display: flex; justify-content: center; margin-top: 5rem; margin-bottom: 2rem;">
           <button class="btn-primary" id="btn-portfolio-load-more">
             <span>Load More Stories</span>
             <span class="btn-ripple"></span>
@@ -83,7 +96,8 @@
             <span class="booking-tag font-accent">START A CAMPAIGN</span>
             <h2 class="booking-title">Ready to Make Something Iconic?</h2>
             <p class="booking-text">
-              Book a creative briefing session or schedule a shoot window with our award-winning design team. Let's make your competitors nervous.
+              Book a creative briefing session or schedule a shoot window with our award-winning design team. Let's make
+              your competitors nervous.
             </p>
             <div class="booking-action-wrap">
               <a href="/contact.html" class="btn-booking-action btn-magnetic">
@@ -102,20 +116,31 @@
   </div>
 
   <!-- LIGHTBOX MEDIA POPUP OVERLAY -->
-  <div id="media-lightbox-modal" class="lightbox-overlay" data-lenis-prevent style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(10, 10, 10, 0.98); z-index: 10000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.4s ease; pointer-events: none;">
-    <button id="btn-lightbox-close" style="position: absolute; top: 1.5rem; right: 1.5rem; background: transparent; border: none; color: #ffffff; font-size: 3rem; line-height: 1; cursor: pointer; z-index: 10100; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">&times;</button>
-    
-    <div class="lightbox-content-container" style="position: relative; max-width: 90%; max-height: 85%; width: 1200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 1rem;">
+  <div id="media-lightbox-modal" class="lightbox-overlay" data-lenis-prevent
+    style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(10, 10, 10, 0.98); z-index: 10000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.4s ease; pointer-events: none;">
+    <button id="btn-lightbox-close"
+      style="position: absolute; top: 1.5rem; right: 1.5rem; background: transparent; border: none; color: #ffffff; font-size: 3rem; line-height: 1; cursor: pointer; z-index: 10100; opacity: 0.7; transition: opacity 0.2s;"
+      onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">&times;</button>
+
+    <div class="lightbox-content-container"
+      style="position: relative; max-width: 90%; max-height: 85%; width: 1200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 1rem;">
       <!-- Media Area -->
-      <div id="lightbox-media-container" style="width: 100%; display: flex; justify-content: center; align-items: center; background: #000; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+      <div id="lightbox-media-container"
+        style="width: 100%; display: flex; justify-content: center; align-items: center; background: #000; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
         <!-- Embedded dynamically -->
       </div>
-      
+
       <!-- Info Area -->
-      <div id="lightbox-info-container" style="color: #ffffff; text-align: center; font-family: var(--font-primary); width: 100%; max-width: 800px;">
-        <span id="lightbox-category" style="font-size: 0.75rem; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; font-family: var(--font-sans); font-weight: 600;">CATEGORY</span>
-        <h3 id="lightbox-title" style="margin: 0.4rem 0; font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: #ffffff;">Project Title</h3>
-        <p id="lightbox-description" style="margin: 0.6rem 0 0 0; color: #cccccc; font-size: 0.95rem; line-height: 1.6; font-family: var(--font-sans);">Project description content...</p>
+      <div id="lightbox-info-container"
+        style="color: #ffffff; text-align: center; font-family: var(--font-primary); width: 100%; max-width: 800px;">
+        <span id="lightbox-category"
+          style="font-size: 0.75rem; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; font-family: var(--font-sans); font-weight: 600;">CATEGORY</span>
+        <h3 id="lightbox-title"
+          style="margin: 0.4rem 0; font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: #ffffff;">
+          Project Title</h3>
+        <p id="lightbox-description"
+          style="margin: 0.6rem 0 0 0; color: #cccccc; font-size: 0.95rem; line-height: 1.6; font-family: var(--font-sans);">
+          Project description content...</p>
       </div>
     </div>
   </div>
@@ -123,4 +148,5 @@
   <!-- JavaScript Entry Module -->
   <script type="module" src="/src/pages/Portfolio/portfolio.js"></script>
 </body>
+
 </html>
