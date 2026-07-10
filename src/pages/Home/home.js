@@ -984,7 +984,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function resolveProjectThumbnail(project) {
   let thumb = project.thumbnail || '';
-  if (!thumb || thumb.startsWith('/src/assets/')) {
+  if (!thumb || thumb.startsWith('/src/assets/') || thumb.includes('image.thum.io')) {
     if (project.videoUrl) {
       const ytMatch = project.videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
       if (ytMatch && ytMatch[1]) {

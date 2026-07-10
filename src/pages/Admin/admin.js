@@ -755,8 +755,17 @@ async function openProjectModal(id = null) {
     modalFieldLink.value = proj.videoUrl || proj.demoUrl || '';
     
     let imgVal = proj.gallery && proj.gallery.length > 0 ? proj.gallery[0] : proj.thumbnail || '';
-    if (imgVal.includes('image.thum.io') || imgVal.includes('api.microlink.io')) {
-      imgVal = '';
+    if (imgVal.includes('image.thum.io')) {
+      const cleanUrl = (proj.demoUrl || '').trim();
+      if (cleanUrl) {
+        let formattedUrl = cleanUrl;
+        if (!/^https?:\/\//i.test(formattedUrl)) {
+          formattedUrl = 'https://' + formattedUrl;
+        }
+        imgVal = `https://api.microlink.io/?url=${encodeURIComponent(formattedUrl)}&screenshot=true&embed=screenshot.url`;
+      } else {
+        imgVal = '';
+      }
     }
     modalFieldImage.value = imgVal;
     
