@@ -325,8 +325,10 @@
   z-index: 15000;
   display: none;
   justify-content: center;
-  align-items: center;
-  padding: 1.5rem;
+  align-items: flex-start;
+  padding: 3rem 1.5rem;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-modal-overlay.active {

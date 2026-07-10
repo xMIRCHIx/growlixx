@@ -721,11 +721,15 @@ async function openProjectModal(id = null) {
 
   projectModal.classList.add('active');
   document.body.style.overflow = 'hidden';
+  document.body.classList.add('lightbox-active');
+  if (window.lenis) window.lenis.stop();
 }
 
 function closeProjectModal() {
   projectModal.classList.remove('active');
   document.body.style.overflow = '';
+  document.body.classList.remove('lightbox-active');
+  if (window.lenis) window.lenis.start();
 }
 
 function toggleDynamicFields() {
