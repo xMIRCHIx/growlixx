@@ -122,6 +122,58 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 /**
+ * Compress images client-side using canvas scaling
+ */
+function compressImage(file, maxWidth = 1600, maxHeight = 1200, quality = 0.8) {
+  return new Promise((resolve) => {
+    if (!file || !file.type.startsWith('image/')) {
+      resolve(file);
+      return;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        if (height > maxHeight) {
+          width = Math.round((width * maxHeight) / height);
+          height = maxHeight;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            resolve(file);
+            return;
+          }
+          const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          });
+          resolve(compressedFile);
+        }, 'image/jpeg', quality);
+      };
+      img.onerror = () => resolve(file);
+    };
+    reader.onerror = () => resolve(file);
+  });
+}
+
+/**
  * Bind file inputs to automatic Supabase Storage uploads
  */
 function initImageUploaders() {
@@ -140,12 +192,24 @@ function initImageUploaders() {
 
       if (labelEl) {
         labelEl.classList.add('uploading');
+        labelEl.querySelector('span').textContent = 'Compressing...';
+      }
+
+      showToast("Compressing media asset...");
+      let finalFile = file;
+      try {
+        finalFile = await compressImage(file);
+      } catch (err) {
+        console.warn("Client-side compression failed, using original file:", err);
+      }
+
+      if (labelEl) {
         labelEl.querySelector('span').textContent = 'Uploading...';
       }
 
       showToast("Uploading media asset...");
       try {
-        const publicUrl = await db.uploadImage(file);
+        const publicUrl = await db.uploadImage(finalFile);
         if (!publicUrl) throw new Error("Upload returned empty path");
 
         const mode = uploader.getAttribute('data-mode');

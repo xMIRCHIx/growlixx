@@ -624,14 +624,18 @@ export const db = {
       });
 
       if (!res.ok) {
-        throw new Error(`Upload response failed: ${res.statusText}`);
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.message || errJson.error || `HTTP ${res.status} ${res.statusText}`);
       }
 
       // Return public retrieval URL
       const publicUrl = `${SUPABASE_RAW_URL}/storage/v1/object/public/growlix-media/${fileName}`;
       return publicUrl;
     } catch (e) {
-      console.warn("Storage upload failed, falling back to base64 data URL:", e);
+      console.warn("Storage upload failed:", e);
+      if (isUsingSupabase) {
+        throw e;
+      }
       // LocalStorage fallback: convert to base64
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
