@@ -698,9 +698,6 @@ async function openProjectModal(id = null) {
     modalFieldImage.value = '';
   }
 
-  // Trigger dynamic fields visibility shifting
-  toggleDynamicFields();
-
   projectModal.classList.add('active');
   document.body.style.overflow = 'hidden';
   document.body.classList.add('lightbox-active');
@@ -712,41 +709,6 @@ function closeProjectModal() {
   document.body.style.overflow = '';
   document.body.classList.remove('lightbox-active');
   if (window.lenis) window.lenis.start();
-}
-
-function toggleDynamicFields() {
-  const category = modalFieldCategory.value;
-  const groupLink = document.getElementById('group-project-link');
-  const labelLink = document.getElementById('label-project-link');
-  const groupImage = document.getElementById('group-project-image');
-  const labelImage = groupImage ? groupImage.querySelector('label[for="modal-project-image"]') : null;
-
-  if (!groupLink || !groupImage) return;
-
-  if (category === 'Photography' || category === 'Brand Identity' || category === 'Graphic Design') {
-    // Visual categories: only show Custom Image / Upload Mockup
-    groupLink.style.display = 'none';
-    groupImage.style.display = 'block';
-    if (labelImage) labelImage.innerHTML = 'Project Image / Design Mockup';
-  } else if (category === 'Website Development' || category === 'Software Development') {
-    // Web categories: show Link (demoUrl) and optional custom Image Upload
-    groupLink.style.display = 'block';
-    groupImage.style.display = 'block';
-    if (labelLink) labelLink.innerHTML = 'Live Project Demo URL';
-    if (labelImage) labelImage.innerHTML = 'Custom Cover Image (Optional - leave empty to auto-generate screenshot)';
-  } else if (category === 'Videography' || category === 'Video Editing') {
-    // Video categories: show Link (videoUrl) and optional custom Image Upload
-    groupLink.style.display = 'block';
-    groupImage.style.display = 'block';
-    if (labelLink) labelLink.innerHTML = 'YouTube Video Link or Video File Path';
-    if (labelImage) labelImage.innerHTML = 'Custom Thumbnail (Optional - leave empty to auto-extract YouTube cover)';
-  } else if (category === 'Social Media Marketing') {
-    // Social marketing: show both
-    groupLink.style.display = 'block';
-    groupImage.style.display = 'block';
-    if (labelLink) labelLink.innerHTML = 'Campaign Link / Social Media URL (Optional)';
-    if (labelImage) labelImage.innerHTML = 'Campaign Cover Image';
-  }
 }
 
 async function handleSaveProject() {

@@ -215,15 +215,7 @@ function setupCardInteractions(container, projects) {
 
     item.addEventListener('click', () => {
       if (project) {
-        if (project.demoUrl) {
-          let cleanUrl = project.demoUrl.trim();
-          if (!/^https?:\/\//i.test(cleanUrl)) {
-            cleanUrl = 'https://' + cleanUrl;
-          }
-          window.open(cleanUrl, '_blank');
-        } else {
-          openMediaLightbox(project);
-        }
+        openMediaLightbox(project);
       }
     });
 
@@ -319,6 +311,46 @@ function openMediaLightbox(project) {
       mediaContainer.innerHTML = `<img src="${images[0]}" style="max-width: 100%; max-height: 60vh; object-fit: contain; border-radius: 4px;">`;
     } else {
       mediaContainer.innerHTML = `<div style="color: #777; padding: 4rem;">No preview media available</div>`;
+    }
+  }
+
+  // Handle action button rendering
+  const actionWrap = document.getElementById('lightbox-action-wrap');
+  if (actionWrap) {
+    actionWrap.innerHTML = '';
+    const link = project.demoUrl || project.videoUrl;
+    if (link) {
+      let cleanUrl = link.trim();
+      if (!/^https?:\/\//i.test(cleanUrl)) {
+        cleanUrl = 'https://' + cleanUrl;
+      }
+      
+      let buttonText = 'Visit Project Link';
+      if (project.videoUrl) {
+        const isYoutube = project.videoUrl.includes('youtube.com') || project.videoUrl.includes('youtu.be');
+        if (isYoutube) {
+          const isChannel = project.videoUrl.includes('/channel/') || 
+                            project.videoUrl.includes('/c/') || 
+                            project.videoUrl.includes('/user/') || 
+                            project.videoUrl.includes('@');
+          buttonText = isChannel ? 'Visit YouTube Channel' : 'Watch on YouTube';
+        } else {
+          buttonText = 'Watch Video';
+        }
+      } else if (project.demoUrl) {
+        buttonText = 'Visit Live Website';
+      }
+
+      actionWrap.innerHTML = `
+        <a href="${cleanUrl}" target="_blank" class="btn-primary" style="text-decoration: none; padding: 0.8rem 2rem; border-radius: 2rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;">
+          <span>${buttonText}</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left: 2px;">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+          <span class="btn-ripple"></span>
+        </a>
+      `;
     }
   }
 
