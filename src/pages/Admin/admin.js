@@ -757,7 +757,7 @@ async function handleSaveProject() {
     if (!/^https?:\/\//i.test(cleanUrl)) {
       cleanUrl = 'https://' + cleanUrl;
     }
-    thumbnailPath = `https://image.thum.io/get/width/1280/crop/800/${cleanUrl}`;
+    thumbnailPath = `https://api.microlink.io/?url=${encodeURIComponent(cleanUrl)}&screenshot=true&embed=screenshot.url`;
   }
 
   const projectData = {
@@ -981,13 +981,13 @@ async function cleanupBrokenPlaceholderAssets() {
           needsUpdate = true;
         }
       }
-      // 3. If it is empty, but has a demoUrl, generate the live thum.io screenshot!
+      // 3. If it is empty, but has a demoUrl, generate the live Microlink screenshot!
       else if (!newThumb && proj.demoUrl) {
         let cleanUrl = proj.demoUrl.trim();
         if (!/^https?:\/\//i.test(cleanUrl)) {
           cleanUrl = 'https://' + cleanUrl;
         }
-        newThumb = `https://image.thum.io/get/width/1280/crop/800/${cleanUrl}`;
+        newThumb = `https://api.microlink.io/?url=${encodeURIComponent(cleanUrl)}&screenshot=true&embed=screenshot.url`;
         needsUpdate = true;
       }
 

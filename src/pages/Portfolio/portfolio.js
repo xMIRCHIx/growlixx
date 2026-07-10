@@ -498,7 +498,7 @@ function resolveProjectThumbnail(project) {
       if (!/^https?:\/\//i.test(cleanUrl)) {
         cleanUrl = 'https://' + cleanUrl;
       }
-      return `https://image.thum.io/get/width/1280/crop/800/${cleanUrl}`;
+      return `https://api.microlink.io/?url=${encodeURIComponent(cleanUrl)}&screenshot=true&embed=screenshot.url`;
     }
     return '';
   }
