@@ -689,7 +689,13 @@ async function openProjectModal(id = null) {
     modalFieldCategory.value = proj.category;
     modalFieldThumbnail.value = proj.thumbnail;
     modalFieldLink.value = proj.videoUrl || proj.demoUrl || '';
-    modalFieldImage.value = proj.gallery && proj.gallery.length > 0 ? proj.gallery[0] : proj.thumbnail || '';
+    
+    let imgVal = proj.gallery && proj.gallery.length > 0 ? proj.gallery[0] : proj.thumbnail || '';
+    if (imgVal.includes('image.thum.io') || imgVal.includes('api.microlink.io')) {
+      imgVal = '';
+    }
+    modalFieldImage.value = imgVal;
+    
     modalFieldDescription.value = proj.detailedDescription || proj.shortDescription || '';
   } else {
     // Add mode
