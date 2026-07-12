@@ -1011,6 +1011,11 @@ async function openProjectModal(id = null) {
   if (radioYoutube) radioYoutube.checked = true;
   if (radioLocal) radioLocal.checked = false;
 
+  const radioRatioLandscape = document.getElementById('modal-video-ratio-landscape');
+  const radioRatioPortrait = document.getElementById('modal-video-ratio-portrait');
+  if (radioRatioLandscape) radioRatioLandscape.checked = true;
+  if (radioRatioPortrait) radioRatioPortrait.checked = false;
+
   // Clear inputs explicitly
   const standardImageInput = document.getElementById('modal-standard-image');
   const videoYoutubeUrlInput = document.getElementById('modal-video-youtube-url');
@@ -1038,6 +1043,13 @@ async function openProjectModal(id = null) {
     if (modalFieldTitle) modalFieldTitle.value = proj.title;
     if (modalFieldCategory) modalFieldCategory.value = proj.category;
     if (modalFieldDescription) modalFieldDescription.value = proj.detailedDescription || proj.shortDescription || '';
+
+    // Load orientation selection
+    if (proj.videoLayout === 'portrait') {
+      if (radioRatioPortrait) radioRatioPortrait.checked = true;
+    } else {
+      if (radioRatioLandscape) radioRatioLandscape.checked = true;
+    }
 
     const categoryLower = proj.category.toLowerCase();
     const isVideo = ['videography', 'video editing'].includes(categoryLower);
@@ -1143,6 +1155,9 @@ async function handleSaveProject() {
     thumbnail = standardImageInput ? standardImageInput.value.trim() : '';
   }
 
+  const selectedRatio = document.querySelector('input[name="video-aspect-ratio"]:checked');
+  const videoLayout = selectedRatio ? selectedRatio.value : 'landscape';
+
   const projectData = {
     title,
     client: 'Creative Concept',
@@ -1155,6 +1170,7 @@ async function handleSaveProject() {
     featured: false,
     videoUrl,
     demoUrl,
+    videoLayout,
     gallery: thumbnail ? [thumbnail] : [],
     coverImage: thumbnail,
     completionDate: new Date().toISOString().substring(0, 10)

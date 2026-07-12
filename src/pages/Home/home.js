@@ -400,7 +400,7 @@ function openMediaLightbox(project) {
   }
 
   // Helper to detect vertical ratio for UGC shorts/reels
-  const isVertical = project.videoUrl && (
+  const isVertical = project.videoLayout === 'portrait' || (project.videoUrl && (
     project.videoUrl.toLowerCase().includes('/shorts/') ||
     project.videoUrl.toLowerCase().includes('instagram.com') ||
     project.videoUrl.toLowerCase().includes('tiktok.com') ||
@@ -414,7 +414,7 @@ function openMediaLightbox(project) {
       project.title.toLowerCase().includes('short') ||
       project.title.toLowerCase().includes('reel')
     ))
-  );
+  ));
 
   // Handle Media Preview Rendering
   if (project.videoUrl) {
