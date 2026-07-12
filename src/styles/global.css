@@ -4240,8 +4240,8 @@ body.lightbox-active {
 
 /* Portfolio Archive Page Custom Styling */
 .portfolio-archive-section {
-  padding-top: 8rem !important;
-  padding-bottom: 5rem !important;
+  padding-top: 7rem !important;
+  padding-bottom: 4rem !important;
 }
 
 .archive-main-title {
@@ -4250,7 +4250,7 @@ body.lightbox-active {
   font-size: 3.8rem;
   letter-spacing: -0.02em;
   color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.15rem !important;
   text-transform: uppercase;
 }
 
@@ -4258,7 +4258,7 @@ body.lightbox-active {
   font-size: 0.85rem;
   letter-spacing: 0.12em;
   color: var(--accent);
-  margin-bottom: 3rem;
+  margin-bottom: 1.8rem !important; /* Reduced to bring search input closer */
   text-transform: uppercase;
   font-weight: 600;
 }
