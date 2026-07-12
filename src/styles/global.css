@@ -4211,7 +4211,7 @@ body.lightbox-active {
 
   .lightbox-media-wrapper {
     width: auto !important;
-    height: 45vh !important; /* Constrain height to keep details visible on screen */
+    height: 58vh !important; /* Taller viewport height for shorts display, content details scroll below */
     aspect-ratio: 9/16 !important;
     max-width: 90vw !important;
   }

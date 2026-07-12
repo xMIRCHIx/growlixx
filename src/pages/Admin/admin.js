@@ -1045,7 +1045,7 @@ function toggleDynamicFields() {
   const category = modalFieldCategory.value ? modalFieldCategory.value.trim() : '';
   const categoryLower = category.toLowerCase();
   
-  const isVideo = ['videography', 'video editing'].includes(categoryLower);
+  const isVideo = ['videography', 'video editing', 'social media marketing'].includes(categoryLower);
   const isWebsite = ['website development', 'software development'].includes(categoryLower);
 
   console.log('toggleDynamicFields category:', category, 'isVideo:', isVideo, 'isWebsite:', isWebsite);
@@ -1141,7 +1141,7 @@ async function openProjectModal(id = null) {
     }
 
     const categoryLower = proj.category.toLowerCase();
-    const isVideo = ['videography', 'video editing'].includes(categoryLower);
+    const isVideo = ['videography', 'video editing', 'social media marketing'].includes(categoryLower);
     const isWebsite = ['website development', 'software development'].includes(categoryLower);
 
     if (isVideo) {
@@ -1200,7 +1200,7 @@ async function handleSaveProject() {
   }
 
   const categoryLower = category.toLowerCase();
-  const isVideo = ['videography', 'video editing'].includes(categoryLower);
+  const isVideo = ['videography', 'video editing', 'social media marketing'].includes(categoryLower);
   const isWebsite = ['website development', 'software development'].includes(categoryLower);
 
   let videoUrl = '';
