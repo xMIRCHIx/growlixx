@@ -961,7 +961,7 @@ function filterProjects() {
  * Portfolio CRUD handlers
  */
 async function handleToggleFeatured(id) {
-  const proj = loadedProjects.find(p => p.id === id);
+  const proj = loadedProjects.find(p => String(p.id) === String(id));
   if (!proj) return;
   
   const nextFeatured = !(proj.featured === true || proj.featured === 'true');
@@ -972,7 +972,7 @@ async function handleToggleFeatured(id) {
 }
 
 async function handleDeleteProject(id) {
-  const proj = loadedProjects.find(p => p.id === id);
+  const proj = loadedProjects.find(p => String(p.id) === String(id));
   if (!proj) return;
 
   if (confirm(`Are you sure you want to permanently delete "${proj.title}"?`)) {
@@ -1000,10 +1000,10 @@ async function handleReorderProjects(draggedId, targetId) {
   }
 
   // Get other projects not in the active filtered view
-  const restProjects = loadedProjects.filter(p => !activeIds.includes(p.id));
+  const restProjects = loadedProjects.filter(p => !activeIds.includes(String(p.id)));
 
   // Map active projects in their new relative order
-  const activeProjectsOrdered = activeIds.map(id => loadedProjects.find(p => p.id === id)).filter(Boolean);
+  const activeProjectsOrdered = activeIds.map(id => loadedProjects.find(p => String(p.id) === String(id))).filter(Boolean);
 
   // Merge back
   const mergedProjects = [...activeProjectsOrdered, ...restProjects];
@@ -1124,7 +1124,7 @@ async function openProjectModal(id = null) {
   if (id) {
     // Edit mode
     if (modalTitleDisplay) modalTitleDisplay.textContent = "Edit Showcase Item";
-    const proj = loadedProjects.find(p => p.id === id);
+    const proj = loadedProjects.find(p => String(p.id) === String(id));
     if (!proj) return;
 
     if (modalFieldId) modalFieldId.value = proj.id;
