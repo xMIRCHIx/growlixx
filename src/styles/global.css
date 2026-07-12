@@ -3671,6 +3671,10 @@ img {
   -webkit-overflow-scrolling: touch;
 }
 
+.lightbox-overlay {
+  z-index: 50000 !important;
+}
+
 body.lightbox-active {
   overflow: hidden !important;
 }
@@ -3738,7 +3742,10 @@ body.lightbox-active {
 
   #lightbox-media-container {
     width: 100% !important;
-    aspect-ratio: 16/9 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #000 !important;
     border-radius: 0.8rem !important;
     overflow: hidden !important;
   }

@@ -1044,8 +1044,9 @@ async function openProjectModal(id = null) {
     if (modalFieldCategory) modalFieldCategory.value = proj.category;
     if (modalFieldDescription) modalFieldDescription.value = proj.detailedDescription || proj.shortDescription || '';
 
-    // Load orientation selection
-    if (proj.videoLayout === 'portrait') {
+    // Load orientation selection based on videoUrl keywords
+    const isProjPortrait = (proj.videoUrl || '').includes('/shorts/') || (proj.videoUrl || '').includes('#portrait') || proj.videoLayout === 'portrait';
+    if (isProjPortrait) {
       if (radioRatioPortrait) radioRatioPortrait.checked = true;
     } else {
       if (radioRatioLandscape) radioRatioLandscape.checked = true;
@@ -1180,7 +1181,6 @@ async function handleSaveProject() {
     featured: false,
     videoUrl: finalVideoUrl,
     demoUrl,
-    videoLayout,
     gallery: thumbnail ? [thumbnail] : [],
     coverImage: thumbnail,
     completionDate: new Date().toISOString().substring(0, 10)
