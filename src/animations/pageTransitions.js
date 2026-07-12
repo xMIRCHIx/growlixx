@@ -77,4 +77,24 @@ export function initPageTransitions() {
       }
     );
   });
+
+  // 3. Reset overlay state if page loaded from back-forward cache (history navigation)
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      overlay.style.pointerEvents = 'all';
+      overlay.style.display = 'block';
+      gsap.fromTo(overlay, 
+        { yPercent: 0 },
+        { 
+          yPercent: -100, 
+          duration: 0.75, 
+          ease: 'power3.inOut',
+          onComplete: () => {
+            overlay.style.pointerEvents = 'none';
+            overlay.style.display = 'none';
+          }
+        }
+      );
+    }
+  });
 }
