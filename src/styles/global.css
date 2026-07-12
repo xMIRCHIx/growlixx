@@ -4162,3 +4162,23 @@ body.lightbox-active {
   }
 }
 
+/* UGC Gallery Vertical Portrait 9:16 Slider Cards */
+#ugc-gallery-grid .portfolio-item {
+  width: 220px !important;
+}
+
+#ugc-gallery-grid .portfolio-img-container {
+  aspect-ratio: 9/16 !important;
+  height: 380px !important;
+}
+
+@media (max-width: 768px) {
+  #ugc-gallery-grid .portfolio-item {
+    width: 155px !important;
+  }
+  #ugc-gallery-grid .portfolio-img-container {
+    height: 275px !important;
+    aspect-ratio: 9/16 !important;
+  }
+}
+
