@@ -77,31 +77,105 @@ async function renderPortfolioContent() {
 
 function renderFilters(orderedCategories) {
   const pillsContainer = document.getElementById('portfolio-filter-pills');
-  if (!pillsContainer) return;
+  const dropdownContainer = document.getElementById('mobile-filter-dropdown');
+  const triggerBtn = document.getElementById('mobile-filter-trigger');
+  const triggerLabel = document.getElementById('mobile-filter-label');
+  const arrowIcon = document.getElementById('mobile-filter-arrow');
 
-  pillsContainer.innerHTML = orderedCategories.map(cat => {
-    const isActive = cat === activeFilter;
-    return `
-      <button class="filter-pill ${isActive ? 'active' : ''}" data-category="${cat}">
-        <span>${cat}</span>
-      </button>
-    `;
-  }).join('');
+  if (pillsContainer) {
+    pillsContainer.innerHTML = orderedCategories.map(cat => {
+      const isActive = cat === activeFilter;
+      return `
+        <button class="filter-pill ${isActive ? 'active' : ''}" data-category="${cat}">
+          <span>${cat}</span>
+        </button>
+      `;
+    }).join('');
 
-  // Click handler
-  pillsContainer.querySelectorAll('.filter-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      const category = pill.getAttribute('data-category');
-      if (category === activeFilter) return;
+    // Click handler for desktop pills
+    pillsContainer.querySelectorAll('.filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const category = pill.getAttribute('data-category');
+        if (category === activeFilter) return;
 
-      pillsContainer.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
+        pillsContainer.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
 
-      activeFilter = category;
-      currentPage = 1;
-      applyFilterAndSearch(true);
+        activeFilter = category;
+        if (triggerLabel) triggerLabel.textContent = `Category: ${category}`;
+        currentPage = 1;
+        applyFilterAndSearch(true);
+      });
     });
-  });
+  }
+
+  // Populate mobile dropdown items
+  if (dropdownContainer) {
+    dropdownContainer.innerHTML = orderedCategories.map(cat => {
+      const isActive = cat === activeFilter;
+      return `
+        <button class="mobile-filter-dropdown-item ${isActive ? 'active' : ''}" data-category="${cat}">
+          ${cat}
+        </button>
+      `;
+    }).join('');
+
+    // Click handler for mobile dropdown items
+    dropdownContainer.querySelectorAll('.mobile-filter-dropdown-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const category = item.getAttribute('data-category');
+        if (category === activeFilter) {
+          dropdownContainer.style.display = 'none';
+          if (arrowIcon) arrowIcon.style.transform = 'rotate(0deg)';
+          return;
+        }
+
+        activeFilter = category;
+        if (triggerLabel) triggerLabel.textContent = `Category: ${category}`;
+        
+        // Sync active state in pills row too
+        if (pillsContainer) {
+          pillsContainer.querySelectorAll('.filter-pill').forEach(p => {
+            if (p.getAttribute('data-category') === category) {
+              p.classList.add('active');
+            } else {
+              p.classList.remove('active');
+            }
+          });
+        }
+
+        dropdownContainer.style.display = 'none';
+        if (arrowIcon) arrowIcon.style.transform = 'rotate(0deg)';
+        currentPage = 1;
+        applyFilterAndSearch(true);
+      });
+    });
+  }
+
+  if (triggerLabel) {
+    triggerLabel.textContent = `Category: ${activeFilter || 'All'}`;
+  }
+
+  // Bind trigger click listener only once (use custom property flag to avoid duplicate bindings)
+  if (triggerBtn && !triggerBtn.dataset.bound) {
+    triggerBtn.dataset.bound = "true";
+    triggerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isVisible = dropdownContainer.style.display === 'block';
+      dropdownContainer.style.display = isVisible ? 'none' : 'block';
+      if (arrowIcon) arrowIcon.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+
+    // Close dropdown on click outside
+    document.addEventListener('click', (e) => {
+      if (dropdownContainer && dropdownContainer.style.display === 'block') {
+        if (!triggerBtn.contains(e.target) && !dropdownContainer.contains(e.target)) {
+          dropdownContainer.style.display = 'none';
+          if (arrowIcon) arrowIcon.style.transform = 'rotate(0deg)';
+        }
+      }
+    });
+  }
 }
 
 function applyFilterAndSearch(animate = true) {

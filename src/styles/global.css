@@ -4237,3 +4237,79 @@ body.lightbox-active {
   }
 }
 
+/* Portfolio Archive Page Custom Styling */
+.portfolio-archive-section {
+  padding-top: 8rem !important;
+  padding-bottom: 5rem !important;
+}
+
+.archive-main-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 3.8rem;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.archive-tagline {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 3rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Custom Category Dropdown on Mobile */
+.mobile-filter-dropdown-item {
+  width: 100%;
+  padding: 0.8rem 1.4rem;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: block;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.mobile-filter-dropdown-item:hover,
+.mobile-filter-dropdown-item.active {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .portfolio-archive-section {
+    padding-top: 6rem !important;
+    padding-bottom: 4rem !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+
+  .archive-main-title {
+    font-size: 2.2rem !important; /* Prevent ugly wrapping on small screens */
+    margin-bottom: 0.4rem;
+  }
+
+  .archive-tagline {
+    font-size: 0.72rem !important;
+    letter-spacing: 0.1em !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .portfolio-filter-mobile-wrapper {
+    display: block !important;
+  }
+  
+  #portfolio-filter-pills {
+    display: none !important; /* Hide horizontal scroll pills row on mobile */
+  }
+}
+
