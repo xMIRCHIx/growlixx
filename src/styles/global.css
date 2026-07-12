@@ -4180,8 +4180,8 @@ body.lightbox-active {
 @media (max-width: 768px) {
   .lightbox-content-container {
     flex-direction: column !important; /* Stack vertically on mobile */
-    gap: 1.5rem !important;
-    max-height: 90vh !important;
+    gap: 1.2rem !important;
+    max-height: 95vh !important;
     padding: 1rem !important;
     overflow-y: auto !important;
   }
@@ -4189,6 +4189,9 @@ body.lightbox-active {
   #lightbox-media-container {
     width: 100% !important; /* Take full width container spacing */
     order: 1 !important; /* Video always sits on top */
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
 
   #lightbox-info-container {
@@ -4199,12 +4202,17 @@ body.lightbox-active {
   }
 
   .lightbox-media-wrapper {
-    max-width: 280px !important; /* Larger phone scale width for 9:16 layout */
-    max-height: 500px !important; /* Give vertical video proper height limits */
+    width: auto !important;
+    height: 45vh !important; /* Constrain height to keep details visible on screen */
+    aspect-ratio: 9/16 !important;
+    max-width: 90vw !important;
   }
 
   .lightbox-media-wrapper.landscape-media {
+    width: 100% !important;
     max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16/9 !important;
     max-height: none !important;
   }
 }
