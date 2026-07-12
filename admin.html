@@ -14,6 +14,10 @@
   <!-- Style Sheets -->
   <link rel="stylesheet" href="/src/styles/global.css">
   <link rel="stylesheet" href="/src/styles/admin_login.css">
+  
+  <!-- Cropper.js Image Editor Library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" integrity="sha512-UtO5cxu1s440+k9v57KwbA8hXn/p5WpxB1j5b2z0B6K4G2a9pW/Qe7u+lGkM32fJ2VjM3nF2vJ44Jm7M/kH6Dw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js" integrity="sha512-6gO+5t1u2LhN9Z5g/8X4d+Yy+lG1Wb1Xn7G34mF2vJ44Jm7M/kH6Dw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
 
@@ -785,22 +789,95 @@
             </select>
           </div>
 
-          <!-- Project Link Input (Website URL or YouTube video link) -->
-          <div class="form-group" id="group-project-link">
-            <label id="label-project-link" for="modal-project-link">Project Link (Website URL or YouTube video link)</label>
-            <input type="text" id="modal-project-link" placeholder="e.g. https://cinevo.in or https://www.youtube.com/watch?v=...">
-          </div>
-
-          <!-- Project Image Upload (Custom file upload or URL) -->
-          <div class="form-group" id="group-project-image">
+          <!-- SECTION 1: Standard Image Upload (Photography, Brand Identity, Graphic Design, Social Media Marketing) -->
+          <div class="form-group" id="sec-standard-fields" style="display: block;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
-              <label for="modal-project-image" style="margin: 0; font-weight: 600;">Project Image / Mockup</label>
-              <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
+              <label for="modal-standard-image" style="margin: 0; font-weight: 600;">Upload Project Image / Showcase Asset</label>
+              <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
                 <span>+ Upload Image</span>
-                <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-project-image" style="display: none;">
+                <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-standard-image" style="display: none;">
               </label>
             </div>
-            <input type="text" id="modal-project-image" placeholder="Upload an image or paste a URL">
+            <input type="text" id="modal-standard-image" placeholder="Upload an image or paste a URL">
+          </div>
+
+          <!-- SECTION 2: Video Fields (Videography, Video Editing) -->
+          <div id="sec-video-fields" style="display: none; border: 1px solid rgba(18,18,18,0.06); padding: 1.2rem; border-radius: 0.6rem; background: rgba(0,0,0,0.01);">
+            <div class="form-group" style="margin-bottom: 1.2rem;">
+              <label style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Video Hosting Source</label>
+              <div style="display: flex; gap: 2rem; align-items: center;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;">
+                  <input type="radio" name="video-source-type" id="modal-video-source-youtube" value="youtube" checked style="width: 16px; height: 16px;">
+                  <span>YouTube Link</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;">
+                  <input type="radio" name="video-source-type" id="modal-video-source-local" value="local" style="width: 16px; height: 16px;">
+                  <span>Direct Local Upload</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- YouTube Video Fields Group -->
+            <div id="group-video-youtube" style="display: block;">
+              <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="modal-video-youtube-url">YouTube Video Link / URL</label>
+                <input type="text" id="modal-video-youtube-url" placeholder="e.g., https://www.youtube.com/watch?v=XXXXXX">
+              </div>
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                  <label for="modal-video-youtube-cover" style="margin: 0;">Select Video Cover Photo (Optional)</label>
+                  <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
+                    <span>+ Upload Cover</span>
+                    <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-video-youtube-cover" style="display: none;">
+                  </label>
+                </div>
+                <input type="text" id="modal-video-youtube-cover" placeholder="Upload a cover photo or paste a URL">
+                <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; display: block;">Note: Maxresdefault thumbnail will automatically be extracted from YouTube if left empty.</span>
+              </div>
+            </div>
+
+            <!-- Direct Local Video Fields Group -->
+            <div id="group-video-local" style="display: none;">
+              <div class="form-group" style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                  <label for="modal-video-local-file" style="margin: 0; font-weight: 600;">Select Video File (MP4/MOV/AVI, Max 500MB)</label>
+                  <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
+                    <span>+ Upload Video</span>
+                    <input type="file" accept="video/*" class="admin-file-uploader" data-target="modal-video-local-file" style="display: none;">
+                  </label>
+                </div>
+                <input type="text" id="modal-video-local-file" placeholder="Upload a video file or paste a URL">
+              </div>
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                  <label for="modal-video-local-cover" style="margin: 0; font-weight: 600;">Select Video Cover Photo (JPG/PNG/WEBP)</label>
+                  <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
+                    <span>+ Upload Cover</span>
+                    <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-video-local-cover" style="display: none;">
+                  </label>
+                </div>
+                <input type="text" id="modal-video-local-cover" placeholder="Upload a cover photo or paste a URL">
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 3: Website/App Fields (Website Development, Software Development) -->
+          <div id="sec-website-fields" style="display: none; border: 1px solid rgba(18,18,18,0.06); padding: 1.2rem; border-radius: 0.6rem; background: rgba(0,0,0,0.01);">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="modal-website-url">Website / Demo URL</label>
+              <input type="text" id="modal-website-url" placeholder="e.g., https://example.com">
+            </div>
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                <label for="modal-website-banner" style="margin: 0; font-weight: 600;">Upload Website Banner / Mockup Image</label>
+                <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
+                  <span>+ Upload Banner</span>
+                  <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-website-banner" style="display: none;">
+                </label>
+              </div>
+              <input type="text" id="modal-website-banner" placeholder="Upload a banner mockup image or paste a URL">
+              <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; display: block;">Note: Banner image will be displayed on the portfolio grid.</span>
+            </div>
           </div>
 
           <div class="form-group">
@@ -816,6 +893,67 @@
           <span>Save Showcase Item</span>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- IMAGE CROPPER & EDITOR MODAL -->
+  <div id="admin-crop-modal" class="lightbox-overlay" data-lenis-prevent style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(10, 10, 10, 0.95); z-index: 20000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none;">
+    <div class="crop-modal-content" style="background: #1c1c1c; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1.25rem; width: 90%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.6); color: #ffffff; font-family: var(--font-sans);">
+      
+      <!-- Modal Header -->
+      <div class="crop-modal-header" style="padding: 1.2rem 1.8rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin: 0; font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: #ffffff;">Crop & Edit Media Asset</h3>
+        <button id="btn-crop-cancel-x" style="background: transparent; border: none; color: rgba(255,255,255,0.6); font-size: 1.8rem; line-height: 1; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">&times;</button>
+      </div>
+
+      <!-- Crop Workspace -->
+      <div class="crop-modal-body" style="padding: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 1.2rem; background: #121212; flex-grow: 1; overflow-y: auto; justify-content: center; min-height: 350px;">
+        <div class="crop-workspace-container" style="width: 100%; max-width: 700px; height: 350px; background: #080808; border-radius: 0.5rem; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; border: 1px dashed rgba(255,255,255,0.15);">
+          <img id="crop-modal-image" src="" alt="Source image to crop" style="max-width: 100%; max-height: 100%; display: block;">
+        </div>
+      </div>
+
+      <!-- Controls Panel (Aspect Ratio & Zoom) -->
+      <div class="crop-controls-panel" style="padding: 1rem 1.8rem; background: #181818; border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-direction: column; gap: 1rem;">
+        
+        <!-- Aspect Ratio Pills -->
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <span style="font-size: 0.72rem; text-transform: uppercase; color: rgba(255,255,255,0.4); letter-spacing: 0.05em; font-weight: 600;">Choose Target Layout Ratio</span>
+          <div class="crop-ratio-options" style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+            <button type="button" class="crop-ratio-btn active" data-ratio="1.7777777777777777" style="padding: 0.5rem 1rem; border-radius: 2rem; background: var(--accent); color: #000000; border: 1px solid var(--accent); font-size: 0.78rem; font-weight: bold; cursor: pointer; transition: all 0.2s;">16:9 Landscape (Web Cover)</button>
+            <button type="button" class="crop-ratio-btn" data-ratio="0.8" style="padding: 0.5rem 1rem; border-radius: 2rem; background: rgba(255,255,255,0.06); color: #ffffff; border: 1px solid rgba(255,255,255,0.1); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">4:5 Portrait (Showcase Card)</button>
+            <button type="button" class="crop-ratio-btn" data-ratio="1" style="padding: 0.5rem 1rem; border-radius: 2rem; background: rgba(255,255,255,0.06); color: #ffffff; border: 1px solid rgba(255,255,255,0.1); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">1:1 Square (Logo/Detail)</button>
+            <button type="button" class="crop-ratio-btn" data-ratio="NaN" style="padding: 0.5rem 1rem; border-radius: 2rem; background: rgba(255,255,255,0.06); color: #ffffff; border: 1px solid rgba(255,255,255,0.1); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">Free Layout</button>
+          </div>
+        </div>
+
+        <!-- Zoom Utility controls -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 0.8rem;">
+          <div style="display: flex; gap: 0.8rem; align-items: center;">
+            <span style="font-size: 0.72rem; text-transform: uppercase; color: rgba(255,255,255,0.4); letter-spacing: 0.05em; font-weight: 600;">Zoom Control:</span>
+            <div style="display: flex; gap: 0.4rem;">
+              <button type="button" id="btn-crop-zoom-in" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #ffffff; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">+</button>
+              <button type="button" id="btn-crop-zoom-out" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #ffffff; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">&minus;</button>
+              <button type="button" id="btn-crop-zoom-reset" style="padding: 0 0.8rem; height: 32px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #ffffff; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.25rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+                <span>↺</span> <span>Reset View</span>
+              </button>
+            </div>
+          </div>
+          
+          <div style="font-size: 0.7rem; color: rgba(255,255,255,0.35);">
+            Drag grid handles to resize cropping frame, or scroll to zoom in/out.
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div class="crop-modal-footer" style="padding: 1.2rem 1.8rem; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: flex-end; gap: 1rem; background: #1c1c1c;">
+        <button type="button" id="btn-crop-cancel" style="padding: 0.65rem 1.5rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: #ffffff; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">Cancel</button>
+        <button type="button" id="btn-crop-apply" class="btn-primary" style="background: var(--accent); color: #000000; padding: 0.65rem 1.8rem; border-radius: 2rem; font-weight: bold; border: 1px solid var(--accent); cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;">
+          <span>Apply Crop & Upload</span>
+        </button>
+      </div>
+
     </div>
   </div>
 

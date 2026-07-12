@@ -56,6 +56,12 @@ async function renderServicesContent() {
                 <ul class="service-details-list">
                   ${tagsList}
                 </ul>
+                <div style="margin-top: 1.5rem;">
+                  <button type="button" class="btn-service-view-portfolio" data-service="${s.key}" style="background: transparent; border: none; padding: 0; color: var(--accent); font-family: var(--font-sans); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <span>View Projects</span>
+                    <span>&rarr;</span>
+                  </button>
+                </div>
               </div>
               <div class="service-media-col">
                 <div class="service-preview-wrapper">
@@ -67,6 +73,26 @@ async function renderServicesContent() {
         </div>
       `;
     }).join('');
+
+    // Bind click handlers to portfolio redirect buttons inside expanded card views
+    const viewPortfolioButtons = servicesList.querySelectorAll('.btn-service-view-portfolio');
+    viewPortfolioButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation(); // prevent accordion collapse
+        const serviceKey = btn.getAttribute('data-service');
+        let filterVal = '';
+        switch(serviceKey) {
+          case 'photography': filterVal = 'Photography'; break;
+          case 'videography': filterVal = 'Videography'; break;
+          case 'design': filterVal = 'Graphic Design'; break;
+          case 'development': filterVal = 'Website Development'; break;
+          default: filterVal = '';
+        }
+        if (filterVal) {
+          window.location.href = `/portfolio.html?filter=${encodeURIComponent(filterVal)}`;
+        }
+      });
+    });
   }
 
   // 2. Bento Grid (Why Choose Us)

@@ -1,5 +1,6 @@
 import { initPage } from '../../utils/initPage.js';
 import { db } from '../../utils/db.js';
+import { gsap } from 'gsap';
 
 // DOM Elements - Login
 const loginOverlay = document.getElementById('admin-login-overlay');
@@ -33,8 +34,6 @@ const modalFieldId = document.getElementById('modal-project-id');
 const modalFieldTitle = document.getElementById('modal-project-title');
 const modalFieldCategory = document.getElementById('modal-project-category');
 const modalFieldThumbnail = document.getElementById('modal-project-thumbnail');
-const modalFieldLink = document.getElementById('modal-project-link');
-const modalFieldImage = document.getElementById('modal-project-image');
 const modalFieldDescription = document.getElementById('modal-project-description');
 
 // DOM Elements - Settings Diagnostics
@@ -84,6 +83,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeProjectModal);
   if (modalSaveBtn) modalSaveBtn.addEventListener('click', handleSaveProject);
   if (modalFieldCategory) modalFieldCategory.addEventListener('change', toggleDynamicFields);
+  const radioYoutube = document.getElementById('modal-video-source-youtube');
+  const radioLocal = document.getElementById('modal-video-source-local');
+  if (radioYoutube) radioYoutube.addEventListener('change', toggleVideoSourceFields);
+  if (radioLocal) radioLocal.addEventListener('change', toggleVideoSourceFields);
   if (filterCategorySelect) filterCategorySelect.addEventListener('change', filterProjects);
 
   // 9. Bind Settings controls
@@ -173,6 +176,171 @@ function compressImage(file, maxWidth = 1600, maxHeight = 1200, quality = 0.8) {
   });
 }
 
+let activeCropper = null;
+
+/**
+ * Open crop dialog and return a Promise that resolves with the cropped File (or null if cancelled)
+ */
+function cropImageDialog(file) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('admin-crop-modal');
+    const imageEl = document.getElementById('crop-modal-image');
+    const btnCancel = document.getElementById('btn-crop-cancel');
+    const btnCancelX = document.getElementById('btn-crop-cancel-x');
+    const btnApply = document.getElementById('btn-crop-apply');
+    const btnZoomIn = document.getElementById('btn-crop-zoom-in');
+    const btnZoomOut = document.getElementById('btn-crop-zoom-out');
+    const btnZoomReset = document.getElementById('btn-crop-zoom-reset');
+    const ratioBtns = document.querySelectorAll('.crop-ratio-btn');
+
+    if (!modal || !imageEl || !btnApply) {
+      resolve(file); // fallback if DOM elements missing
+      return;
+    }
+
+    // Read file and load image
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imageEl.src = e.target.result;
+
+      // Open Modal
+      modal.style.display = 'flex';
+      modal.style.pointerEvents = 'auto';
+      
+      gsap.fromTo(modal, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' });
+
+      // Destroy old cropper instance if any
+      if (activeCropper) {
+        activeCropper.destroy();
+        activeCropper = null;
+      }
+
+      // Default aspect ratio button active is 16:9
+      let currentRatio = 1.7777777777777777;
+      ratioBtns.forEach(btn => {
+        const ratio = parseFloat(btn.getAttribute('data-ratio'));
+        if (Math.abs(ratio - currentRatio) < 0.01) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Initialize Cropper.js
+      activeCropper = new Cropper(imageEl, {
+        aspectRatio: currentRatio,
+        viewMode: 1,
+        dragMode: 'move',
+        autoCropArea: 0.9,
+        restore: false,
+        guides: true,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+        background: false
+      });
+    };
+    reader.readAsDataURL(file);
+
+    // Clean up function
+    const cleanup = () => {
+      if (activeCropper) {
+        activeCropper.destroy();
+        activeCropper = null;
+      }
+      gsap.to(modal, {
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power2.out',
+        onComplete: () => {
+          modal.style.display = 'none';
+          modal.style.pointerEvents = 'none';
+        }
+      });
+    };
+
+    // Aspect ratio switching
+    ratioBtns.forEach(btn => {
+      btn.onclick = () => {
+        ratioBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const ratioStr = btn.getAttribute('data-ratio');
+        const ratioVal = ratioStr === 'NaN' ? NaN : parseFloat(ratioStr);
+        if (activeCropper) {
+          activeCropper.setAspectRatio(ratioVal);
+        }
+      };
+    });
+
+    // Zoom controls
+    if (btnZoomIn) {
+      btnZoomIn.onclick = () => {
+        if (activeCropper) activeCropper.zoom(0.1);
+      };
+    }
+    if (btnZoomOut) {
+      btnZoomOut.onclick = () => {
+        if (activeCropper) activeCropper.zoom(-0.1);
+      };
+    }
+    if (btnZoomReset) {
+      btnZoomReset.onclick = () => {
+        if (activeCropper) {
+          activeCropper.reset();
+        }
+      };
+    }
+
+    // Cancel triggers
+    const onCancel = () => {
+      cleanup();
+      resolve(null); // resolve with null to indicate cancel
+    };
+    if (btnCancel) btnCancel.onclick = onCancel;
+    if (btnCancelX) btnCancelX.onclick = onCancel;
+
+    // Apply crop
+    btnApply.onclick = () => {
+      if (!activeCropper) {
+        resolve(file);
+        cleanup();
+        return;
+      }
+
+      // Get cropped canvas
+      const canvas = activeCropper.getCroppedCanvas({
+        maxWidth: 2048,
+        maxHeight: 2048,
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high'
+      });
+
+      if (!canvas) {
+        resolve(file);
+        cleanup();
+        return;
+      }
+
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          resolve(file);
+        } else {
+          // Convert blob back to a File object
+          const croppedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + "_cropped.jpg", {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          });
+          resolve(croppedFile);
+        }
+        cleanup();
+      }, 'image/jpeg', 0.9);
+    };
+
+  });
+}
+
 /**
  * Bind file inputs to automatic Supabase Storage uploads
  */
@@ -192,15 +360,39 @@ function initImageUploaders() {
 
       if (labelEl) {
         labelEl.classList.add('uploading');
-        labelEl.querySelector('span').textContent = 'Compressing...';
+        labelEl.querySelector('span').textContent = 'Processing...';
       }
 
-      showToast("Compressing media asset...");
       let finalFile = file;
-      try {
-        finalFile = await compressImage(file);
-      } catch (err) {
-        console.warn("Client-side compression failed, using original file:", err);
+
+      // Open cropping dialog if it's an image
+      if (file.type.startsWith('image/')) {
+        showToast("Opening crop editor...");
+        const cropped = await cropImageDialog(file);
+        if (!cropped) {
+          // Cropping cancelled
+          showToast("Crop cancelled.");
+          if (labelEl) {
+            labelEl.classList.remove('uploading');
+            labelEl.querySelector('span').textContent = originalText;
+          }
+          uploader.value = '';
+          return;
+        }
+        finalFile = cropped;
+      }
+
+      // Compress cropped image
+      if (finalFile.type.startsWith('image/')) {
+        if (labelEl) {
+          labelEl.querySelector('span').textContent = 'Compressing...';
+        }
+        showToast("Compressing media asset...");
+        try {
+          finalFile = await compressImage(finalFile);
+        } catch (err) {
+          console.warn("Compression failed, using uncompressed file:", err);
+        }
       }
 
       if (labelEl) {
@@ -739,111 +931,206 @@ async function handleDeleteProject(id) {
 /**
  * Modal dialog control
  */
+/**
+ * Toggle custom dynamic form fields based on category
+ */
+function toggleDynamicFields() {
+  const modalFieldCategory = document.getElementById('modal-project-category');
+  if (!modalFieldCategory) return;
+  const category = modalFieldCategory.value ? modalFieldCategory.value.trim() : '';
+  const categoryLower = category.toLowerCase();
+  
+  const isVideo = ['videography', 'video editing'].includes(categoryLower);
+  const isWebsite = ['website development', 'software development'].includes(categoryLower);
+
+  console.log('toggleDynamicFields category:', category, 'isVideo:', isVideo, 'isWebsite:', isWebsite);
+
+  const secStandard = document.getElementById('sec-standard-fields');
+  const secVideo = document.getElementById('sec-video-fields');
+  const secWebsite = document.getElementById('sec-website-fields');
+
+  if (secStandard) {
+    if (isVideo || isWebsite) {
+      secStandard.style.display = 'none';
+    } else {
+      secStandard.style.display = 'block';
+    }
+  }
+  if (secVideo) secVideo.style.display = isVideo ? 'block' : 'none';
+  if (secWebsite) secWebsite.style.display = isWebsite ? 'block' : 'none';
+
+  if (isVideo) {
+    toggleVideoSourceFields();
+  }
+}
+
+function toggleVideoSourceFields() {
+  const radioYoutube = document.getElementById('modal-video-source-youtube');
+  const isYoutube = radioYoutube ? radioYoutube.checked : true;
+  const groupYoutube = document.getElementById('group-video-youtube');
+  const groupLocal = document.getElementById('group-video-local');
+
+  if (groupYoutube) groupYoutube.style.display = isYoutube ? 'block' : 'none';
+  if (groupLocal) groupLocal.style.display = isYoutube ? 'none' : 'block';
+}
+
+/**
+ * Modal dialog control
+ */
 async function openProjectModal(id = null) {
-  projectModalForm.reset();
+  const projectModalForm = document.getElementById('project-modal-form');
+  const projectModal = document.getElementById('project-modal');
+  const modalTitleDisplay = document.getElementById('modal-title-display');
+  const modalFieldId = document.getElementById('modal-project-id');
+  const modalFieldTitle = document.getElementById('modal-project-title');
+  const modalFieldCategory = document.getElementById('modal-project-category');
+  const modalFieldDescription = document.getElementById('modal-project-description');
+
+  if (projectModalForm) projectModalForm.reset();
+
+  // Reset defaults for conditional forms
+  const radioYoutube = document.getElementById('modal-video-source-youtube');
+  const radioLocal = document.getElementById('modal-video-source-local');
+  if (radioYoutube) radioYoutube.checked = true;
+  if (radioLocal) radioLocal.checked = false;
+
+  // Clear inputs explicitly
+  const standardImageInput = document.getElementById('modal-standard-image');
+  const videoYoutubeUrlInput = document.getElementById('modal-video-youtube-url');
+  const videoYoutubeCoverInput = document.getElementById('modal-video-youtube-cover');
+  const videoLocalFileInput = document.getElementById('modal-video-local-file');
+  const videoLocalCoverInput = document.getElementById('modal-video-local-cover');
+  const websiteUrlInput = document.getElementById('modal-website-url');
+  const websiteBannerInput = document.getElementById('modal-website-banner');
+
+  if (standardImageInput) standardImageInput.value = '';
+  if (videoYoutubeUrlInput) videoYoutubeUrlInput.value = '';
+  if (videoYoutubeCoverInput) videoYoutubeCoverInput.value = '';
+  if (videoLocalFileInput) videoLocalFileInput.value = '';
+  if (videoLocalCoverInput) videoLocalCoverInput.value = '';
+  if (websiteUrlInput) websiteUrlInput.value = '';
+  if (websiteBannerInput) websiteBannerInput.value = '';
 
   if (id) {
     // Edit mode
-    modalTitleDisplay.textContent = "Edit Showcase Item";
+    if (modalTitleDisplay) modalTitleDisplay.textContent = "Edit Showcase Item";
     const proj = loadedProjects.find(p => p.id === id);
     if (!proj) return;
 
-    modalFieldId.value = proj.id;
-    modalFieldTitle.value = proj.title;
-    modalFieldCategory.value = proj.category;
-    modalFieldThumbnail.value = proj.thumbnail;
-    modalFieldLink.value = proj.videoUrl || proj.demoUrl || '';
-    
-    let imgVal = proj.gallery && proj.gallery.length > 0 ? proj.gallery[0] : proj.thumbnail || '';
-    if (imgVal.includes('image.thum.io')) {
-      const cleanUrl = (proj.demoUrl || '').trim();
-      if (cleanUrl) {
-        let formattedUrl = cleanUrl;
-        if (!/^https?:\/\//i.test(formattedUrl)) {
-          formattedUrl = 'https://' + formattedUrl;
-        }
-        imgVal = `https://api.microlink.io/?url=${encodeURIComponent(formattedUrl)}&screenshot=true&embed=screenshot.url`;
+    if (modalFieldId) modalFieldId.value = proj.id;
+    if (modalFieldTitle) modalFieldTitle.value = proj.title;
+    if (modalFieldCategory) modalFieldCategory.value = proj.category;
+    if (modalFieldDescription) modalFieldDescription.value = proj.detailedDescription || proj.shortDescription || '';
+
+    const categoryLower = proj.category.toLowerCase();
+    const isVideo = ['videography', 'video editing'].includes(categoryLower);
+    const isWebsite = ['website development', 'software development'].includes(categoryLower);
+
+    if (isVideo) {
+      const isYoutube = (proj.videoUrl || '').includes('youtube.com') || (proj.videoUrl || '').includes('youtu.be');
+      if (isYoutube) {
+        if (radioYoutube) radioYoutube.checked = true;
+        if (videoYoutubeUrlInput) videoYoutubeUrlInput.value = proj.videoUrl || '';
+        if (videoYoutubeCoverInput) videoYoutubeCoverInput.value = proj.thumbnail || '';
       } else {
-        imgVal = '';
+        if (radioLocal) radioLocal.checked = true;
+        if (videoLocalFileInput) videoLocalFileInput.value = proj.videoUrl || '';
+        if (videoLocalCoverInput) videoLocalCoverInput.value = proj.thumbnail || '';
       }
+    } else if (isWebsite) {
+      if (websiteUrlInput) websiteUrlInput.value = proj.demoUrl || '';
+      if (websiteBannerInput) websiteBannerInput.value = proj.thumbnail || '';
+    } else {
+      if (standardImageInput) standardImageInput.value = proj.thumbnail || '';
     }
-    modalFieldImage.value = imgVal;
-    
-    modalFieldDescription.value = proj.detailedDescription || proj.shortDescription || '';
   } else {
     // Add mode
-    modalTitleDisplay.textContent = "Add Showcase Item";
-    modalFieldId.value = '';
-    modalFieldImage.value = '';
+    if (modalTitleDisplay) modalTitleDisplay.textContent = "Add Showcase Item";
+    if (modalFieldId) modalFieldId.value = '';
   }
 
-  projectModal.classList.add('active');
+  toggleDynamicFields();
+
+  if (projectModal) projectModal.classList.add('active');
   document.body.style.overflow = 'hidden';
   document.body.classList.add('lightbox-active');
   if (window.lenis) window.lenis.stop();
 }
 
 function closeProjectModal() {
-  projectModal.classList.remove('active');
+  const projectModal = document.getElementById('project-modal');
+  if (projectModal) projectModal.classList.remove('active');
   document.body.style.overflow = '';
   document.body.classList.remove('lightbox-active');
   if (window.lenis) window.lenis.start();
 }
 
 async function handleSaveProject() {
-  const id = modalFieldId.value.trim();
-  const title = modalFieldTitle.value.trim();
-  const category = modalFieldCategory.value;
-  const projectLink = modalFieldLink.value.trim();
-  const customImage = modalFieldImage.value.trim();
-  const description = modalFieldDescription.value.trim();
+  const modalFieldId = document.getElementById('modal-project-id');
+  const modalFieldTitle = document.getElementById('modal-project-title');
+  const modalFieldCategory = document.getElementById('modal-project-category');
+  const modalFieldDescription = document.getElementById('modal-project-description');
+
+  const id = modalFieldId ? modalFieldId.value.trim() : '';
+  const title = modalFieldTitle ? modalFieldTitle.value.trim() : '';
+  const category = modalFieldCategory ? modalFieldCategory.value : 'Photography';
+  const description = modalFieldDescription ? modalFieldDescription.value.trim() : '';
 
   if (!title) {
     alert("Please fill in the project title.");
     return;
   }
 
-  // Parse project link to determine videoUrl vs demoUrl
+  const categoryLower = category.toLowerCase();
+  const isVideo = ['videography', 'video editing'].includes(categoryLower);
+  const isWebsite = ['website development', 'software development'].includes(categoryLower);
+
   let videoUrl = '';
   let demoUrl = '';
+  let thumbnail = '';
 
-  if (projectLink) {
-    const isVideo = projectLink.includes('youtube.com') || 
-                    projectLink.includes('youtu.be') || 
-                    projectLink.includes('vimeo.com') || 
-                    projectLink.endsWith('.mp4') || 
-                    projectLink.endsWith('.webm') || 
-                    projectLink.endsWith('.mov');
-    if (isVideo) {
-      videoUrl = projectLink;
+  if (isVideo) {
+    const radioYoutube = document.getElementById('modal-video-source-youtube');
+    const isYoutube = radioYoutube ? radioYoutube.checked : true;
+    if (isYoutube) {
+      const videoYoutubeUrlInput = document.getElementById('modal-video-youtube-url');
+      const videoYoutubeCoverInput = document.getElementById('modal-video-youtube-cover');
+      videoUrl = videoYoutubeUrlInput ? videoYoutubeUrlInput.value.trim() : '';
+      thumbnail = videoYoutubeCoverInput ? videoYoutubeCoverInput.value.trim() : '';
+      if (!thumbnail && videoUrl) {
+        const ytMatch = videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+        if (ytMatch && ytMatch[1]) {
+          thumbnail = `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
+        }
+      }
     } else {
-      demoUrl = projectLink;
+      const videoLocalFileInput = document.getElementById('modal-video-local-file');
+      const videoLocalCoverInput = document.getElementById('modal-video-local-cover');
+      videoUrl = videoLocalFileInput ? videoLocalFileInput.value.trim() : '';
+      thumbnail = videoLocalCoverInput ? videoLocalCoverInput.value.trim() : '';
     }
-  }
-
-  // Fallback defaults and automatic thumbnail extraction
-  let thumbnailPath = '';
-  
-  if (customImage) {
-    thumbnailPath = customImage;
-  } else if (videoUrl) {
-    const ytMatch = videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-    if (ytMatch && ytMatch[1]) {
-      thumbnailPath = `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
+  } else if (isWebsite) {
+    const websiteUrlInput = document.getElementById('modal-website-url');
+    const websiteBannerInput = document.getElementById('modal-website-banner');
+    demoUrl = websiteUrlInput ? websiteUrlInput.value.trim() : '';
+    thumbnail = websiteBannerInput ? websiteBannerInput.value.trim() : '';
+    if (!thumbnail && demoUrl) {
+      let cleanUrl = demoUrl.trim();
+      if (!/^https?:\/\//i.test(cleanUrl)) {
+        cleanUrl = 'https://' + cleanUrl;
+      }
+      thumbnail = `https://api.microlink.io/?url=${encodeURIComponent(cleanUrl)}&screenshot=true&embed=screenshot.url`;
     }
-  } else if (demoUrl) {
-    let cleanUrl = demoUrl.trim();
-    if (!/^https?:\/\//i.test(cleanUrl)) {
-      cleanUrl = 'https://' + cleanUrl;
-    }
-    thumbnailPath = `https://api.microlink.io/?url=${encodeURIComponent(cleanUrl)}&screenshot=true&embed=screenshot.url`;
+  } else {
+    const standardImageInput = document.getElementById('modal-standard-image');
+    thumbnail = standardImageInput ? standardImageInput.value.trim() : '';
   }
 
   const projectData = {
     title,
     client: 'Creative Concept',
     category,
-    thumbnail: thumbnailPath,
+    thumbnail: thumbnail,
     shortDescription: description,
     detailedDescription: description,
     displayOrder: 1,
@@ -851,8 +1138,8 @@ async function handleSaveProject() {
     featured: false,
     videoUrl,
     demoUrl,
-    gallery: customImage ? [customImage] : [],
-    coverImage: thumbnailPath,
+    gallery: thumbnail ? [thumbnail] : [],
+    coverImage: thumbnail,
     completionDate: new Date().toISOString().substring(0, 10)
   };
 

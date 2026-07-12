@@ -49,12 +49,18 @@ async function renderPortfolioContent() {
     }
   });
 
-  // Read requested category query parameter from URL
+  // Read requested category or filter query parameter from URL robustly
   const urlParams = new URLSearchParams(window.location.search);
-  const urlCategory = urlParams.get('category');
+  const urlCategory = urlParams.get('category') || urlParams.get('filter');
 
-  if (urlCategory && projectCategories.includes(urlCategory)) {
-    activeFilter = urlCategory;
+  let matchedCategory = '';
+  if (urlCategory) {
+    const cleanUrlCat = urlCategory.trim().toLowerCase().replace(/[-_]/g, ' ');
+    matchedCategory = projectCategories.find(cat => cat.trim().toLowerCase().replace(/[-_]/g, ' ') === cleanUrlCat);
+  }
+
+  if (matchedCategory) {
+    activeFilter = matchedCategory;
   } else if (orderedCategories.length > 0) {
     activeFilter = orderedCategories[0];
   } else {
@@ -170,6 +176,10 @@ function renderGridItems() {
 
   grid.innerHTML = visibleProjects.map((project, idx) => {
     const sizeClass = idx % 3 === 0 ? 'p-large' : 'p-medium';
+    const categoryClean = (project.category || '').trim().toLowerCase().replace(/[-_]/g, ' ');
+    const isHorizontal = ['video editing', 'videography', 'website development', 'software development'].includes(categoryClean);
+    const horizontalClass = isHorizontal ? 'horizontal-thumb' : '';
+    const inlineStyle = isHorizontal ? 'style="aspect-ratio: 16/9 !important;"' : '';
     const videoMarkup = project.videoUrl
       ? `<video src="${project.videoUrl}" loop muted playsinline class="portfolio-hover-video" style="position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0; transition: opacity 0.4s ease; pointer-events: none; z-index: 1;"></video>`
       : '';
@@ -182,7 +192,7 @@ function renderGridItems() {
 
     return `
       <div class="portfolio-item ${sizeClass} fade-item" data-id="${project.id}" style="cursor: pointer;">
-        <div class="portfolio-img-container revealed">
+        <div class="portfolio-img-container revealed ${horizontalClass}" ${inlineStyle}>
           ${imgMarkup}
           ${videoMarkup}
           <div class="portfolio-overlay">
@@ -269,65 +279,76 @@ function openMediaLightbox(project) {
 
   mediaContainer.innerHTML = '';
 
-  if (catEl) catEl.textContent = project.category.toUpperCase();
-  if (titleEl) titleEl.textContent = project.title;
-  
-  const clientInfo = project.client ? ` | CLIENT: ${project.client.toUpperCase()}` : '';
-  if (catEl) catEl.textContent = `${project.category.toUpperCase()}${clientInfo}`;
-  if (descEl) descEl.textContent = project.detailedDescription || project.shortDescription || '';
+  // Dynamic Editorial Info Panel Generation
+  const infoContainer = document.getElementById('lightbox-info-container');
+  if (infoContainer) {
+    const dateStr = project.completionDate ? new Date(project.completionDate).getFullYear() : '2026';
+    const techTags = project.technologies 
+      ? project.technologies.split(',').map(t => `<span style="background: rgba(255,255,255,0.06); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.72rem; border: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.85);">${t.trim()}</span>`).join(' ') 
+      : '';
 
+    infoContainer.innerHTML = `
+      <div class="lightbox-info-header" style="margin-bottom: 1.2rem; text-align: left;">
+        <span style="font-size: 0.75rem; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; font-family: var(--font-sans); font-weight: 700;">${project.category.toUpperCase()}</span>
+        <h3 style="margin: 0.4rem 0 0.8rem 0; font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; color: #ffffff; line-height: 1.1; letter-spacing: -0.01em;">${project.title}</h3>
+      </div>
+      
+      <div class="lightbox-meta-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; padding: 1.2rem 0; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 1.5rem; font-family: var(--font-sans); font-size: 0.82rem; text-align: left;">
+        <div>
+          <span style="color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.2rem; font-size: 0.7rem; font-weight: 600;">Client</span>
+          <strong style="color: #ffffff; font-weight: 600; font-size: 0.9rem;">${project.client || 'Creative Studio'}</strong>
+        </div>
+        <div>
+          <span style="color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.2rem; font-size: 0.7rem; font-weight: 600;">Year</span>
+          <strong style="color: #ffffff; font-weight: 600; font-size: 0.9rem;">${dateStr}</strong>
+        </div>
+        ${techTags ? `
+        <div style="grid-column: span 2;">
+          <span style="color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.4rem; font-size: 0.7rem; font-weight: 600;">Keywords & Tech</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+            ${techTags}
+          </div>
+        </div>
+        ` : ''}
+      </div>
+
+      <div class="lightbox-desc-wrap" style="margin-bottom: 2rem; text-align: left;">
+        <span style="color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.4rem; font-family: var(--font-sans); font-size: 0.7rem; font-weight: 600;">Description</span>
+        <p style="color: #cccccc; font-size: 0.92rem; line-height: 1.65; font-family: var(--font-sans); margin: 0;">
+          ${project.detailedDescription || project.shortDescription || 'No detailed case study description provided for this visual production.'}
+        </p>
+      </div>
+
+      <div id="lightbox-action-wrap" style="display: flex; width: 100%; text-align: left;"></div>
+    `;
+  }
+
+  // Handle Media Preview Rendering
   if (project.videoUrl) {
     const isYoutube = project.videoUrl.includes('youtube.com') || project.videoUrl.includes('youtu.be');
+    const isInstagram = project.videoUrl.includes('instagram.com');
     if (isYoutube) {
       const embed = getYoutubeEmbedUrl(project.videoUrl);
-      mediaContainer.innerHTML = `<iframe src="${embed}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width: 1000px; height: 560px; max-width: 100%; aspect-ratio: 16/9; border-radius: 4px;"></iframe>`;
+      const isShorts = project.videoUrl.includes('/shorts/');
+      if (isShorts) {
+        mediaContainer.innerHTML = `<iframe src="${embed}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width: 100%; height: 100%; min-height: 480px; max-height: 70vh; aspect-ratio: 9/16; border-radius: 12px; border: none; max-width: 380px; margin: 0 auto; background: #000;"></iframe>`;
+      } else {
+        mediaContainer.innerHTML = `<iframe src="${embed}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width: 100%; height: 100%; min-height: 480px; aspect-ratio: 16/9; border-radius: 12px; border: none;"></iframe>`;
+      }
+    } else if (isInstagram) {
+      const embed = getInstagramEmbedUrl(project.videoUrl);
+      mediaContainer.innerHTML = `<iframe src="${embed}" frameborder="0" allowtransparency="true" allowfullscreen="true" style="width: 100%; height: 100%; min-height: 480px; max-height: 70vh; aspect-ratio: 9/16; border-radius: 12px; border: none; max-width: 380px; margin: 0 auto; background: #000;"></iframe>`;
     } else {
-      mediaContainer.innerHTML = `<video src="${project.videoUrl}" controls autoplay style="max-width: 100%; max-height: 60vh; border-radius: 4px;"></video>`;
+      mediaContainer.innerHTML = `<video src="${project.videoUrl}" controls autoplay style="width: 100%; height: 100%; min-height: 480px; aspect-ratio: 16/9; object-fit: contain; border-radius: 12px;"></video>`;
     }
   } else {
     const resolvedThumb = resolveProjectThumbnail(project);
     const images = [resolvedThumb, ...(project.gallery || [])].filter(Boolean);
-    if (images.length > 1) {
-      let currentSlide = 0;
+    if (images.length >= 1) {
       mediaContainer.innerHTML = `
-        <div class="lightbox-slider" style="position: relative; width: 100%; height: 60vh; display: flex; justify-content: center; align-items: center; background: #000;">
-          ${images.map((img, i) => `
-            <img class="lightbox-slide" src="${img}" style="max-width: 100%; max-height: 60vh; object-fit: contain; display: ${i === 0 ? 'block' : 'none'}; border-radius: 4px;">
-          `).join('')}
-          <button class="slider-nav-btn prev" style="position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); border: none; color: #fff; font-size: 2.5rem; cursor: pointer; padding: 0.5rem 1.2rem; border-radius: 4px; z-index: 10; line-height: 1;">&lsaquo;</button>
-          <button class="slider-nav-btn next" style="position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); border: none; color: #fff; font-size: 2.5rem; cursor: pointer; padding: 0.5rem 1.2rem; border-radius: 4px; z-index: 10; line-height: 1;">&rsaquo;</button>
-        </div>
-      `;
-
-      const slides = mediaContainer.querySelectorAll('.lightbox-slide');
-      const prevBtn = mediaContainer.querySelector('.slider-nav-btn.prev');
-      const nextBtn = mediaContainer.querySelector('.slider-nav-btn.next');
-
-      const showSlide = (idx) => {
-        slides.forEach((slide, i) => {
-          slide.style.display = i === idx ? 'block' : 'none';
-        });
-      };
-
-      if (prevBtn) {
-        prevBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-          showSlide(currentSlide);
-        });
-      }
-      if (nextBtn) {
-        nextBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          currentSlide = (currentSlide + 1) % slides.length;
-          showSlide(currentSlide);
-        });
-      }
-    } else if (images.length === 1) {
-      mediaContainer.innerHTML = `
-        <div class="lightbox-img-wrapper" style="width: 1000px; height: 560px; max-width: 100%; display: flex; align-items: center; justify-content: center; position: relative;">
-          <img src="${images[0]}" style="max-width: 100%; max-height: 60vh; object-fit: contain; border-radius: 4px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div class="lightbox-img-fallback" style="display: none; width: 100%; height: 100%; min-height: 350px; align-items: center; justify-content: center; background: linear-gradient(135deg, #1c1c1c 0%, #0d0d0d 100%); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; color: var(--accent); font-family: var(--font-display); font-size: 5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">
+        <div class="lightbox-img-wrapper" style="width: 100%; height: 100%; min-height: 480px; display: flex; align-items: center; justify-content: center; position: relative;">
+          <img src="${images[0]}" style="width: 100%; height: 100%; max-height: 70vh; object-fit: contain; border-radius: 12px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="lightbox-img-fallback" style="display: none; width: 100%; height: 100%; min-height: 480px; align-items: center; justify-content: center; background: linear-gradient(135deg, #1c1c1c 0%, #0d0d0d 100%); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; color: var(--accent); font-family: var(--font-display); font-size: 5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">
             ${project.title.substring(0, 2)}
           </div>
         </div>
@@ -351,12 +372,15 @@ function openMediaLightbox(project) {
       let buttonText = 'Visit Project Link';
       if (project.videoUrl) {
         const isYoutube = project.videoUrl.includes('youtube.com') || project.videoUrl.includes('youtu.be');
+        const isInstagram = project.videoUrl.includes('instagram.com');
         if (isYoutube) {
           const isChannel = project.videoUrl.includes('/channel/') || 
                             project.videoUrl.includes('/c/') || 
                             project.videoUrl.includes('/user/') || 
                             project.videoUrl.includes('@');
           buttonText = isChannel ? 'Visit YouTube Channel' : 'Watch on YouTube';
+        } else if (isInstagram) {
+          buttonText = 'Watch on Instagram';
         } else {
           buttonText = 'Watch Video';
         }
@@ -365,13 +389,8 @@ function openMediaLightbox(project) {
       }
 
       actionWrap.innerHTML = `
-        <a href="${cleanUrl}" target="_blank" class="btn-primary" style="text-decoration: none; padding: 0.8rem 2rem; border-radius: 2rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;">
+        <a href="${cleanUrl}" target="_blank" class="btn-lightbox-action">
           <span>${buttonText}</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left: 2px;">
-            <line x1="7" y1="17" x2="17" y2="7"></line>
-            <polyline points="7 7 17 7 17 17"></polyline>
-          </svg>
-          <span class="btn-ripple"></span>
         </a>
       `;
     }
@@ -418,7 +437,7 @@ function openMediaLightbox(project) {
 function getYoutubeEmbedUrl(url) {
   if (!url) return '';
   let videoId = '';
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
   const match = url.match(regExp);
   if (match && match[2].length === 11) {
     videoId = match[2];
@@ -511,4 +530,19 @@ function resolveProjectThumbnail(project) {
     return '';
   }
   return thumb;
+}
+
+function getInstagramEmbedUrl(url) {
+  if (!url) return '';
+  let cleanUrl = url.trim();
+  const match = cleanUrl.match(/instagram\.com\/(?:p|reel|reels)\/([^/?#]+)/i);
+  if (match && match[1]) {
+    return `https://www.instagram.com/p/${match[1]}/embed/`;
+  }
+  if (cleanUrl.includes('instagram.com')) {
+    let normalized = cleanUrl;
+    if (!normalized.endsWith('/')) normalized += '/';
+    return normalized + 'embed/';
+  }
+  return cleanUrl;
 }

@@ -65,12 +65,49 @@
           
           <div class="about-grid">
             <div class="about-text-col">
-              <p class="lead-paragraph fade-in-up" id="about-lead-text">
-                We don’t believe in templated aesthetics. Every project we undertake is handcrafted from the ground up, blending cutting-edge cinematic videography, high-fashion editorial photography, and premium digital design.
-              </p>
-              <p class="body-paragraph fade-in-up" id="about-body-text">
-                Based globally and working with forward-thinking visionaries, we elevate brands into experiences. Our design is minimal; our execution is loud. We live at the intersection of aesthetic brilliance and flawless motion design.
-              </p>
+              <!-- Premium Accordion FAQ Dropdown instead of flat paragraphs -->
+              <div class="about-accordion" style="margin-bottom: 2.5rem; display: flex; flex-direction: column; gap: 0.8rem; text-align: left;">
+                
+                <!-- Accordion Item 1 -->
+                <div class="about-accordion-item active" style="border: 1px solid rgba(18, 18, 18, 0.08); border-radius: 0.8rem; overflow: hidden; background: rgba(18, 18, 18, 0.02); transition: all 0.3s ease;">
+                  <button type="button" class="about-accordion-trigger" style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 1.4rem; background: transparent; border: none; cursor: pointer; text-align: left; font-family: var(--font-sans); font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">
+                    <span>Our Creative Philosophy</span>
+                    <span class="about-accordion-icon" style="font-size: 0.8rem; transition: transform 0.3s ease; transform: rotate(180deg); color: var(--accent);">&#9660;</span>
+                  </button>
+                  <div class="about-accordion-content" style="padding: 0 1.4rem 1.2rem 1.4rem; max-height: 200px; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease;">
+                    <p style="margin: 0; font-size: 0.92rem; line-height: 1.6; color: var(--text-secondary); font-family: var(--font-sans);">
+                      We don’t believe in templated aesthetics. Every project we undertake is handcrafted from the ground up, blending cutting-edge cinematic videography, high-fashion editorial photography, and premium digital design.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Accordion Item 2 -->
+                <div class="about-accordion-item" style="border: 1px solid rgba(18, 18, 18, 0.08); border-radius: 0.8rem; overflow: hidden; background: rgba(18, 18, 18, 0.02); transition: all 0.3s ease;">
+                  <button type="button" class="about-accordion-trigger" style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 1.4rem; background: transparent; border: none; cursor: pointer; text-align: left; font-family: var(--font-sans); font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">
+                    <span>Elevating Visual Experiences</span>
+                    <span class="about-accordion-icon" style="font-size: 0.8rem; transition: transform 0.3s ease; color: var(--accent);">&#9660;</span>
+                  </button>
+                  <div class="about-accordion-content" style="padding: 0 1.4rem 0 1.4rem; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease;">
+                    <p style="margin: 0; font-size: 0.92rem; line-height: 1.6; color: var(--text-secondary); font-family: var(--font-sans);">
+                      Based globally and working with forward-thinking visionaries, we elevate brands into experiences. Our design is minimal; our execution is loud. We live at the intersection of aesthetic brilliance and flawless motion design.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Accordion Item 3 -->
+                <div class="about-accordion-item" style="border: 1px solid rgba(18, 18, 18, 0.08); border-radius: 0.8rem; overflow: hidden; background: rgba(18, 18, 18, 0.02); transition: all 0.3s ease;">
+                  <button type="button" class="about-accordion-trigger" style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 1.4rem; background: transparent; border: none; cursor: pointer; text-align: left; font-family: var(--font-sans); font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">
+                    <span>Handcrafted & Tailored Approach</span>
+                    <span class="about-accordion-icon" style="font-size: 0.8rem; transition: transform 0.3s ease; color: var(--accent);">&#9660;</span>
+                  </button>
+                  <div class="about-accordion-content" style="padding: 0 1.4rem 0 1.4rem; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease;">
+                    <p style="margin: 0; font-size: 0.92rem; line-height: 1.6; color: var(--text-secondary); font-family: var(--font-sans);">
+                      We bring a meticulous, tailor-made workflow to every production. From concept storyboarding to high-end post-production color grading, we ensure every frame aligns with your brand's luxury identity.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
               
               <!-- Stats grid -->
               <div class="stats-grid">
@@ -103,7 +140,21 @@
         </div>
       </section>
 
-      <!-- 3. VISION & MISSION CARD -->
+      <!-- 3. SERVICES CAPABILITIES CARD -->
+      <section id="services" class="services-section scroll-section section-card-wrapper">
+        <div class="services-container">
+          <div class="services-header animate-header">
+            <span class="section-subtitle" id="services-subtitle-text">OUR CAPABILITIES</span>
+            <h2 class="section-title" id="services-title-text">Handcrafted Services.</h2>
+          </div>
+          
+          <div class="services-list" id="services-list-container">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. VISION & MISSION CARD -->
       <section class="vision-mission-section scroll-section section-card-wrapper" style="background-color: var(--bg-secondary);">
         <div class="about-container">
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 4rem;">
@@ -121,20 +172,6 @@
                 We refuse automated templates and cheap assets. From specialized sensor calibrations and cinema captures to writing high-performance WebGL codebases, we ensure everything matches a pristine, bespoke, handcrafted standard.
               </p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 4. SERVICES CAPABILITIES CARD -->
-      <section id="services" class="services-section scroll-section section-card-wrapper">
-        <div class="services-container">
-          <div class="services-header animate-header">
-            <span class="section-subtitle" id="services-subtitle-text">OUR CAPABILITIES</span>
-            <h2 class="section-title" id="services-title-text">Handcrafted Services.</h2>
-          </div>
-          
-          <div class="services-list" id="services-list-container">
-            <!-- Dynamically populated via JS -->
           </div>
         </div>
       </section>
@@ -489,16 +526,21 @@
             <h2 class="section-title">Featured Creative Pieces.</h2>
           </div>
 
-          <!-- Featured Projects Grid -->
-          <div class="portfolio-grid" id="featured-portfolio-grid">
-            <!-- Dynamically populated via JS -->
+          <!-- Featured Projects Slider Wrapper -->
+          <div class="featured-slider-wrapper" id="featured-slider-wrapper">
+            <div class="featured-slider-container" id="featured-portfolio-grid">
+              <!-- Dynamically populated via JS -->
+            </div>
           </div>
 
           <!-- Redirect to Full Portfolio Page -->
-          <div class="load-more-container" style="display: flex; justify-content: center; margin-top: 5rem;">
-            <a href="/portfolio.html" class="btn-primary">
+          <div class="load-more-container" style="display: flex; justify-content: center; margin-top: 4rem;">
+            <a href="/portfolio.html" class="btn-view-portfolio">
               <span>View Full Portfolio</span>
-              <span class="btn-ripple"></span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left: 6px;">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
             </a>
           </div>
         </div>
