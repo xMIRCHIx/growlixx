@@ -4288,26 +4288,26 @@ body.lightbox-active {
 
 @media (max-width: 768px) {
   .portfolio-archive-section {
-    padding-top: 4.5rem !important;
-    padding-bottom: 2.5rem !important;
-    padding-left: 1.5rem !important;
-    padding-right: 1.5rem !important;
+    padding-top: 3.5rem !important; /* Reduced padding-top to bring header up */
+    padding-bottom: 2rem !important;
+    padding-left: 1.2rem !important;
+    padding-right: 1.2rem !important;
   }
 
   .archive-main-title {
     font-size: 2rem !important; /* Smaller size to save layout space */
-    margin-bottom: 0.2rem !important;
+    margin-bottom: 0.1rem !important;
   }
 
   .archive-tagline {
     font-size: 0.68rem !important;
     letter-spacing: 0.08em !important;
-    margin-bottom: 1.2rem !important; /* Compact tagline spacing */
+    margin-bottom: 0.8rem !important; /* Even more compact tagline spacing */
   }
 
   .filter-controls-container {
-    gap: 1rem !important;
-    margin-bottom: 1.5rem !important;
+    gap: 0.8rem !important;
+    margin-bottom: 1.2rem !important; /* Brought search bar closer to grid */
     position: relative !important;
     z-index: 10050 !important;
     overflow: visible !important; /* Force visible overflow to prevent clipping of absolute dropdown */
@@ -4331,6 +4331,13 @@ body.lightbox-active {
   
   #portfolio-filter-pills {
     display: none !important; /* Hide horizontal scroll pills row on mobile */
+  }
+
+  /* Force single-column stacking layout on phone to make cards/videos much larger */
+  .portfolio-grid, .archive-grid {
+    grid-template-columns: 1fr !important;
+    column-gap: 0 !important;
+    row-gap: 1.6rem !important;
   }
 }
 
