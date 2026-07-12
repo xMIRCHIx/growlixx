@@ -4287,25 +4287,38 @@ body.lightbox-active {
 
 @media (max-width: 768px) {
   .portfolio-archive-section {
-    padding-top: 6rem !important;
-    padding-bottom: 4rem !important;
+    padding-top: 4.5rem !important;
+    padding-bottom: 2.5rem !important;
     padding-left: 1.5rem !important;
     padding-right: 1.5rem !important;
   }
 
   .archive-main-title {
-    font-size: 2.2rem !important; /* Prevent ugly wrapping on small screens */
-    margin-bottom: 0.4rem;
+    font-size: 2rem !important; /* Smaller size to save layout space */
+    margin-bottom: 0.2rem !important;
   }
 
   .archive-tagline {
-    font-size: 0.72rem !important;
-    letter-spacing: 0.1em !important;
-    margin-bottom: 2rem !important;
+    font-size: 0.68rem !important;
+    letter-spacing: 0.08em !important;
+    margin-bottom: 1.2rem !important; /* Compact tagline spacing */
+  }
+
+  .filter-controls-container {
+    gap: 1rem !important;
+    margin-bottom: 1.5rem !important;
+    position: relative !important;
+    z-index: 10050 !important;
   }
 
   .portfolio-filter-mobile-wrapper {
     display: block !important;
+    position: relative !important;
+    z-index: 10100 !important; /* Forces dropdown stack order above grid cards */
+  }
+
+  #mobile-filter-dropdown {
+    z-index: 10200 !important; /* Highest layer to prevent getting covered */
   }
   
   #portfolio-filter-pills {
