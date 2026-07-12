@@ -9,8 +9,9 @@ let activeScrollTriggers = [];
 const CATEGORY_PRIORITY = [
   "All",
   "Video Editing",
-  "Videography",
+  "Photography & Videography",
   "Photography",
+  "Videography",
   "Graphic Design",
   "Brand Identity",
   "Social Media Marketing",
@@ -34,20 +35,8 @@ async function renderPortfolioContent() {
   const list = await db.getProjects();
   allProjects = list.filter(p => p.status === 'published');
 
-  // Determine available categories
-  const projectCategories = [...new Set(allProjects.map(p => p.category))];
-  const orderedCategories = [];
-  
-  CATEGORY_PRIORITY.forEach(cat => {
-    if (cat !== 'All' && projectCategories.includes(cat)) {
-      orderedCategories.push(cat);
-    }
-  });
-  projectCategories.forEach(cat => {
-    if (cat !== 'All' && !orderedCategories.includes(cat)) {
-      orderedCategories.push(cat);
-    }
-  });
+  // Predefined Categories (Always show all of them as filter pills)
+  const orderedCategories = CATEGORY_PRIORITY;
 
   // Read requested category or filter query parameter from URL robustly
   const urlParams = new URLSearchParams(window.location.search);
@@ -56,15 +45,26 @@ async function renderPortfolioContent() {
   let matchedCategory = '';
   if (urlCategory) {
     const cleanUrlCat = urlCategory.trim().toLowerCase().replace(/[-_]/g, ' ');
-    matchedCategory = projectCategories.find(cat => cat.trim().toLowerCase().replace(/[-_]/g, ' ') === cleanUrlCat);
+    // Match against priority list
+    matchedCategory = orderedCategories.find(cat => cat.trim().toLowerCase().replace(/[-_]/g, ' ') === cleanUrlCat);
+    
+    // Also try fuzzy matches (e.g. "branding" matching "Brand Identity" or "social-media" matching "Social Media Marketing")
+    if (!matchedCategory) {
+      matchedCategory = orderedCategories.find(cat => {
+        const catLower = cat.trim().toLowerCase();
+        return catLower.includes(cleanUrlCat) || cleanUrlCat.includes(catLower) ||
+               (cleanUrlCat === 'branding' && catLower === 'brand identity') ||
+               (cleanUrlCat === 'web dev' && catLower === 'website development') ||
+               (cleanUrlCat === 'photography' && catLower === 'photography & videography') ||
+               (cleanUrlCat === 'videography' && catLower === 'photography & videography');
+      });
+    }
   }
 
   if (matchedCategory) {
     activeFilter = matchedCategory;
-  } else if (orderedCategories.length > 0) {
-    activeFilter = orderedCategories[0];
   } else {
-    activeFilter = '';
+    activeFilter = "All"; // Default to show all
   }
 
   // Render Filters
@@ -107,10 +107,14 @@ function renderFilters(orderedCategories) {
 function applyFilterAndSearch(animate = true) {
   // Filter by category
   let temp = allProjects;
-  if (activeFilter) {
-    temp = temp.filter(p => p.category === activeFilter);
-  } else {
-    temp = [];
+  if (activeFilter && activeFilter !== 'All') {
+    temp = temp.filter(p => {
+      const pCat = (p.category || '').trim().toLowerCase();
+      const fCat = activeFilter.trim().toLowerCase();
+      return pCat === fCat || 
+             (fCat === 'brand identity' && pCat === 'branding') ||
+             (fCat === 'photography & videography' && (pCat === 'photography' || pCat === 'videography'));
+    });
   }
 
   // Filter by search query
