@@ -4107,15 +4107,19 @@ body.lightbox-active {
   display: block;
 }
 
-.lightbox-iframe.media-16-9,
-.lightbox-video.media-16-9 {
+.lightbox-video {
+  max-height: 70vh;
+  object-fit: contain;
+}
+
+.lightbox-iframe.media-16-9 {
   aspect-ratio: 16/9;
   min-height: 480px;
 }
 
-.lightbox-iframe.media-9-16,
-.lightbox-video.media-9-16 {
+.lightbox-iframe.media-9-16 {
   aspect-ratio: 9/16;
+  width: 100%;
   max-width: 380px;
   max-height: 70vh;
   margin: 0 auto;
@@ -4141,15 +4145,17 @@ body.lightbox-active {
 }
 
 @media (max-width: 768px) {
-  .lightbox-iframe.media-16-9,
-  .lightbox-video.media-16-9 {
+  .lightbox-iframe.media-16-9 {
     min-height: auto; /* Let aspect ratio decide on phone viewport width! */
   }
-  .lightbox-iframe.media-9-16,
-  .lightbox-video.media-9-16 {
-    min-height: 380px;
+  .lightbox-iframe.media-9-16 {
+    width: 80%;
+    max-width: 290px;
+    min-height: 400px;
     max-height: 60vh;
-    width: auto;
+  }
+  .lightbox-video {
+    max-height: 60vh;
   }
   .lightbox-img-wrapper {
     min-height: 300px;

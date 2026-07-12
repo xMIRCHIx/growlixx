@@ -415,14 +415,7 @@ function openMediaLightbox(project) {
       const embed = getInstagramEmbedUrl(project.videoUrl);
       mediaContainer.innerHTML = `<iframe src="${embed}" frameborder="0" allowtransparency="true" allowfullscreen="true" class="lightbox-iframe media-9-16"></iframe>`;
     } else {
-      const isVertical = project.category && (
-        project.category.toLowerCase().includes('shorts') || 
-        project.category.toLowerCase().includes('reel') || 
-        project.category.toLowerCase().includes('instagram') ||
-        project.category.toLowerCase().includes('review')
-      );
-      const videoClass = isVertical ? 'lightbox-video media-9-16' : 'lightbox-video media-16-9';
-      mediaContainer.innerHTML = `<video src="${project.videoUrl}" controls autoplay class="${videoClass}"></video>`;
+      mediaContainer.innerHTML = `<video src="${project.videoUrl}" controls autoplay class="lightbox-video"></video>`;
     }
   } else {
     const resolvedThumb = resolveProjectThumbnail(project);
