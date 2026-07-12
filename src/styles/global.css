@@ -3818,51 +3818,122 @@ body.lightbox-active {
   background-color: var(--accent) !important;
 }
 
-/* Shorter mobile hero section / horizontal banner style */
+/* Mobile hero section layout styling overrides */
 @media (max-width: 768px) {
   .hero-section {
-    height: 48vh !important;
-    min-height: 380px !important;
-    padding-top: 5rem !important;
-    padding-bottom: 2rem !important;
+    height: 70vh !important;
+    min-height: 480px !important;
+    padding-top: 7rem !important;
+    padding-bottom: 6.5rem !important;
     display: flex !important;
     align-items: center !important;
+    justify-content: center !important;
   }
   
   .hero-container {
     padding-left: 1.5rem !important;
     padding-right: 1.5rem !important;
+    width: 100% !important;
   }
   
   .hero-content {
     max-width: 100% !important;
     text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   
   .hero-title {
-    font-size: 1.85rem !important;
-    margin-bottom: 0.75rem !important;
-    line-height: 1.25 !important;
+    font-size: 2.1rem !important;
+    margin-bottom: 0.85rem !important;
+    line-height: 1.35 !important;
   }
   
   .hero-tagline {
-    font-size: 0.7rem !important;
+    font-size: 0.75rem !important;
     letter-spacing: 0.15em !important;
-    margin-bottom: 0.4rem !important;
+    margin-bottom: 0.5rem !important;
   }
   
   .hero-description {
-    font-size: 0.82rem !important;
-    margin-bottom: 1.25rem !important;
-    line-height: 1.45 !important;
-    max-width: 90% !important;
+    font-size: 0.88rem !important;
+    line-height: 1.55 !important;
+    margin-bottom: 1.6rem !important;
+    max-width: 92% !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
 
   .hero-cta-wrap .btn-primary {
-    padding: 0.65rem 1.8rem !important;
-    font-size: 0.8rem !important;
+    padding: 0.75rem 2.2rem !important;
+    font-size: 0.82rem !important;
+  }
+}
+
+/* Animated Scroll Down Indicator */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 2.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.scroll-indicator-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.scroll-indicator-link:hover {
+  color: var(--accent);
+}
+
+.scroll-arrow-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(18, 18, 18, 0.35);
+  backdrop-filter: blur(4px);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  animation: bounceArrow 2s infinite ease-in-out;
+}
+
+.scroll-indicator-link:hover .scroll-arrow-box {
+  border-color: var(--accent);
+  background: rgba(184, 159, 116, 0.15);
+}
+
+.scroll-arrow {
+  width: 12px;
+  height: 12px;
+  color: inherit;
+}
+
+@keyframes bounceArrow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
   }
 }
 

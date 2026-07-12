@@ -450,7 +450,7 @@ function getYoutubeEmbedUrl(url) {
 
 function initHomeAnimations() {
   if (prefersReducedMotion) {
-    gsap.set(['.main-header', '.hero-tagline', '.hero-title', '.hero-description', '.hero-cta-wrap', '.hero-bg-img'], { opacity: 1, y: 0, scale: 1 });
+    gsap.set(['.main-header', '.hero-tagline', '.hero-title', '.hero-description', '.hero-cta-wrap', '.hero-bg-img', '.hero-scroll-indicator'], { opacity: 1, y: 0, scale: 1 });
     gsap.set('.fade-in-up, .lead-paragraph, .body-paragraph, .stats-grid, .service-card, .testimonials-carousel-wrapper', { opacity: 1, y: 0 });
     return;
   }
@@ -463,7 +463,8 @@ function initHomeAnimations() {
     .fromTo('.hero-tagline', { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, '-=0.9')
     .fromTo('.hero-title', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: 'power3.out' }, '-=0.75')
     .fromTo('.hero-description', { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' }, '-=0.65')
-    .fromTo('.hero-cta-wrap', { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, '-=0.6');
+    .fromTo('.hero-cta-wrap', { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, '-=0.6')
+    .fromTo('.hero-scroll-indicator', { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' }, '-=0.5');
 
   // 2. Scroll count trigger
   const statNumbers = document.querySelectorAll('.stat-number');
