@@ -122,17 +122,14 @@
       style="position: absolute; top: 1.5rem; right: 1.5rem; background: transparent; border: none; color: #ffffff; font-size: 3rem; line-height: 1; cursor: pointer; z-index: 10100; opacity: 0.7; transition: opacity 0.2s;"
       onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">&times;</button>
 
-    <div class="lightbox-content-container"
-      style="position: relative; max-width: 90%; max-height: 85%; width: 1200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 1rem;">
+    <div class="lightbox-content-container" style="position: relative;">
       <!-- Media Area -->
-      <div id="lightbox-media-container"
-        style="width: 100%; display: flex; justify-content: center; align-items: center; background: #000; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+      <div id="lightbox-media-container">
         <!-- Embedded dynamically -->
       </div>
 
       <!-- Info Area -->
-      <div id="lightbox-info-container"
-        style="color: #ffffff; text-align: center; font-family: var(--font-primary); width: 100%; max-width: 800px;">
+      <div id="lightbox-info-container">
         <span id="lightbox-category"
           style="font-size: 0.75rem; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; font-family: var(--font-sans); font-weight: 600;">CATEGORY</span>
         <h3 id="lightbox-title"
