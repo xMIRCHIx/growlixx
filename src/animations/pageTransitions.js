@@ -23,8 +23,9 @@ export function initPageTransitions() {
     document.body.appendChild(overlay);
   }
 
-  // Ensure pointer-events are active during animation block
+  // Ensure pointer-events are active and overlay is visible during entry animation
   overlay.style.pointerEvents = 'all';
+  overlay.style.display = 'block';
 
   // 1. Page Entry Transition (Reveal Content on Load)
   gsap.fromTo(overlay, 
@@ -35,6 +36,7 @@ export function initPageTransitions() {
       ease: 'power3.inOut',
       onComplete: () => {
         overlay.style.pointerEvents = 'none';
+        overlay.style.display = 'none'; // Absolutely prevent black screen
       }
     }
   );
@@ -61,6 +63,7 @@ export function initPageTransitions() {
     e.preventDefault();
 
     // Trigger page exit animation, then redirect
+    overlay.style.display = 'block'; // Make overlay visible before exit animation starts
     overlay.style.pointerEvents = 'all';
     gsap.fromTo(overlay,
       { yPercent: 100 },

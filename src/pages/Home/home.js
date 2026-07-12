@@ -407,24 +407,31 @@ function openMediaLightbox(project) {
       const embed = getYoutubeEmbedUrl(project.videoUrl);
       const isShorts = project.videoUrl.includes('/shorts/');
       if (isShorts) {
-        mediaContainer.innerHTML = `<iframe src="${embed}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width: 100%; height: 100%; min-height: 480px; max-height: 70vh; aspect-ratio: 9/16; border-radius: 12px; border: none; max-width: 380px; margin: 0 auto; background: #000;"></iframe>`;
+        mediaContainer.innerHTML = `<iframe src="${embed}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen class="lightbox-iframe media-9-16"></iframe>`;
       } else {
-        mediaContainer.innerHTML = `<iframe src="${embed}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width: 100%; height: 100%; min-height: 480px; aspect-ratio: 16/9; border-radius: 12px; border: none;"></iframe>`;
+        mediaContainer.innerHTML = `<iframe src="${embed}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen class="lightbox-iframe media-16-9"></iframe>`;
       }
     } else if (isInstagram) {
       const embed = getInstagramEmbedUrl(project.videoUrl);
-      mediaContainer.innerHTML = `<iframe src="${embed}" frameborder="0" allowtransparency="true" allowfullscreen="true" style="width: 100%; height: 100%; min-height: 480px; max-height: 70vh; aspect-ratio: 9/16; border-radius: 12px; border: none; max-width: 380px; margin: 0 auto; background: #000;"></iframe>`;
+      mediaContainer.innerHTML = `<iframe src="${embed}" frameborder="0" allowtransparency="true" allowfullscreen="true" class="lightbox-iframe media-9-16"></iframe>`;
     } else {
-      mediaContainer.innerHTML = `<video src="${project.videoUrl}" controls autoplay style="width: 100%; height: 100%; min-height: 480px; aspect-ratio: 16/9; object-fit: contain; border-radius: 12px;"></video>`;
+      const isVertical = project.category && (
+        project.category.toLowerCase().includes('shorts') || 
+        project.category.toLowerCase().includes('reel') || 
+        project.category.toLowerCase().includes('instagram') ||
+        project.category.toLowerCase().includes('review')
+      );
+      const videoClass = isVertical ? 'lightbox-video media-9-16' : 'lightbox-video media-16-9';
+      mediaContainer.innerHTML = `<video src="${project.videoUrl}" controls autoplay class="${videoClass}"></video>`;
     }
   } else {
     const resolvedThumb = resolveProjectThumbnail(project);
     const images = [resolvedThumb, ...(project.gallery || [])].filter(Boolean);
     if (images.length >= 1) {
       mediaContainer.innerHTML = `
-        <div class="lightbox-img-wrapper" style="width: 100%; height: 100%; min-height: 480px; display: flex; align-items: center; justify-content: center; position: relative;">
-          <img src="${images[0]}" style="width: 100%; height: 100%; max-height: 70vh; object-fit: contain; border-radius: 12px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div class="lightbox-img-fallback" style="display: none; width: 100%; height: 100%; min-height: 480px; align-items: center; justify-content: center; background: linear-gradient(135deg, #1c1c1c 0%, #0d0d0d 100%); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; color: var(--accent); font-family: var(--font-display); font-size: 5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">
+        <div class="lightbox-img-wrapper">
+          <img src="${images[0]}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="lightbox-img-fallback" style="display: none; width: 100%; height: 100%; min-height: 300px; align-items: center; justify-content: center; background: linear-gradient(135deg, #1c1c1c 0%, #0d0d0d 100%); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; color: var(--accent); font-family: var(--font-display); font-size: 5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">
             ${project.title.substring(0, 2)}
           </div>
         </div>
