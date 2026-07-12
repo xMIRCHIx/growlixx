@@ -2302,7 +2302,8 @@ img {
 .filter-pills {
   display: flex;
   gap: 0.8rem;
-  white-space: nowrap;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .filter-pill {
