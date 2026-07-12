@@ -98,6 +98,10 @@
                 <span class="nav-icon">📬</span>
                 <span class="nav-label">Inquiries</span>
               </button>
+              <button class="admin-nav-item" data-panel="ugc-manager">
+                <span class="nav-icon">🎬</span>
+                <span class="nav-label">UGC Reels</span>
+              </button>
               <button class="admin-nav-item" data-panel="settings">
                 <span class="nav-icon">🛠️</span>
                 <span class="nav-label">Settings</span>
@@ -747,6 +751,43 @@
                 </div>
               </div>
 
+              <!-- Tab Panel 5: UGC social proof Manager -->
+              <div class="admin-panel" id="panel-ugc-manager">
+                <div class="panel-header">
+                  <h2 class="panel-title">UGC Reels & Community Media</h2>
+                  <button class="btn-primary" id="btn-ugc-add">
+                    <span>Add UGC Reel</span>
+                  </button>
+                </div>
+                
+                <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                  <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                    Manage user generated content. Videos and images can be linked or uploaded, and display directly in the home reels gallery.
+                  </div>
+                </div>
+
+                <!-- UGC Table Wrap -->
+                <div class="admin-table-wrap">
+                  <table class="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Thumbnail</th>
+                        <th>Title</th>
+                        <th>Platform / Category</th>
+                        <th>Video Link / Source</th>
+                        <th style="text-align: right;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-ugc-table-body">
+                      <!-- Populated dynamically via admin.js -->
+                      <tr>
+                        <td colspan="5" style="text-align: center; padding: 3rem; color: #777;">Loading community reels...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -954,6 +995,63 @@
         </button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- UGC EDIT MODAL OVERLAY -->
+  <div class="admin-modal-overlay" id="ugc-modal" data-lenis-prevent style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(10, 10, 10, 0.85); z-index: 10000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none;">
+    <div class="admin-modal-box" style="background: #ffffff; border-radius: 1.25rem; width: 90%; max-width: 550px; overflow: hidden; box-shadow: var(--shadow-medium); color: var(--text-primary); font-family: var(--font-sans); display: flex; flex-direction: column;">
+      <div class="modal-header" style="padding: 1.2rem 1.8rem; border-bottom: 1px solid rgba(18,18,18,0.06); display: flex; justify-content: space-between; align-items: center;">
+        <h3 class="panel-title" id="ugc-modal-title-display" style="margin: 0; font-family: var(--font-display); font-size: 1.25rem; font-weight: 700;">Add UGC Community Reel</h3>
+        <button class="modal-close-btn" id="btn-ugc-modal-close" style="background: transparent; border: none; color: var(--text-secondary); font-size: 1.8rem; line-height: 1; cursor: pointer;">&times;</button>
+      </div>
+      
+      <div class="modal-body" style="padding: 1.5rem 1.8rem; overflow-y: auto; max-height: 70vh;">
+        <form id="ugc-modal-form" class="contact-form" style="display: flex; flex-direction: column; gap: 1.2rem;">
+          <input type="hidden" id="modal-ugc-id">
+          <input type="hidden" id="modal-ugc-thumbnail">
+          
+          <div class="form-group">
+            <label for="modal-ugc-title" style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">Video Title</label>
+            <input type="text" id="modal-ugc-title" required placeholder="e.g., Client Success Reel" style="width: 100%; padding: 0.85rem 1.15rem; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.12); outline: none;">
+          </div>
+
+          <div class="form-group">
+            <label for="modal-ugc-category" style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">Platform / Category</label>
+            <select id="modal-ugc-category" required style="width: 100%; padding: 0.85rem 1.15rem; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.12); background-color: #faf9f6; outline: none;">
+              <option value="Instagram Video">Instagram Video</option>
+              <option value="YouTube Shorts">YouTube Shorts</option>
+              <option value="YouTube Video">YouTube Video</option>
+              <option value="TikTok Reel">TikTok Reel</option>
+              <option value="Drone Reel">Drone Reel</option>
+              <option value="Client Review">Client Review</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-ugc-video-url" style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">Video Link / Source URL</label>
+            <input type="text" id="modal-ugc-video-url" placeholder="e.g. YouTube, Instagram or raw MP4 URL" style="width: 100%; padding: 0.85rem 1.15rem; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.12); outline: none;">
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <label for="modal-ugc-file-input" style="margin: 0; font-weight: 600; font-size: 0.85rem;">Or Upload Image / Custom Thumbnail</label>
+              <label class="btn-upload-label" style="height: 30px; padding: 0 0.8rem; font-size: 0.72rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                <span>+ Upload</span>
+                <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-ugc-thumbnail-display" style="display: none;">
+              </label>
+            </div>
+            <input type="text" id="modal-ugc-thumbnail-display" readonly placeholder="Upload a cover photo or will auto-capture YouTube cover" style="width: 100%; padding: 0.85rem 1.15rem; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.12); outline: none; background: #faf9f6;">
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer" style="padding: 1.2rem 1.8rem; border-top: 1px solid rgba(18,18,18,0.06); display: flex; justify-content: flex-end; gap: 0.8rem; background: #faf9f6;">
+        <button type="button" id="btn-ugc-modal-cancel" style="padding: 0.65rem 1.5rem; border-radius: 2rem; border: 1px solid rgba(18,18,18,0.15); background: transparent; color: var(--text-primary); font-size: 0.82rem; font-weight: 600; cursor: pointer;">Cancel</button>
+        <button type="button" id="btn-ugc-modal-save" class="btn-primary" style="padding: 0.65rem 1.8rem; border-radius: 2rem; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
+          <span>Save Item</span>
+        </button>
+      </div>
     </div>
   </div>
 

@@ -371,6 +371,47 @@ function saveRawQueries(queries) {
   localStorage.setItem('growlix_queries_db', JSON.stringify(queries));
 }
 
+const UGC_STORAGE_KEY = 'growlix_ugc_db';
+const DEFAULT_SEED_UGC = [
+  {
+    id: "ugc-1",
+    title: "Cinematic Reel",
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    thumbnail: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
+    category: "Instagram Video",
+    created_at: new Date().toISOString()
+  },
+  {
+    id: "ugc-2",
+    title: "Community Spotlight",
+    videoUrl: "https://www.youtube.com/shorts/3Dpyg2G6XbQ",
+    thumbnail: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80",
+    category: "YouTube Shorts",
+    created_at: new Date().toISOString()
+  },
+  {
+    id: "ugc-3",
+    title: "Drone Footage",
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    thumbnail: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+    category: "Drone Reel",
+    created_at: new Date().toISOString()
+  }
+];
+
+function loadRawUgc() {
+  const data = localStorage.getItem(UGC_STORAGE_KEY);
+  if (!data) {
+    localStorage.setItem(UGC_STORAGE_KEY, JSON.stringify(DEFAULT_SEED_UGC));
+    return DEFAULT_SEED_UGC;
+  }
+  try { return JSON.parse(data); } catch (e) { return DEFAULT_SEED_UGC; }
+}
+
+function saveRawUgc(ugcList) {
+  localStorage.setItem(UGC_STORAGE_KEY, JSON.stringify(ugcList));
+}
+
 // Active database status logger
 let isUsingSupabase = false;
 
@@ -571,6 +612,7 @@ export const db = {
     // Reset local cache
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(DEFAULT_SEED_PROJECTS));
     localStorage.setItem(LANDING_STORAGE_KEY, JSON.stringify(DEFAULT_LANDING_CONFIG));
+    localStorage.setItem(UGC_STORAGE_KEY, JSON.stringify(DEFAULT_SEED_UGC));
 
     try {
       // 1. Reset projects table in Supabase
@@ -596,6 +638,19 @@ export const db = {
         headers: HEADERS,
         body: JSON.stringify({ id: 1, data: DEFAULT_LANDING_CONFIG })
       });
+
+      // 3. Reset UGC table in Supabase
+      await fetch(`${SUPABASE_URL}/growlix_ugc?id=not.is.null`, {
+        method: 'DELETE',
+        headers: HEADERS
+      });
+      for (const ugc of DEFAULT_SEED_UGC) {
+        await fetch(`${SUPABASE_URL}/growlix_ugc`, {
+          method: 'POST',
+          headers: HEADERS,
+          body: JSON.stringify(ugc)
+        });
+      }
 
       isUsingSupabase = true;
       return { ok: true, message: 'Seeded online database successfully!' };
@@ -727,6 +782,73 @@ export const db = {
       }
       return false;
     }
+  },
+
+  async getUgcList() {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/growlix_ugc?select=*&order=created_at.desc`, {
+        method: 'GET',
+        headers: HEADERS
+      });
+      if (!res.ok) throw new Error(`Supabase UGC fetch failed: ${res.status}`);
+      const data = await res.json();
+      isUsingSupabase = true;
+      saveRawUgc(data);
+      return data;
+    } catch (e) {
+      console.warn("Supabase UGC fetch failed, falling back to LocalStorage:", e);
+      isUsingSupabase = false;
+      return loadRawUgc();
+    }
+  },
+
+  async createUgc(ugcData) {
+    const finalData = {
+      ...ugcData,
+      id: ugcData.id || String(Date.now()),
+      created_at: ugcData.created_at || new Date().toISOString()
+    };
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/growlix_ugc`, {
+        method: 'POST',
+        headers: HEADERS,
+        body: JSON.stringify(finalData)
+      });
+      if (!res.ok) throw new Error(`Supabase UGC write failed: ${res.status}`);
+      isUsingSupabase = true;
+    } catch (e) {
+      console.warn("Supabase UGC create failed, syncing to LocalStorage fallback:", e);
+      isUsingSupabase = false;
+    }
+
+    const list = loadRawUgc();
+    list.unshift(finalData);
+    saveRawUgc(list);
+    return finalData;
+  },
+
+  async deleteUgc(id) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/growlix_ugc?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: HEADERS
+      });
+      if (!res.ok) throw new Error(`Supabase UGC delete failed: ${res.status}`);
+      isUsingSupabase = true;
+    } catch (e) {
+      console.warn("Supabase UGC delete failed, syncing to LocalStorage fallback:", e);
+      isUsingSupabase = false;
+    }
+
+    const list = loadRawUgc();
+    const idx = list.findIndex(u => String(u.id) === String(id));
+    if (idx !== -1) {
+      list.splice(idx, 1);
+      saveRawUgc(list);
+      return true;
+    }
+    return false;
   },
 
   isDbOnline() {

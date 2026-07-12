@@ -229,6 +229,82 @@ async function renderHomeContent() {
   if (contactLocation) {
     contactLocation.textContent = config.contactLocation;
   }
+
+  // 7. UGC Social Proof rendering
+  const ugcGrid = document.getElementById('ugc-gallery-grid');
+  if (ugcGrid) {
+    const ugcList = await db.getUgcList();
+    if (ugcList.length === 0) {
+      ugcGrid.innerHTML = `
+        <div style="grid-column: span 12; text-align: center; padding: 4rem 2rem; color: rgba(18,18,18,0.4);">
+          <p class="font-accent">No community reels found.</p>
+        </div>
+      `;
+    } else {
+      ugcGrid.innerHTML = ugcList.map(ugc => {
+        const thumb = resolveUgcThumbnail(ugc);
+        const isVideo = !!ugc.videoUrl;
+        
+        return `
+          <div class="portfolio-item p-medium fade-in-up ugc-item" data-id="${ugc.id}" style="cursor: pointer; width: 280px !important;">
+            <div class="portfolio-img-container horizontal-thumb" style="height: 180px !important;">
+              <img src="${thumb}" alt="${ugc.title}" class="portfolio-img" onerror="this.src='/src/assets/hero_concept.png';">
+              ${isVideo ? `
+                <div class="play-icon-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 44px; height: 44px; border-radius: 50%; background: rgba(18,18,18,0.8); border: 1px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; z-index: 5; transition: background-color 0.3s ease;">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="color: var(--accent); margin-left: 2px;">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </div>
+              ` : ''}
+              <div class="portfolio-overlay">
+                <div class="portfolio-overlay-content">
+                  <span class="portfolio-cat">${(ugc.category || 'UGC').toUpperCase()}</span>
+                  <h3 class="portfolio-name">${ugc.title}</h3>
+                </div>
+              </div>
+            </div>
+            <div class="portfolio-details">
+              <span class="portfolio-meta">${(ugc.category || 'UGC').toUpperCase()}</span>
+              <h4 class="portfolio-card-title">${ugc.title}</h4>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Click listener for UGC lightbox
+      ugcGrid.querySelectorAll('.ugc-item').forEach(item => {
+        const ugcId = item.getAttribute('data-id');
+        const ugc = ugcList.find(u => String(u.id) === String(ugcId));
+        if (ugc) {
+          item.addEventListener('click', () => {
+            openMediaLightbox({
+              id: ugc.id,
+              title: ugc.title,
+              category: ugc.category || 'UGC Reels',
+              client: 'Growlix Community',
+              videoUrl: ugc.videoUrl || '',
+              coverImage: resolveUgcThumbnail(ugc),
+              detailedDescription: `Community submitted media featuring: ${ugc.title}. Handcrafted digital motion showcases and digital client testimonies.`,
+              technologies: ugc.category || 'UGC',
+              completionDate: ugc.created_at
+            });
+          });
+        }
+      });
+    }
+  }
+}
+
+function resolveUgcThumbnail(ugcItem) {
+  if (ugcItem.thumbnail) return ugcItem.thumbnail;
+  if (ugcItem.videoUrl) {
+    const ytReg = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
+    const match = ugcItem.videoUrl.match(ytReg);
+    if (match && match[2].length === 11) {
+      return `https://img.youtube.com/vi/${match[2]}/hqdefault.jpg`;
+    }
+  }
+  return '/src/assets/hero_concept.png';
 }
 
 function setupCardInteractions(container, projects) {
@@ -1166,6 +1242,100 @@ function initFeaturedSliderDrag() {
   startAutoplay();
 }
 
+function initUgcSliderDrag() {
+  const slider = document.getElementById('ugc-slider-wrapper');
+  if (!slider) return;
+
+  let isDown = false;
+  let isHovered = false;
+  let startX;
+  let scrollLeft;
+  let autoplaySpeed = 0.8; // pixels per frame
+  let animationId = null;
+  let resumeTimeout = null;
+
+  function startAutoplay() {
+    if (animationId) return;
+    
+    function step() {
+      if (!isDown && !isHovered) {
+        slider.scrollLeft += autoplaySpeed;
+        
+        // Loop back to start if reached the end
+        const maxScroll = slider.scrollWidth - slider.clientWidth;
+        if (slider.scrollLeft >= maxScroll - 1) {
+          slider.scrollLeft = 0;
+        }
+      }
+      animationId = requestAnimationFrame(step);
+    }
+    animationId = requestAnimationFrame(step);
+  }
+
+  function stopAutoplay() {
+    if (animationId) {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    }
+  }
+
+  function requestResume() {
+    if (resumeTimeout) clearTimeout(resumeTimeout);
+    resumeTimeout = setTimeout(() => {
+      startAutoplay();
+    }, 1500); // Resume autoplay after 1.5s of no interaction
+  }
+
+  slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    stopAutoplay();
+    slider.classList.add('active');
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+  });
+
+  slider.addEventListener('mouseleave', () => {
+    isDown = false;
+    isHovered = false;
+    slider.classList.remove('active');
+    requestResume();
+  });
+
+  slider.addEventListener('mouseup', () => {
+    isDown = false;
+    slider.classList.remove('active');
+    requestResume();
+  });
+
+  slider.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    slider.scrollLeft = scrollLeft - walk;
+  });
+
+  // Hover states to pause autoplay
+  slider.addEventListener('mouseenter', () => {
+    isHovered = true;
+    stopAutoplay();
+  });
+
+  // Touch events for mobile autoplay management
+  slider.addEventListener('touchstart', () => {
+    isDown = true;
+    stopAutoplay();
+  }, { passive: true });
+
+  slider.addEventListener('touchend', () => {
+    isDown = false;
+    requestResume();
+  }, { passive: true });
+
+  // Initial start
+  startAutoplay();
+}
+
 // Bootstrapping
 window.addEventListener('DOMContentLoaded', () => {
   initPage('home');
@@ -1176,6 +1346,7 @@ window.addEventListener('DOMContentLoaded', () => {
     initServicesModal();
     initAboutAccordion();
     initFeaturedSliderDrag();
+    initUgcSliderDrag();
   });
 });
 

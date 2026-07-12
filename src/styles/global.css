@@ -1979,6 +1979,34 @@ img {
   transform: translateY(0);
 }
 
+
+/* --- Vision & Mission Layout Section --- */
+.vision-mission-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4rem;
+}
+
+.vision-mission-card {
+  background: transparent;
+  padding: 0;
+  transition: transform 0.3s ease;
+}
+
+.vision-mission-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  color: var(--text-primary);
+}
+
+.vision-mission-desc {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
 /* ==========================================================================
    RESPONSIVE DESIGN MEDIA QUERIES
    ========================================================================== */
@@ -3903,6 +3931,38 @@ body.lightbox-active {
     order: 3 !important; /* Collapsible FAQ goes last */
     margin-bottom: 0 !important;
   }
+
+  /* Vision & Mission mobile overrides */
+  .vision-mission-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2.2rem !important;
+  }
+  
+  .vision-mission-card {
+    background: rgba(18, 18, 18, 0.02) !important;
+    border: 1px solid rgba(18, 18, 18, 0.06) !important;
+    border-radius: 1.2rem !important;
+    padding: 2.2rem 1.6rem !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
+  }
+  
+  .vision-mission-title {
+    font-size: 1.45rem !important;
+    margin-bottom: 0.8rem !important;
+    letter-spacing: -0.01em !important;
+  }
+  
+  .vision-mission-desc {
+    font-size: 0.86rem !important;
+    line-height: 1.65 !important;
+    color: var(--text-secondary) !important;
+    margin: 0 !important;
+  }
+  
+  .vision-mission-section {
+    padding-top: 4.5rem !important;
+    padding-bottom: 4.5rem !important;
+  }
 }
 
 /* Animated Scroll Down Indicator */
@@ -4019,5 +4079,15 @@ body.lightbox-active {
   .featured-slider-container .portfolio-img-container {
     height: 180px !important;
   }
+}
+
+/* UGC Play Icon Hover Effects */
+.portfolio-item:hover .play-icon-overlay {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+.portfolio-item:hover .play-icon-overlay svg {
+  color: #121212 !important;
 }
 

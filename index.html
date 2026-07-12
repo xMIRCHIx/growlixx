@@ -170,18 +170,18 @@
       <!-- 4. VISION & MISSION CARD -->
       <section class="vision-mission-section scroll-section section-card-wrapper" style="background-color: var(--bg-secondary);">
         <div class="about-container">
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 4rem;">
-            <div class="fade-in-up">
+          <div class="vision-mission-grid">
+            <div class="vision-mission-card fade-in-up">
               <span class="section-subtitle">THE VISION</span>
-              <h3 style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem;">Visual Timelessness</h3>
-              <p style="color: var(--text-secondary); line-height: 1.7;">
+              <h3 class="vision-mission-title">Visual Timelessness</h3>
+              <p class="vision-mission-desc">
                 To create graphics and motion media that stand out in a crowded digital marketplace. We make visual stories that hold luxury standards, ensuring our client partners maintain long-term equity and prestigious presence.
               </p>
             </div>
-            <div class="fade-in-up">
+            <div class="vision-mission-card fade-in-up">
               <span class="section-subtitle">THE MISSION</span>
-              <h3 style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem;">Handcrafted Standards</h3>
-              <p style="color: var(--text-secondary); line-height: 1.7;">
+              <h3 class="vision-mission-title">Handcrafted Standards</h3>
+              <p class="vision-mission-desc">
                 We refuse automated templates and cheap assets. From specialized sensor calibrations and cinema captures to writing high-performance WebGL codebases, we ensure everything matches a pristine, bespoke, handcrafted standard.
               </p>
             </div>
@@ -555,6 +555,23 @@
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
             </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. UGC SOCIAL PROOF SHOWCASE -->
+      <section id="ugc-gallery" class="work-section scroll-section section-card-wrapper" style="background-color: var(--bg-secondary);">
+        <div class="work-container">
+          <div class="work-header">
+            <span class="section-subtitle">COMMUNITY REELS</span>
+            <h2 class="section-title">UGC Social Proof.</h2>
+          </div>
+
+          <!-- UGC Cards Horizontal Slider Carousel -->
+          <div class="featured-slider-wrapper" id="ugc-slider-wrapper">
+            <div class="featured-slider-container" id="ugc-gallery-grid">
+              <!-- Dynamically populated via JS -->
+            </div>
           </div>
         </div>
       </section>

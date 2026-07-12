@@ -96,6 +96,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   if (resetDbBtn) resetDbBtn.addEventListener('click', handleResetDatabaseSeed);
   
+  // 9.2. Bind UGC CRUD triggers
+  const addUgcBtn = document.getElementById('btn-ugc-add');
+  const closeUgcModalBtn = document.getElementById('btn-ugc-modal-close');
+  const cancelUgcModalBtn = document.getElementById('btn-ugc-modal-cancel');
+  const saveUgcModalBtn = document.getElementById('btn-ugc-modal-save');
+
+  if (addUgcBtn) addUgcBtn.addEventListener('click', () => openUgcModal());
+  if (closeUgcModalBtn) closeUgcModalBtn.addEventListener('click', closeUgcModal);
+  if (cancelUgcModalBtn) cancelUgcModalBtn.addEventListener('click', closeUgcModal);
+  if (saveUgcModalBtn) saveUgcModalBtn.addEventListener('click', handleSaveUgc);
+  
   // 9.5. Bind Dashboard Quick Actions
   const quickAddBtn = document.getElementById('btn-quick-add');
   const quickSettingsBtn = document.getElementById('btn-quick-settings');
@@ -508,6 +519,9 @@ function initTabNavigation() {
       if (panelId === 'inquiries-manager') {
         loadInquiriesManager();
       }
+      if (panelId === 'ugc-manager') {
+        loadUgcManager();
+      }
     });
   });
 }
@@ -534,6 +548,9 @@ function switchToPanel(panelId) {
 
   if (panelId === 'inquiries-manager') {
     loadInquiriesManager();
+  }
+  if (panelId === 'ugc-manager') {
+    loadUgcManager();
   }
 }
 
@@ -1369,5 +1386,185 @@ async function cleanupBrokenPlaceholderAssets() {
     }
   } catch (e) {
     console.warn("Failed placeholder clean-up:", e);
+  }
+}
+
+// ==========================================================================
+// UGC REELS & COMMUNITY MEDIA MANAGER
+// ==========================================================================
+let loadedUgcList = [];
+
+async function loadUgcManager() {
+  await loadUgcTable();
+}
+
+async function loadUgcTable() {
+  const tableBody = document.getElementById('admin-ugc-table-body');
+  if (!tableBody) return;
+
+  tableBody.innerHTML = `
+    <tr>
+      <td colspan="5" style="text-align: center; padding: 3rem; color: #777;">Loading community reels...</td>
+    </tr>
+  `;
+
+  try {
+    loadedUgcList = await db.getUgcList();
+    renderUgcTable(loadedUgcList);
+  } catch (err) {
+    console.error("UGC load error:", err);
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 3rem; color: #d93838;">Failed to load UGC database: ${err.message}</td>
+      </tr>
+    `;
+  }
+}
+
+function renderUgcTable(items) {
+  const tableBody = document.getElementById('admin-ugc-table-body');
+  if (!tableBody) return;
+
+  if (items.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 3rem; color: #777;">No community reels found. Click "Add UGC Reel" to create one.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  tableBody.innerHTML = items.map(item => {
+    // Resolve thumbnail
+    let thumb = item.thumbnail || '';
+    if (!thumb && item.videoUrl) {
+      const ytMatch = item.videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+      if (ytMatch && ytMatch[1]) {
+        thumb = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+      }
+    }
+    if (!thumb) thumb = '/src/assets/hero_concept.png';
+
+    return `
+      <tr style="border-bottom: 1px solid rgba(18,18,18,0.05);">
+        <td style="padding: 1rem 0.5rem;">
+          <img src="${thumb}" alt="${item.title}" style="width: 70px; height: 44px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(18,18,18,0.08);">
+        </td>
+        <td style="padding: 1rem 0.5rem;">
+          <strong style="display: block; font-size: 0.95rem; color: var(--text-primary);">${item.title}</strong>
+        </td>
+        <td style="padding: 1rem 0.5rem;">
+          <span style="background: rgba(184, 159, 116, 0.1); color: var(--accent); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(184, 159, 116, 0.15);">${item.category || 'UGC'}</span>
+        </td>
+        <td style="padding: 1rem 0.5rem; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace; font-size: 0.8rem; color: var(--text-secondary);">
+          <a href="${item.videoUrl || '#'}" target="_blank" style="color: var(--accent); text-decoration: underline;">${item.videoUrl || 'N/A'}</a>
+        </td>
+        <td style="padding: 1rem 0.5rem; text-align: right;">
+          <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+            <button class="btn-delete-ugc" data-id="${item.id}" style="padding: 0.4rem 0.8rem; border-radius: 4px; background: rgba(217, 56, 56, 0.08); border: 1px solid rgba(217, 56, 56, 0.15); color: #d93838; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s;">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  // Bind deletes
+  tableBody.querySelectorAll('.btn-delete-ugc').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const ugcId = btn.getAttribute('data-id');
+      if (confirm("Are you sure you want to permanently delete this community reel?")) {
+        showToast("Deleting UGC item...");
+        try {
+          const success = await db.deleteUgc(ugcId);
+          if (success) {
+            showToast("UGC item deleted successfully!");
+            await loadUgcTable();
+          } else {
+            throw new Error("Delete operation failed");
+          }
+        } catch (err) {
+          console.error("Delete error:", err);
+          showToast(`Delete failed: ${err.message}`);
+        }
+      }
+    });
+  });
+}
+
+function openUgcModal(ugc = null) {
+  const modal = document.getElementById('ugc-modal');
+  const titleDisplay = document.getElementById('ugc-modal-title-display');
+  if (!modal) return;
+
+  // Reset form
+  document.getElementById('ugc-modal-form').reset();
+  document.getElementById('modal-ugc-id').value = '';
+  document.getElementById('modal-ugc-thumbnail').value = '';
+  document.getElementById('modal-ugc-thumbnail-display').value = '';
+
+  if (ugc) {
+    titleDisplay.textContent = 'Edit UGC Community Reel';
+    document.getElementById('modal-ugc-id').value = ugc.id;
+    document.getElementById('modal-ugc-title').value = ugc.title;
+    document.getElementById('modal-ugc-category').value = ugc.category || 'Instagram Video';
+    document.getElementById('modal-ugc-video-url').value = ugc.videoUrl || '';
+    document.getElementById('modal-ugc-thumbnail').value = ugc.thumbnail || '';
+    document.getElementById('modal-ugc-thumbnail-display').value = ugc.thumbnail || '';
+  } else {
+    titleDisplay.textContent = 'Add UGC Community Reel';
+  }
+
+  modal.style.display = 'flex';
+  modal.style.pointerEvents = 'auto';
+  gsap.fromTo(modal, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: 'power2.out' });
+}
+
+function closeUgcModal() {
+  const modal = document.getElementById('ugc-modal');
+  if (!modal) return;
+  
+  gsap.to(modal, {
+    opacity: 0,
+    duration: 0.3,
+    ease: 'power2.inOut',
+    onComplete: () => {
+      modal.style.display = 'none';
+      modal.style.pointerEvents = 'none';
+    }
+  });
+}
+
+async function handleSaveUgc() {
+  const title = document.getElementById('modal-ugc-title').value.trim();
+  const category = document.getElementById('modal-ugc-category').value;
+  const videoUrl = document.getElementById('modal-ugc-video-url').value.trim();
+  
+  // Custom uploaded thumbnail path
+  const customThumb = document.getElementById('modal-ugc-thumbnail-display').value.trim();
+
+  if (!title) {
+    showToast("Please enter a video title.");
+    return;
+  }
+
+  showToast("Saving UGC item...");
+  
+  const id = document.getElementById('modal-ugc-id').value || String(Date.now());
+  const ugcData = {
+    id,
+    title,
+    category,
+    videoUrl,
+    thumbnail: customThumb
+  };
+
+  try {
+    await db.createUgc(ugcData);
+    showToast("UGC item saved successfully!");
+    closeUgcModal();
+    await loadUgcTable();
+  } catch (err) {
+    console.error("Save error:", err);
+    showToast(`Save failed: ${err.message}`);
   }
 }
