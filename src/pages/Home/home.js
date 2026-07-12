@@ -571,29 +571,7 @@ function initHomeAnimations() {
   // 4. Testimonials Drag
   initTestimonialsDrag();
 
-  // 5. Horizontal Timeline Scroll
-  const scrollSection = document.getElementById('process-horizontal-scroll');
-  const scrollWrapper = document.getElementById('process-scroll-wrapper');
-  const scrollBar = document.getElementById('process-scroll-bar');
-  
-  if (scrollSection && scrollWrapper) {
-    const scrollDistance = scrollSection.scrollWidth - scrollWrapper.clientWidth;
-    
-    if (scrollDistance > 0) {
-      const st = ScrollTrigger.create({
-        trigger: '#process',
-        start: 'top top',
-        end: `+=${scrollDistance * 1.5}`,
-        pin: true,
-        scrub: 0.5,
-        onUpdate: (self) => {
-          gsap.set(scrollSection, { x: -scrollDistance * self.progress });
-          if (scrollBar) gsap.set(scrollBar, { width: `${self.progress * 100}%` });
-        }
-      });
-      activeScrollTriggers.push(st);
-    }
-  }
+
 
   // 6. General Scroll Fade Reveals
   const fadeElements = document.querySelectorAll('.fade-in-up, .lead-paragraph, .body-paragraph, .stats-grid, .service-card, .testimonials-carousel-wrapper, .portfolio-item, .section-card-wrapper');
@@ -635,30 +613,76 @@ function initTestimonialsDrag() {
   
   if (carouselWrapper && carousel) {
     let isDown = false;
+    let isHovered = false;
     let startX;
     let xTranslation = 0;
     let velocity = 0;
     let animationFrameId = null;
+    let autoplayId = null;
+    let resumeTimeout = null;
+    const autoplaySpeed = 0.6; // pixels per frame (leftwards)
 
     carousel.style.transform = 'translate3d(0px, 0, 0)';
 
-    carouselWrapper.addEventListener('mousedown', (e) => {
-      isDown = true;
-      carousel.classList.add('dragging');
-      startX = e.pageX - xTranslation;
-      cancelAnimationFrame(animationFrameId);
+    function startAutoplay() {
+      if (autoplayId) return;
+      
+      function step() {
+        if (!isDown && !isHovered) {
+          const minTranslate = -(carousel.scrollWidth - carouselWrapper.clientWidth);
+          if (minTranslate < 0) {
+            xTranslation -= autoplaySpeed;
+            if (xTranslation <= minTranslate) {
+              xTranslation = 0; // Wrap around to beginning
+            }
+            carousel.style.transform = `translate3d(${xTranslation}px, 0, 0)`;
+          }
+        }
+        autoplayId = requestAnimationFrame(step);
+      }
+      autoplayId = requestAnimationFrame(step);
+    }
+
+    function stopAutoplay() {
+      if (autoplayId) {
+        cancelAnimationFrame(autoplayId);
+        autoplayId = null;
+      }
+    }
+
+    function requestResume() {
+      if (resumeTimeout) clearTimeout(resumeTimeout);
+      resumeTimeout = setTimeout(() => {
+        startAutoplay();
+      }, 1500);
+    }
+
+    carouselWrapper.addEventListener('mouseenter', () => {
+      isHovered = true;
+      stopAutoplay();
     });
 
     carouselWrapper.addEventListener('mouseleave', () => {
       isDown = false;
+      isHovered = false;
       carousel.classList.remove('dragging');
       applyInertia();
+      requestResume();
+    });
+
+    carouselWrapper.addEventListener('mousedown', (e) => {
+      isDown = true;
+      stopAutoplay();
+      carousel.classList.add('dragging');
+      startX = e.pageX - xTranslation;
+      cancelAnimationFrame(animationFrameId);
     });
 
     carouselWrapper.addEventListener('mouseup', () => {
       isDown = false;
       carousel.classList.remove('dragging');
       applyInertia();
+      requestResume();
     });
 
     carouselWrapper.addEventListener('mousemove', (e) => {
@@ -685,16 +709,18 @@ function initTestimonialsDrag() {
     // Touch support
     carouselWrapper.addEventListener('touchstart', (e) => {
       isDown = true;
+      stopAutoplay();
       carousel.classList.add('dragging');
       startX = e.touches[0].pageX - xTranslation;
       cancelAnimationFrame(animationFrameId);
-    });
+    }, { passive: true });
 
     carouselWrapper.addEventListener('touchend', () => {
       isDown = false;
       carousel.classList.remove('dragging');
       applyInertia();
-    });
+      requestResume();
+    }, { passive: true });
 
     carouselWrapper.addEventListener('touchmove', (e) => {
       if (!isDown) return;
@@ -713,7 +739,7 @@ function initTestimonialsDrag() {
       velocity = targetTranslation - xTranslation;
       xTranslation = targetTranslation;
       carousel.style.transform = `translate3d(${xTranslation}px, 0, 0)`;
-    });
+    }, { passive: true });
 
     function applyInertia() {
       const friction = 0.95;
@@ -737,6 +763,8 @@ function initTestimonialsDrag() {
         animationFrameId = requestAnimationFrame(applyInertia);
       }
     }
+
+    startAutoplay();
   }
 }
 
