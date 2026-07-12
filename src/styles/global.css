@@ -4325,6 +4325,7 @@ body.lightbox-active {
     background: #ffffff !important;
     background-color: #ffffff !important;
     box-shadow: 0 10px 30px rgba(0,0,0,0.12) !important;
+    overflow-y: auto !important; /* Force native overflow scroll over lenis */
   }
   
   #portfolio-filter-pills {
