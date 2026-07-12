@@ -845,7 +845,7 @@ async function loadPortfolioTable() {
   tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 2rem;">Loading creative showcase list...</td></tr>`;
 
   loadedProjects = await db.getProjects();
-  renderProjectsToTable(loadedProjects);
+  filterProjects();
 }
 
 function renderProjectsToTable(list) {
@@ -863,7 +863,7 @@ function renderProjectsToTable(list) {
   tableBody.innerHTML = list.map(item => {
     const isFeatured = item.featured === true || item.featured === 'true';
     return `
-      <tr>
+      <tr draggable="true" data-id="${item.id}" class="draggable-project-row" style="cursor: move; transition: background-color 0.2s;">
         <td>
           <img src="${item.thumbnail || `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23121212'/><text x='50' y='55' fill='white' font-family='sans-serif' font-weight='bold' font-size='32' text-anchor='middle'>${item.title.substring(0,2).toUpperCase()}</text></svg>`}" class="table-thumb" alt="">
         </td>
@@ -906,6 +906,45 @@ function renderProjectsToTable(list) {
   tableBody.querySelectorAll('.featured-icon').forEach(star => {
     star.onclick = () => handleToggleFeatured(star.getAttribute('data-id'));
   });
+
+  // Bind HTML5 drag and drop events for sorting
+  let draggedId = null;
+  tableBody.querySelectorAll('.draggable-project-row').forEach(row => {
+    row.addEventListener('dragstart', (e) => {
+      draggedId = row.getAttribute('data-id');
+      row.style.opacity = '0.4';
+      e.dataTransfer.effectAllowed = 'move';
+    });
+
+    row.addEventListener('dragend', () => {
+      row.style.opacity = '1';
+      tableBody.querySelectorAll('.draggable-project-row').forEach(r => {
+        r.classList.remove('drag-over');
+      });
+    });
+
+    row.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+
+    row.addEventListener('dragenter', (e) => {
+      row.classList.add('drag-over');
+    });
+
+    row.addEventListener('dragleave', () => {
+      row.classList.remove('drag-over');
+    });
+
+    row.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      const targetId = row.getAttribute('data-id');
+      if (draggedId && draggedId !== targetId) {
+        await handleReorderProjects(draggedId, targetId);
+      }
+    });
+  });
 }
 
 function filterProjects() {
@@ -942,6 +981,55 @@ async function handleDeleteProject(id) {
     await updateDbStatusBadge();
     await loadPortfolioTable();
     showToast("Showcase project deleted.");
+  }
+}
+
+async function handleReorderProjects(draggedId, targetId) {
+  showToast("Updating showcase order...");
+
+  // Get active IDs currently rendered in the table (which matches current category filter)
+  const activeIds = Array.from(tableBody.querySelectorAll('.draggable-project-row')).map(row => row.getAttribute('data-id'));
+
+  const draggedIdx = activeIds.indexOf(draggedId);
+  const targetIdx = activeIds.indexOf(targetId);
+
+  if (draggedIdx !== -1 && targetIdx !== -1) {
+    // Reorder inside the active list
+    const [moved] = activeIds.splice(draggedIdx, 1);
+    activeIds.splice(targetIdx, 0, moved);
+  }
+
+  // Get other projects not in the active filtered view
+  const restProjects = loadedProjects.filter(p => !activeIds.includes(p.id));
+
+  // Map active projects in their new relative order
+  const activeProjectsOrdered = activeIds.map(id => loadedProjects.find(p => p.id === id)).filter(Boolean);
+
+  // Merge back
+  const mergedProjects = [...activeProjectsOrdered, ...restProjects];
+
+  // Re-assign displayOrder sequentially
+  mergedProjects.forEach((proj, idx) => {
+    proj.displayOrder = idx + 1;
+  });
+
+  // Temporarily update local cache state to avoid lag
+  loadedProjects = mergedProjects;
+
+  try {
+    // Write new displayOrder values to Supabase / LocalStorage
+    await Promise.all(activeProjectsOrdered.map(proj => 
+      db.updateProject(proj.id, { displayOrder: proj.displayOrder })
+    ));
+
+    await updateDbStatusBadge();
+
+    // Reload list
+    await loadPortfolioTable();
+    showToast("Showcase order updated successfully!");
+  } catch (err) {
+    console.error("Reorder save failed:", err);
+    showToast("Failed to save new project order.");
   }
 }
 

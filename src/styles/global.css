@@ -4406,3 +4406,9 @@ body.lightbox-active {
   }
 }
 
+/* Draggable admin table rows styling highlight */
+.draggable-project-row.drag-over {
+  background-color: rgba(184, 159, 116, 0.1) !important;
+  outline: 2px dashed var(--accent) !important;
+}
+
