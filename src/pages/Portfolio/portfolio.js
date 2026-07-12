@@ -323,14 +323,30 @@ function openMediaLightbox(project) {
     `;
   }
 
+  // Helper to detect vertical ratio for UGC shorts/reels
+  const isVertical = project.videoUrl && (
+    project.videoUrl.toLowerCase().includes('/shorts/') ||
+    project.videoUrl.toLowerCase().includes('instagram.com') ||
+    project.videoUrl.toLowerCase().includes('tiktok.com') ||
+    (project.category && (
+      project.category.toLowerCase().includes('shorts') ||
+      project.category.toLowerCase().includes('reel') ||
+      project.category.toLowerCase().includes('instagram') ||
+      project.category.toLowerCase().includes('review')
+    )) ||
+    (project.title && (
+      project.title.toLowerCase().includes('short') ||
+      project.title.toLowerCase().includes('reel')
+    ))
+  );
+
   // Handle Media Preview Rendering
   if (project.videoUrl) {
     const isYoutube = project.videoUrl.includes('youtube.com') || project.videoUrl.includes('youtu.be');
     const isInstagram = project.videoUrl.includes('instagram.com');
     if (isYoutube) {
       const embed = getYoutubeEmbedUrl(project.videoUrl);
-      const isShorts = project.videoUrl.includes('/shorts/');
-      if (isShorts) {
+      if (isVertical) {
         mediaContainer.innerHTML = `
           <div class="lightbox-media-wrapper">
             <iframe src="${embed}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen class="lightbox-iframe"></iframe>
@@ -351,12 +367,6 @@ function openMediaLightbox(project) {
         </div>
       `;
     } else {
-      const isVertical = project.category && (
-        project.category.toLowerCase().includes('shorts') || 
-        project.category.toLowerCase().includes('reel') || 
-        project.category.toLowerCase().includes('instagram') ||
-        project.category.toLowerCase().includes('review')
-      );
       const wrapperClass = isVertical ? 'lightbox-media-wrapper' : 'lightbox-media-wrapper landscape-media';
       mediaContainer.innerHTML = `
         <div class="${wrapperClass}">

@@ -4199,8 +4199,8 @@ body.lightbox-active {
   }
 
   .lightbox-media-wrapper {
-    max-width: 250px !important; /* Smaller phone scale width */
-    max-height: 440px !important; /* Limit vertical height overlay overflow */
+    max-width: 280px !important; /* Larger phone scale width for 9:16 layout */
+    max-height: 500px !important; /* Give vertical video proper height limits */
   }
 
   .lightbox-media-wrapper.landscape-media {
