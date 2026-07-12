@@ -23,19 +23,14 @@ async function renderHomeContent() {
   if (heroBgImg) heroBgImg.src = config.heroBgImg;
   if (heroTagline) heroTagline.textContent = config.heroTagline;
   if (heroTitle) {
-    let titleHtml = config.heroTitle || '';
-    if (titleHtml.toLowerCase().includes('grow') && titleHtml.toLowerCase().includes('your business')) {
-      titleHtml = titleHtml.replace(/<br\s*\/?>/gi, '\n');
-      const lines = titleHtml.split('\n');
-      const cleanLines = lines.map(l => l.trim()).filter(Boolean);
-      if (cleanLines.length === 2) {
-        heroTitle.innerHTML = `
-          <span class="hero-title-grow">${cleanLines[0]}</span>
-          <span class="hero-title-business">${cleanLines[1]}</span>
-        `;
-      } else {
-        heroTitle.innerHTML = config.heroTitle;
-      }
+    const titleHtml = config.heroTitle || '';
+    const hasGrow = /grow/i.test(titleHtml);
+    const hasBusiness = /your\s+business/i.test(titleHtml);
+    if (hasGrow && hasBusiness) {
+      heroTitle.innerHTML = `
+        <span class="hero-title-grow">GROW</span>
+        <span class="hero-title-business">YOUR BUSINESS</span>
+      `;
     } else {
       heroTitle.innerHTML = config.heroTitle;
     }
