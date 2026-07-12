@@ -3821,8 +3821,8 @@ body.lightbox-active {
 /* Mobile hero section layout styling overrides */
 @media (max-width: 768px) {
   .hero-section {
-    height: 70vh !important;
-    min-height: 480px !important;
+    height: 82vh !important;
+    min-height: 540px !important;
     padding-top: 7rem !important;
     padding-bottom: 6.5rem !important;
     display: flex !important;
@@ -3869,6 +3869,39 @@ body.lightbox-active {
   .hero-cta-wrap .btn-primary {
     padding: 0.75rem 2.2rem !important;
     font-size: 0.82rem !important;
+  }
+
+  /* About Us mobile order layout swap */
+  .about-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2.5rem !important;
+  }
+
+  .about-media-col {
+    order: 1 !important; /* Images at the very top */
+    margin-bottom: 1.5rem !important;
+  }
+
+  .about-text-col {
+    order: 2 !important; /* Text content below images */
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .about-header {
+    order: 1 !important; /* Title goes first in text container */
+    margin-bottom: 1.8rem !important;
+  }
+
+  .stats-grid {
+    order: 2 !important; /* Badges/Stats go second */
+    margin-bottom: 2.2rem !important;
+  }
+
+  .about-accordion {
+    order: 3 !important; /* Collapsible FAQ goes last */
+    margin-bottom: 0 !important;
   }
 }
 
