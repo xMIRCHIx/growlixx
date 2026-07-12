@@ -161,14 +161,14 @@ function renderFilters(orderedCategories) {
     triggerBtn.dataset.bound = "true";
     triggerBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const isVisible = dropdownContainer.style.display === 'block';
+      const isVisible = window.getComputedStyle(dropdownContainer).display === 'block';
       dropdownContainer.style.display = isVisible ? 'none' : 'block';
       if (arrowIcon) arrowIcon.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
     });
 
     // Close dropdown on click outside
     document.addEventListener('click', (e) => {
-      if (dropdownContainer && dropdownContainer.style.display === 'block') {
+      if (dropdownContainer && window.getComputedStyle(dropdownContainer).display === 'block') {
         if (!triggerBtn.contains(e.target) && !dropdownContainer.contains(e.target)) {
           dropdownContainer.style.display = 'none';
           if (arrowIcon) arrowIcon.style.transform = 'rotate(0deg)';

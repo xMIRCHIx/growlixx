@@ -4309,16 +4309,22 @@ body.lightbox-active {
     margin-bottom: 1.5rem !important;
     position: relative !important;
     z-index: 10050 !important;
+    overflow: visible !important; /* Force visible overflow to prevent clipping of absolute dropdown */
   }
 
   .portfolio-filter-mobile-wrapper {
     display: block !important;
     position: relative !important;
     z-index: 10100 !important; /* Forces dropdown stack order above grid cards */
+    overflow: visible !important;
   }
 
   #mobile-filter-dropdown {
+    display: none;
     z-index: 10200 !important; /* Highest layer to prevent getting covered */
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12) !important;
   }
   
   #portfolio-filter-pills {
