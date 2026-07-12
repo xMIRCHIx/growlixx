@@ -4333,11 +4333,36 @@ body.lightbox-active {
     display: none !important; /* Hide horizontal scroll pills row on mobile */
   }
 
-  /* Force single-column stacking layout on phone to make cards/videos much larger */
+  /* Force 2-column grid layout on phone with thin margins/padding */
   .portfolio-grid, .archive-grid {
-    grid-template-columns: 1fr !important;
-    column-gap: 0 !important;
-    row-gap: 1.6rem !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    column-gap: 0.8rem !important;
+    row-gap: 1.2rem !important;
+  }
+
+  .archive-grid .portfolio-item {
+    padding: 0.4rem !important; /* Thin margins / borders around the video card */
+    border-radius: 0.6rem !important; /* Elegant thin curved edges */
+  }
+
+  .archive-grid .portfolio-img-container {
+    margin-bottom: 0.5rem !important; /* Reduced margin under video/thumbnail */
+    border-radius: 0.4rem !important; /* Matching inner radius */
+  }
+
+  .portfolio-details {
+    padding: 0.3rem 0.2rem 0.1rem 0.2rem !important;
+  }
+
+  .portfolio-meta {
+    font-size: 0.62rem !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  .portfolio-card-title {
+    font-size: 0.78rem !important;
+    line-height: 1.2 !important;
+    margin-top: 0.15rem !important;
   }
 }
 
