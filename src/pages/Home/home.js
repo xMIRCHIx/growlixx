@@ -404,6 +404,7 @@ function openMediaLightbox(project) {
     project.videoUrl.toLowerCase().includes('/shorts/') ||
     project.videoUrl.toLowerCase().includes('instagram.com') ||
     project.videoUrl.toLowerCase().includes('tiktok.com') ||
+    project.videoUrl.toLowerCase().includes('#portrait') ||
     (project.category && (
       project.category.toLowerCase().includes('shorts') ||
       project.category.toLowerCase().includes('reel') ||

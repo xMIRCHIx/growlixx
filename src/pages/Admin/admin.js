@@ -1158,6 +1158,16 @@ async function handleSaveProject() {
   const selectedRatio = document.querySelector('input[name="video-aspect-ratio"]:checked');
   const videoLayout = selectedRatio ? selectedRatio.value : 'landscape';
 
+  let finalVideoUrl = videoUrl;
+  if (videoLayout === 'portrait' && finalVideoUrl) {
+    const ytMatch = finalVideoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+    if (ytMatch && ytMatch[1]) {
+      finalVideoUrl = `https://www.youtube.com/shorts/${ytMatch[1]}`;
+    } else if (!finalVideoUrl.includes('#portrait')) {
+      finalVideoUrl = finalVideoUrl + '#portrait';
+    }
+  }
+
   const projectData = {
     title,
     client: 'Creative Concept',
@@ -1168,7 +1178,7 @@ async function handleSaveProject() {
     displayOrder: 1,
     status: 'published',
     featured: false,
-    videoUrl,
+    videoUrl: finalVideoUrl,
     demoUrl,
     videoLayout,
     gallery: thumbnail ? [thumbnail] : [],
