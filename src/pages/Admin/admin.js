@@ -144,26 +144,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   const galleryUploader = document.getElementById('gallery-file-uploader');
   if (galleryUploader) {
     galleryUploader.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      showToast("Uploading gallery image...");
-      try {
-        const compressed = await compressImage(file);
-        const url = await db.uploadFile(compressed);
-        if (url) {
-          const galleryInput = document.getElementById('modal-project-gallery');
-          const gallery = JSON.parse(galleryInput.value || '[]');
-          gallery.push(url);
-          galleryInput.value = JSON.stringify(gallery);
-          renderGalleryPreviews(gallery);
-          showToast("Gallery image uploaded!");
-        } else {
-          showToast("Failed to upload image.");
+      const files = Array.from(e.target.files);
+      if (files.length === 0) return;
+      
+      showToast(`Uploading ${files.length} gallery image(s)...`);
+      
+      const galleryInput = document.getElementById('modal-project-gallery');
+      const gallery = JSON.parse(galleryInput.value || '[]');
+      
+      let uploadCount = 0;
+      for (const file of files) {
+        try {
+          const compressed = await compressImage(file);
+          const url = await db.uploadFile(compressed);
+          if (url) {
+            gallery.push(url);
+            uploadCount++;
+          }
+        } catch (err) {
+          console.error("Failed to upload file inside multiple list:", file.name, err);
         }
-      } catch (err) {
-        console.error("Gallery upload error:", err);
-        showToast("Upload failed: " + err.message);
       }
+      
+      galleryInput.value = JSON.stringify(gallery);
+      renderGalleryPreviews(gallery);
+      showToast(`Successfully uploaded ${uploadCount} of ${files.length} images!`);
       e.target.value = '';
     });
   }
