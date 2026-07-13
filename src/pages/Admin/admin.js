@@ -910,6 +910,12 @@ function renderProjectsToTable(list) {
   // Bind HTML5 drag and drop events for sorting
   let draggedId = null;
   tableBody.querySelectorAll('.draggable-project-row').forEach(row => {
+    // Disable dragging when mouse is over buttons or stars to allow clicks to register without starting a drag
+    row.querySelectorAll('button, .featured-icon').forEach(elem => {
+      elem.addEventListener('mouseenter', () => row.setAttribute('draggable', 'false'));
+      elem.addEventListener('mouseleave', () => row.setAttribute('draggable', 'true'));
+    });
+
     row.addEventListener('dragstart', (e) => {
       draggedId = row.getAttribute('data-id');
       row.style.opacity = '0.4';
