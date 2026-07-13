@@ -842,7 +842,7 @@ function getInputVal(id) {
  */
 async function loadPortfolioTable() {
   if (!tableBody) return;
-  tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 2rem;">Loading creative showcase list...</td></tr>`;
+  tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;">Loading creative showcase list...</td></tr>`;
 
   loadedProjects = await db.getProjects();
   filterProjects();
@@ -852,7 +852,7 @@ function renderProjectsToTable(list) {
   if (list.length === 0) {
     tableBody.innerHTML = `
       <tr>
-        <td colspan="6" style="text-align: center; padding: 3rem; color: #777;">
+        <td colspan="7" style="text-align: center; padding: 3rem; color: #777;">
           No showcase items. Click "Add Creative Piece" to add a new project.
         </td>
       </tr>
@@ -863,7 +863,10 @@ function renderProjectsToTable(list) {
   tableBody.innerHTML = list.map(item => {
     const isFeatured = item.featured === true || item.featured === 'true';
     return `
-      <tr draggable="true" data-id="${item.id}" class="draggable-project-row" style="cursor: move; transition: background-color 0.2s;">
+      <tr draggable="false" data-id="${item.id}" class="draggable-project-row" style="transition: background-color 0.2s;">
+        <td class="drag-handle" style="cursor: move; text-align: center; width: 40px; color: rgba(18,18,18,0.3); font-size: 1.1rem; user-select: none;">
+          ⠿
+        </td>
         <td>
           <img src="${item.thumbnail || `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23121212'/><text x='50' y='55' fill='white' font-family='sans-serif' font-weight='bold' font-size='32' text-anchor='middle'>${item.title.substring(0,2).toUpperCase()}</text></svg>`}" class="table-thumb" alt="" draggable="false">
         </td>
@@ -910,6 +913,18 @@ function renderProjectsToTable(list) {
   // Bind HTML5 drag and drop events for sorting
   let draggedId = null;
   tableBody.querySelectorAll('.draggable-project-row').forEach(row => {
+    const handle = row.querySelector('.drag-handle');
+    if (handle) {
+      handle.addEventListener('mousedown', () => {
+        row.setAttribute('draggable', 'true');
+      });
+      handle.addEventListener('mouseup', () => {
+        row.setAttribute('draggable', 'false');
+      });
+      handle.addEventListener('mouseleave', () => {
+        row.setAttribute('draggable', 'false');
+      });
+    }
 
     row.addEventListener('dragstart', (e) => {
       draggedId = row.getAttribute('data-id');
@@ -919,6 +934,7 @@ function renderProjectsToTable(list) {
 
     row.addEventListener('dragend', () => {
       row.style.opacity = '1';
+      row.setAttribute('draggable', 'false');
       tableBody.querySelectorAll('.draggable-project-row').forEach(r => {
         r.classList.remove('drag-over');
       });
