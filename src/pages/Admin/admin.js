@@ -1216,7 +1216,7 @@ async function handleSaveProject() {
       videoUrl = videoYoutubeUrlInput ? videoYoutubeUrlInput.value.trim() : '';
       thumbnail = videoYoutubeCoverInput ? videoYoutubeCoverInput.value.trim() : '';
       if (!thumbnail && videoUrl) {
-        const ytMatch = videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+        const ytMatch = videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|shorts\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
         if (ytMatch && ytMatch[1]) {
           thumbnail = `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
         }
@@ -1249,7 +1249,7 @@ async function handleSaveProject() {
 
   let finalVideoUrl = videoUrl;
   if (videoLayout === 'portrait' && finalVideoUrl) {
-    const ytMatch = finalVideoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+    const ytMatch = finalVideoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|shorts\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
     if (ytMatch && ytMatch[1]) {
       finalVideoUrl = `https://www.youtube.com/shorts/${ytMatch[1]}`;
     } else if (!finalVideoUrl.includes('#portrait')) {
@@ -1472,7 +1472,7 @@ async function cleanupBrokenPlaceholderAssets() {
       
       // 2. If it is empty, but has a videoUrl, generate the youtube thumbnail!
       if (!newThumb && proj.videoUrl) {
-        const ytMatch = proj.videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+        const ytMatch = proj.videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|shorts\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
         if (ytMatch && ytMatch[1]) {
           newThumb = `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
           needsUpdate = true;
@@ -1552,7 +1552,7 @@ function renderUgcTable(items) {
     // Resolve thumbnail
     let thumb = item.thumbnail || '';
     if (!thumb && item.videoUrl) {
-      const ytMatch = item.videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+      const ytMatch = item.videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|shorts\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
       if (ytMatch && ytMatch[1]) {
         thumb = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
       }
