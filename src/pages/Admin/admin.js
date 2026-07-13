@@ -990,10 +990,35 @@ async function handleToggleFeatured(id) {
 
 async function handleDeleteProject(id) {
   const proj = loadedProjects.find(p => String(p.id) === String(id));
-  if (!proj) return;
+  if (!proj) {
+    console.warn("Delete aborted: project not found in cache for ID:", id);
+    return;
+  }
 
   if (confirm(`Are you sure you want to permanently delete "${proj.title}"?`)) {
-    showToast("Deleting showcase project...");
+    showToast("Deleting project assets...");
+    try {
+      // 1. Delete thumbnail if it exists in storage bucket
+      if (proj.thumbnail && proj.thumbnail.includes('/growlix-media/')) {
+        await db.deleteFileFromStorage(proj.thumbnail);
+      }
+      // 2. Delete coverImage if it is different
+      if (proj.coverImage && proj.coverImage !== proj.thumbnail && proj.coverImage.includes('/growlix-media/')) {
+        await db.deleteFileFromStorage(proj.coverImage);
+      }
+      // 3. Delete gallery images if present
+      if (proj.gallery && Array.isArray(proj.gallery)) {
+        for (const img of proj.gallery) {
+          if (img && img.includes('/growlix-media/')) {
+            await db.deleteFileFromStorage(img);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("Storage asset cleanup encountered warnings:", e);
+    }
+
+    showToast("Deleting database record...");
     await db.deleteProject(id);
     await updateDbStatusBadge();
     await loadPortfolioTable();
@@ -1603,8 +1628,25 @@ function renderUgcTable(items) {
   tableBody.querySelectorAll('.btn-delete-ugc').forEach(btn => {
     btn.addEventListener('click', async () => {
       const ugcId = btn.getAttribute('data-id');
+      const item = loadedUgcList.find(u => String(u.id) === String(ugcId));
       if (confirm("Are you sure you want to permanently delete this community reel?")) {
-        showToast("Deleting UGC item...");
+        showToast("Deleting UGC assets...");
+        try {
+          if (item) {
+            // 1. Delete thumbnail if it exists in storage bucket
+            if (item.thumbnail && item.thumbnail.includes('/growlix-media/')) {
+              await db.deleteFileFromStorage(item.thumbnail);
+            }
+            // 2. Delete local video file if uploaded to storage bucket
+            if (item.videoUrl && item.videoUrl.includes('/growlix-media/')) {
+              await db.deleteFileFromStorage(item.videoUrl);
+            }
+          }
+        } catch (e) {
+          console.warn("UGC storage asset cleanup encountered warnings:", e);
+        }
+
+        showToast("Deleting UGC database record...");
         try {
           const success = await db.deleteUgc(ugcId);
           if (success) {

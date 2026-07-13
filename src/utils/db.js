@@ -851,6 +851,25 @@ export const db = {
     return false;
   },
 
+  async deleteFileFromStorage(fileUrl) {
+    if (!fileUrl) return;
+    const match = fileUrl.match(/\/growlix-media\/([^?#]+)/);
+    if (!match) return;
+    const fileName = match[1];
+    try {
+      await fetch(`${SUPABASE_URL}/storage/v1/object/growlix-media/${fileName}`, {
+        method: 'DELETE',
+        headers: {
+          'apikey': ANON_KEY,
+          'Authorization': `Bearer ${ANON_KEY}`
+        }
+      });
+      console.log("Deleted file from storage:", fileName);
+    } catch (e) {
+      console.warn("Failed to delete file from storage:", fileUrl, e);
+    }
+  },
+
   isDbOnline() {
     return isUsingSupabase;
   }
