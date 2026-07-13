@@ -857,7 +857,7 @@ export const db = {
     if (!match) return;
     const fileName = match[1];
     try {
-      await fetch(`${SUPABASE_URL}/storage/v1/object/growlix-media/${fileName}`, {
+      await fetch(`${SUPABASE_RAW_URL}/storage/v1/object/growlix-media/${fileName}`, {
         method: 'DELETE',
         headers: {
           'apikey': ANON_KEY,

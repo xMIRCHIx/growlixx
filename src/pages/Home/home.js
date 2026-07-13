@@ -465,8 +465,79 @@ function openMediaLightbox(project) {
     }
   } else {
     const resolvedThumb = resolveProjectThumbnail(project);
-    const images = [resolvedThumb, ...(project.gallery || [])].filter(Boolean);
-    if (images.length >= 1) {
+    // Remove duplicates from the gallery array if thumbnail is already present
+    let galleryList = Array.isArray(project.gallery) ? project.gallery : [];
+    const images = [resolvedThumb, ...galleryList].filter(Boolean).filter((val, idx, self) => self.indexOf(val) === idx);
+    
+    if (images.length > 1) {
+      // Render slide container HTML
+      let slideItems = images.map((img, idx) => `
+        <div class="lightbox-slide ${idx === 0 ? 'active' : ''}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: ${idx === 0 ? 1 : 0}; transition: opacity 0.5s ease; display: flex; align-items: center; justify-content: center; z-index: 1;">
+          <img src="${img}" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;">
+        </div>
+      `).join('');
+
+      let dots = images.map((_, idx) => `
+        <span class="lightbox-dot ${idx === 0 ? 'active' : ''}" data-index="${idx}" style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.35); cursor: pointer; transition: all 0.3s; ${idx === 0 ? 'background: #ffffff; transform: scale(1.2);' : ''}"></span>
+      `).join('');
+
+      mediaContainer.innerHTML = `
+        <div class="lightbox-media-wrapper landscape-media" style="position: relative; overflow: hidden; background: #080808; border-radius: 12px; height: 100%; width: 100%; min-height: 380px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;">
+          <div class="lightbox-slides-container" style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+            ${slideItems}
+          </div>
+          
+          <!-- Navigation Arrows -->
+          <button class="lightbox-arrow prev" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); border: none; color: #fff; width: 44px; height: 44px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.8)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">&lsaquo;</button>
+          <button class="lightbox-arrow next" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); border: none; color: #fff; width: 44px; height: 44px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.8)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">&rsaquo;</button>
+          
+          <!-- Dots Container -->
+          <div class="lightbox-dots-container" style="position: absolute; bottom: 1.2rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 10;">
+            ${dots}
+          </div>
+        </div>
+      `;
+
+      // Slideshow logic
+      let activeIndex = 0;
+      const slides = mediaContainer.querySelectorAll('.lightbox-slide');
+      const dotEls = mediaContainer.querySelectorAll('.lightbox-dot');
+      
+      const showSlide = (index) => {
+        slides.forEach((slide, idx) => {
+          slide.style.opacity = idx === index ? '1' : '0';
+          slide.style.zIndex = idx === index ? '2' : '1';
+        });
+        dotEls.forEach((dot, idx) => {
+          dot.style.background = idx === index ? '#ffffff' : 'rgba(255,255,255,0.35)';
+          dot.style.transform = idx === index ? 'scale(1.2)' : 'scale(1)';
+        });
+        activeIndex = index;
+      };
+
+      mediaContainer.querySelector('.lightbox-arrow.prev').addEventListener('click', (e) => {
+        e.stopPropagation();
+        let idx = activeIndex - 1;
+        if (idx < 0) idx = images.length - 1;
+        showSlide(idx);
+      });
+
+      mediaContainer.querySelector('.lightbox-arrow.next').addEventListener('click', (e) => {
+        e.stopPropagation();
+        let idx = activeIndex + 1;
+        if (idx >= images.length) idx = 0;
+        showSlide(idx);
+      });
+
+      dotEls.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = parseInt(dot.getAttribute('data-index'));
+          showSlide(idx);
+        });
+      });
+      
+    } else if (images.length === 1) {
       mediaContainer.innerHTML = `
         <div class="lightbox-media-wrapper landscape-media">
           <div class="lightbox-img-wrapper">

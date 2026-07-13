@@ -133,7 +133,71 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 10. Initialize dynamic image uploader buttons
   initImageUploaders();
+
+  // Expose global functions to window object to bypass drag click conflicts natively
+  window.handleDeleteProject = handleDeleteProject;
+  window.openProjectModal = openProjectModal;
+  window.handleToggleFeatured = handleToggleFeatured;
+  window.handleDeleteUgc = handleDeleteUgc;
+
+  // Initialize Gallery Upload handler
+  const galleryUploader = document.getElementById('gallery-file-uploader');
+  if (galleryUploader) {
+    galleryUploader.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      showToast("Uploading gallery image...");
+      try {
+        const compressed = await compressImage(file);
+        const url = await db.uploadFile(compressed);
+        if (url) {
+          const galleryInput = document.getElementById('modal-project-gallery');
+          const gallery = JSON.parse(galleryInput.value || '[]');
+          gallery.push(url);
+          galleryInput.value = JSON.stringify(gallery);
+          renderGalleryPreviews(gallery);
+          showToast("Gallery image uploaded!");
+        } else {
+          showToast("Failed to upload image.");
+        }
+      } catch (err) {
+        console.error("Gallery upload error:", err);
+        showToast("Upload failed: " + err.message);
+      }
+      e.target.value = '';
+    });
+  }
 });
+
+function renderGalleryPreviews(urls) {
+  const container = document.getElementById('gallery-preview-container');
+  if (!container) return;
+  if (!urls || urls.length === 0) {
+    container.innerHTML = `<span style="color: #999; font-size: 0.85rem; padding: 0.5rem 0;">No gallery images uploaded yet.</span>`;
+    return;
+  }
+
+  container.innerHTML = urls.map((url, idx) => `
+    <div style="position: relative; width: 68px; height: 68px; border-radius: 6px; border: 1px solid rgba(18,18,18,0.1); overflow: hidden; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.04);">
+      <img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">
+      <button type="button" onclick="window.removeGalleryPhoto(${idx})" style="position: absolute; top: 2px; right: 2px; background: rgba(217, 56, 56, 0.9); color: #fff; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; line-height: 1;">&times;</button>
+    </div>
+  `).join('');
+}
+
+window.removeGalleryPhoto = async (index) => {
+  const galleryInput = document.getElementById('modal-project-gallery');
+  if (!galleryInput) return;
+  const gallery = JSON.parse(galleryInput.value || '[]');
+  const removedUrl = gallery[index];
+  gallery.splice(index, 1);
+  galleryInput.value = JSON.stringify(gallery);
+  renderGalleryPreviews(gallery);
+
+  if (removedUrl && removedUrl.includes('/growlix-media/')) {
+    await db.deleteFileFromStorage(removedUrl);
+  }
+};
 
 /**
  * Compress images client-side using canvas scaling
@@ -876,7 +940,7 @@ function renderProjectsToTable(list) {
         </td>
         <td><span class="status-badge draft">${item.category}</span></td>
         <td>
-          <span class="featured-icon" draggable="false" style="cursor: pointer; user-select: none;" data-id="${item.id}">
+          <span class="featured-icon" onclick="window.handleToggleFeatured('${item.id}')" draggable="false" style="cursor: pointer; user-select: none;" data-id="${item.id}">
             ${isFeatured ? '★' : '☆'}
           </span>
         </td>
@@ -886,29 +950,16 @@ function renderProjectsToTable(list) {
           </span>
         </td>
         <td style="text-align: right; white-space: nowrap;">
-          <button class="btn-primary edit-action-btn" draggable="false" data-id="${item.id}" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; border-radius: 4px; display: inline-flex; cursor: pointer;">
+          <button class="btn-primary edit-action-btn" onclick="window.openProjectModal('${item.id}')" draggable="false" data-id="${item.id}" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; border-radius: 4px; display: inline-flex; cursor: pointer;">
             <span style="pointer-events: none;">Edit</span>
           </button>
-          <button class="btn-magnetic delete-action-btn" draggable="false" data-id="${item.id}" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid rgba(217, 56, 56, 0.15); color: #d93838; margin-left: 0.5rem; display: inline-flex; cursor: pointer;">
+          <button class="btn-magnetic delete-action-btn" onclick="window.handleDeleteProject('${item.id}')" draggable="false" data-id="${item.id}" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid rgba(217, 56, 56, 0.15); color: #d93838; margin-left: 0.5rem; display: inline-flex; cursor: pointer;">
             <span style="pointer-events: none;">Delete</span>
           </button>
         </td>
       </tr>
     `;
   }).join('');
-
-  // Bind edit, delete and toggle featured actions
-  tableBody.querySelectorAll('.edit-action-btn').forEach(btn => {
-    btn.onclick = () => openProjectModal(btn.getAttribute('data-id'));
-  });
-
-  tableBody.querySelectorAll('.delete-action-btn').forEach(btn => {
-    btn.onclick = () => handleDeleteProject(btn.getAttribute('data-id'));
-  });
-
-  tableBody.querySelectorAll('.featured-icon').forEach(star => {
-    star.onclick = () => handleToggleFeatured(star.getAttribute('data-id'));
-  });
 
   // Bind HTML5 drag and drop events for sorting
   let draggedId = null;
@@ -1023,6 +1074,45 @@ async function handleDeleteProject(id) {
     await updateDbStatusBadge();
     await loadPortfolioTable();
     showToast("Showcase project deleted.");
+  }
+}
+
+async function handleDeleteUgc(id) {
+  const item = loadedUgcList.find(u => String(u.id) === String(id));
+  if (!item) {
+    console.warn("Delete UGC aborted: item not found in cache for ID:", id);
+    return;
+  }
+
+  if (confirm("Are you sure you want to permanently delete this community reel?")) {
+    showToast("Deleting UGC assets...");
+    try {
+      // 1. Delete thumbnail if it exists in storage bucket
+      if (item.thumbnail && item.thumbnail.includes('/growlix-media/')) {
+        await db.deleteFileFromStorage(item.thumbnail);
+      }
+      // 2. Delete local video file if uploaded to storage bucket
+      if (item.videoUrl && item.videoUrl.includes('/growlix-media/')) {
+        await db.deleteFileFromStorage(item.videoUrl);
+      }
+    } catch (e) {
+      console.warn("UGC storage asset cleanup warnings:", e);
+    }
+
+    showToast("Deleting UGC database record...");
+    try {
+      const success = await db.deleteUgc(id);
+      if (success) {
+        showToast("UGC item deleted successfully!");
+        await loadUgcTable();
+        await loadDashboardOverview();
+      } else {
+        throw new Error("Delete operation failed");
+      }
+    } catch (err) {
+      console.error("Delete UGC error:", err);
+      showToast(`Delete failed: ${err.message}`);
+    }
   }
 }
 
@@ -1203,10 +1293,29 @@ async function openProjectModal(id = null) {
     } else {
       if (standardImageInput) standardImageInput.value = proj.thumbnail || '';
     }
+
+    let gallery = [];
+    if (proj.gallery) {
+      if (Array.isArray(proj.gallery)) gallery = proj.gallery;
+      else {
+        try {
+          gallery = JSON.parse(proj.gallery);
+        } catch (e) {
+          gallery = [proj.gallery];
+        }
+      }
+    }
+    const galleryInput = document.getElementById('modal-project-gallery');
+    if (galleryInput) galleryInput.value = JSON.stringify(gallery);
+    renderGalleryPreviews(gallery);
   } else {
     // Add mode
     if (modalTitleDisplay) modalTitleDisplay.textContent = "Add Showcase Item";
     if (modalFieldId) modalFieldId.value = '';
+
+    const galleryInput = document.getElementById('modal-project-gallery');
+    if (galleryInput) galleryInput.value = '[]';
+    renderGalleryPreviews([]);
   }
 
   toggleDynamicFields();
@@ -1299,6 +1408,17 @@ async function handleSaveProject() {
     }
   }
 
+  const galleryInput = document.getElementById('modal-project-gallery');
+  let gallery = [];
+  try {
+    gallery = JSON.parse(galleryInput ? galleryInput.value : '[]');
+  } catch (e) {
+    gallery = [];
+  }
+  if (thumbnail && !gallery.includes(thumbnail)) {
+    gallery.unshift(thumbnail);
+  }
+
   const projectData = {
     title,
     client: 'Creative Concept',
@@ -1311,7 +1431,7 @@ async function handleSaveProject() {
     featured: false,
     videoUrl: finalVideoUrl,
     demoUrl,
-    gallery: thumbnail ? [thumbnail] : [],
+    gallery: gallery,
     coverImage: thumbnail,
     completionDate: new Date().toISOString().substring(0, 10)
   };
@@ -1617,51 +1737,12 @@ function renderUgcTable(items) {
         </td>
         <td style="padding: 1rem 0.5rem; text-align: right;">
           <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-            <button class="btn-delete-ugc" data-id="${item.id}" style="padding: 0.4rem 0.8rem; border-radius: 4px; background: rgba(217, 56, 56, 0.08); border: 1px solid rgba(217, 56, 56, 0.15); color: #d93838; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s;">Delete</button>
+            <button class="btn-delete-ugc" onclick="window.handleDeleteUgc('${item.id}')" data-id="${item.id}" style="padding: 0.4rem 0.8rem; border-radius: 4px; background: rgba(217, 56, 56, 0.08); border: 1px solid rgba(217, 56, 56, 0.15); color: #d93838; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s;">Delete</button>
           </div>
         </td>
       </tr>
     `;
   }).join('');
-
-  // Bind deletes
-  tableBody.querySelectorAll('.btn-delete-ugc').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const ugcId = btn.getAttribute('data-id');
-      const item = loadedUgcList.find(u => String(u.id) === String(ugcId));
-      if (confirm("Are you sure you want to permanently delete this community reel?")) {
-        showToast("Deleting UGC assets...");
-        try {
-          if (item) {
-            // 1. Delete thumbnail if it exists in storage bucket
-            if (item.thumbnail && item.thumbnail.includes('/growlix-media/')) {
-              await db.deleteFileFromStorage(item.thumbnail);
-            }
-            // 2. Delete local video file if uploaded to storage bucket
-            if (item.videoUrl && item.videoUrl.includes('/growlix-media/')) {
-              await db.deleteFileFromStorage(item.videoUrl);
-            }
-          }
-        } catch (e) {
-          console.warn("UGC storage asset cleanup encountered warnings:", e);
-        }
-
-        showToast("Deleting UGC database record...");
-        try {
-          const success = await db.deleteUgc(ugcId);
-          if (success) {
-            showToast("UGC item deleted successfully!");
-            await loadUgcTable();
-          } else {
-            throw new Error("Delete operation failed");
-          }
-        } catch (err) {
-          console.error("Delete error:", err);
-          showToast(`Delete failed: ${err.message}`);
-        }
-      }
-    });
-  });
 }
 
 function openUgcModal(ugc = null) {
