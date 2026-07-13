@@ -801,163 +801,170 @@
 
   <!-- PORTFOLIO EDIT MODAL OVERLAY -->
   <div class="admin-modal-overlay" id="project-modal" data-lenis-prevent>
-    <div class="admin-modal-box">
+    <div class="admin-modal-box" style="max-width: 960px !important; width: 90%;">
       <div class="modal-header">
         <h3 class="panel-title" id="modal-title-display">Add Portfolio Piece</h3>
         <button class="modal-close-btn" id="btn-modal-close">&times;</button>
       </div>
       
-      <div class="modal-body" data-lenis-prevent>
-        <form id="project-modal-form" class="contact-form" style="gap: 1.2rem !important;">
+      <div class="modal-body" data-lenis-prevent style="padding: 2rem;">
+        <form id="project-modal-form" class="contact-form" style="display: flex; gap: 2rem; width: 100%; flex-wrap: wrap;">
           <input type="hidden" id="modal-project-id">
           <input type="hidden" id="modal-project-thumbnail">
           
-          <div class="form-group">
-            <label for="modal-project-title">Project Title</label>
-            <input type="text" id="modal-project-title" required placeholder="e.g. Elegance in Motion">
-          </div>
-
-          <div class="form-group">
-            <label for="modal-project-category">Category Showcase</label>
-            <select id="modal-project-category" required style="padding: 0.85rem 1.15rem; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.12); background-color: #faf9f6; font-family: var(--font-sans); outline: none; width: 100%;">
-              <option value="Photography">Photography</option>
-              <option value="Videography">Videography</option>
-              <option value="Video Editing">Video Editing</option>
-              <option value="Brand Identity">Brand Identity</option>
-              <option value="Graphic Design">Graphic Design</option>
-              <option value="Social Media Marketing">Social Media Marketing</option>
-              <option value="Website Development">Website Development</option>
-              <option value="Software Development">Software Development</option>
-            </select>
-          </div>
-
-          <!-- SECTION 1: Standard Image Upload (Photography, Brand Identity, Graphic Design, Social Media Marketing) -->
-          <div class="form-group" id="sec-standard-fields" style="display: block;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
-              <label for="modal-standard-image" style="margin: 0; font-weight: 600;">Upload Project Image / Showcase Asset</label>
-              <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
-                <span>+ Upload Image</span>
-                <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-standard-image" style="display: none;">
-              </label>
-            </div>
-            <input type="text" id="modal-standard-image" placeholder="Upload an image or paste a URL">
-          </div>
-
-          <!-- SECTION 2: Video Fields (Videography, Video Editing) -->
-          <div id="sec-video-fields" style="display: none; border: 1px solid rgba(18,18,18,0.06); padding: 1.2rem; border-radius: 0.6rem; background: rgba(0,0,0,0.01);">
-            <div class="form-group" style="margin-bottom: 1.2rem;">
-              <label style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Video Hosting Source</label>
-              <div style="display: flex; gap: 2rem; align-items: center;">
-                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;">
-                  <input type="radio" name="video-source-type" id="modal-video-source-youtube" value="youtube" checked style="width: 16px; height: 16px;">
-                  <span>YouTube Link</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;">
-                  <input type="radio" name="video-source-type" id="modal-video-source-local" value="local" style="width: 16px; height: 16px;">
-                  <span>Direct Local Upload</span>
-                </label>
-              </div>
-            </div>
-
-            <!-- YouTube Video Fields Group -->
-            <div id="group-video-youtube" style="display: block;">
-              <div class="form-group" style="margin-bottom: 1rem;">
-                <label for="modal-video-youtube-url">YouTube Video Link / URL</label>
-                <input type="text" id="modal-video-youtube-url" placeholder="e.g., https://www.youtube.com/watch?v=XXXXXX">
-              </div>
-              <div class="form-group">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
-                  <label for="modal-video-youtube-cover" style="margin: 0;">Select Video Cover Photo (Optional)</label>
-                  <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
-                    <span>+ Upload Cover</span>
-                    <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-video-youtube-cover" style="display: none;">
-                  </label>
-                </div>
-                <input type="text" id="modal-video-youtube-cover" placeholder="Upload a cover photo or paste a URL">
-                <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; display: block;">Note: Maxresdefault thumbnail will automatically be extracted from YouTube if left empty.</span>
-              </div>
-            </div>
-
-            <!-- Direct Local Video Fields Group -->
-            <div id="group-video-local" style="display: none;">
-              <div class="form-group" style="margin-bottom: 1rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
-                  <label for="modal-video-local-file" style="margin: 0; font-weight: 600;">Select Video File (MP4/MOV/AVI, Max 500MB)</label>
-                  <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
-                    <span>+ Upload Video</span>
-                    <input type="file" accept="video/*" class="admin-file-uploader" data-target="modal-video-local-file" style="display: none;">
-                  </label>
-                </div>
-                <input type="text" id="modal-video-local-file" placeholder="Upload a video file or paste a URL">
-              </div>
-              <div class="form-group">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
-                  <label for="modal-video-local-cover" style="margin: 0; font-weight: 600;">Select Video Cover Photo (JPG/PNG/WEBP)</label>
-                  <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
-                    <span>+ Upload Cover</span>
-                    <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-video-local-cover" style="display: none;">
-                  </label>
-                </div>
-                <input type="text" id="modal-video-local-cover" placeholder="Upload a cover photo or paste a URL">
-            </div>
-
-            <!-- Video Aspect Ratio Toggle Group -->
-            <div class="form-group" style="margin-top: 1.2rem; border-top: 1px solid rgba(18,18,18,0.06); padding-top: 1rem;">
-              <label style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Video Screen Orientation (Aspect Ratio)</label>
-              <div style="display: flex; gap: 2rem; align-items: center;">
-                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;">
-                  <input type="radio" name="video-aspect-ratio" id="modal-video-ratio-landscape" value="landscape" checked style="width: 16px; height: 16px;">
-                  <span>Landscape (16:9)</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;">
-                  <input type="radio" name="video-aspect-ratio" id="modal-video-ratio-portrait" value="portrait" style="width: 16px; height: 16px;">
-                  <span>Portrait / Shorts (9:16)</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- SECTION 3: Website/App Fields (Website Development, Software Development) -->
-          <div id="sec-website-fields" style="display: none; border: 1px solid rgba(18,18,18,0.06); padding: 1.2rem; border-radius: 0.6rem; background: rgba(0,0,0,0.01);">
-            <div class="form-group" style="margin-bottom: 1rem;">
-              <label for="modal-website-url">Website / Demo URL</label>
-              <input type="text" id="modal-website-url" placeholder="e.g., https://example.com">
-            </div>
+          <!-- Left Column (Core Metadata & Source Files) -->
+          <div style="flex: 1; min-width: 320px; display: flex; flex-direction: column; gap: 1.2rem;">
             <div class="form-group">
+              <label for="modal-project-title">Project Title</label>
+              <input type="text" id="modal-project-title" required placeholder="e.g. Elegance in Motion">
+            </div>
+
+            <div class="form-group">
+              <label for="modal-project-category">Category Showcase</label>
+              <select id="modal-project-category" required style="padding: 0.85rem 1.15rem; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.12); background-color: #faf9f6; font-family: var(--font-sans); outline: none; width: 100%;">
+                <option value="Photography">Photography</option>
+                <option value="Videography">Videography</option>
+                <option value="Video Editing">Video Editing</option>
+                <option value="Brand Identity">Brand Identity</option>
+                <option value="Graphic Design">Graphic Design</option>
+                <option value="Social Media Marketing">Social Media Marketing</option>
+                <option value="Website Development">Website Development</option>
+                <option value="Software Development">Software Development</option>
+              </select>
+            </div>
+
+            <!-- SECTION 1: Standard Image Upload (Photography, Brand Identity, Graphic Design, Social Media Marketing) -->
+            <div class="form-group" id="sec-standard-fields" style="display: block;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
-                <label for="modal-website-banner" style="margin: 0; font-weight: 600;">Upload Website Banner / Mockup Image</label>
+                <label for="modal-standard-image" style="margin: 0; font-weight: 600;">Upload Project Image / Showcase Asset</label>
                 <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
-                  <span>+ Upload Banner</span>
-                  <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-website-banner" style="display: none;">
+                  <span>+ Upload Image</span>
+                  <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-standard-image" style="display: none;">
                 </label>
               </div>
-              <input type="text" id="modal-website-banner" placeholder="Upload a banner mockup image or paste a URL">
-              <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; display: block;">Note: Banner image will be displayed on the portfolio grid.</span>
+              <input type="text" id="modal-standard-image" placeholder="Upload an image or paste a URL">
+            </div>
+
+            <!-- SECTION 2: Video Fields (Videography, Video Editing) -->
+            <div id="sec-video-fields" style="display: none; border: 1px solid rgba(18,18,18,0.06); padding: 1.2rem; border-radius: 0.6rem; background: rgba(0,0,0,0.01);">
+              <div class="form-group" style="margin-bottom: 1.2rem;">
+                <label style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Video Hosting Source</label>
+                <div style="display: flex; gap: 2rem; align-items: center;">
+                  <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;">
+                    <input type="radio" name="video-source-type" id="modal-video-source-youtube" value="youtube" checked style="width: 16px; height: 16px;">
+                    <span>YouTube Link</span>
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;">
+                    <input type="radio" name="video-source-type" id="modal-video-source-local" value="local" style="width: 16px; height: 16px;">
+                    <span>Direct Local Upload</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- YouTube Video Fields Group -->
+              <div id="group-video-youtube" style="display: block;">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                  <label for="modal-video-youtube-url">YouTube Video Link / URL</label>
+                  <input type="text" id="modal-video-youtube-url" placeholder="e.g., https://www.youtube.com/watch?v=XXXXXX">
+                </div>
+                <div class="form-group">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                    <label for="modal-video-youtube-cover" style="margin: 0;">Select Video Cover Photo (Optional)</label>
+                    <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
+                      <span>+ Upload Cover</span>
+                      <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-video-youtube-cover" style="display: none;">
+                    </label>
+                  </div>
+                  <input type="text" id="modal-video-youtube-cover" placeholder="Upload a cover photo or paste a URL">
+                  <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; display: block;">Note: Maxresdefault thumbnail will automatically be extracted from YouTube if left empty.</span>
+                </div>
+              </div>
+
+              <!-- Direct Local Video Fields Group -->
+              <div id="group-video-local" style="display: none;">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                    <label for="modal-video-local-file" style="margin: 0; font-weight: 600;">Select Video File (MP4/MOV/AVI, Max 500MB)</label>
+                    <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
+                      <span>+ Upload Video</span>
+                      <input type="file" accept="video/*" class="admin-file-uploader" data-target="modal-video-local-file" style="display: none;">
+                    </label>
+                  </div>
+                  <input type="text" id="modal-video-local-file" placeholder="Upload a video file or paste a URL">
+                </div>
+                <div class="form-group">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                    <label for="modal-video-local-cover" style="margin: 0; font-weight: 600;">Select Video Cover Photo (JPG/PNG/WEBP)</label>
+                    <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
+                      <span>+ Upload Cover</span>
+                      <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-video-local-cover" style="display: none;">
+                    </label>
+                  </div>
+                  <input type="text" id="modal-video-local-cover" placeholder="Upload a cover photo or paste a URL">
+                </div>
+              </div>
+
+              <!-- Video Aspect Ratio Toggle Group -->
+              <div class="form-group" style="margin-top: 1.2rem; border-top: 1px solid rgba(18,18,18,0.06); padding-top: 1rem;">
+                <label style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Video Screen Orientation (Aspect Ratio)</label>
+                <div style="display: flex; gap: 2rem; align-items: center;">
+                  <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;">
+                    <input type="radio" name="video-aspect-ratio" id="modal-video-ratio-landscape" value="landscape" checked style="width: 16px; height: 16px;">
+                    <span>Landscape (16:9)</span>
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;">
+                    <input type="radio" name="video-aspect-ratio" id="modal-video-ratio-portrait" value="portrait" style="width: 16px; height: 16px;">
+                    <span>Portrait / Shorts (9:16)</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 3: Website/App Fields (Website Development, Software Development) -->
+            <div id="sec-website-fields" style="display: none; border: 1px solid rgba(18,18,18,0.06); padding: 1.2rem; border-radius: 0.6rem; background: rgba(0,0,0,0.01);">
+              <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="modal-website-url">Website / Demo URL</label>
+                <input type="text" id="modal-website-url" placeholder="e.g., https://example.com">
+              </div>
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                  <label for="modal-website-banner" style="margin: 0; font-weight: 600;">Upload Website Banner / Mockup Image</label>
+                  <label class="btn-upload-label" style="height: 32px; padding: 0 0.8rem; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--text-primary); color: #ffffff; border-radius: 4px; cursor: pointer;">
+                    <span>+ Upload Banner</span>
+                    <input type="file" accept="image/*" class="admin-file-uploader" data-target="modal-website-banner" style="display: none;">
+                  </label>
+                </div>
+                <input type="text" id="modal-website-banner" placeholder="Upload a banner mockup image or paste a URL">
+                <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; display: block;">Note: Banner image will be displayed on the portfolio grid.</span>
+              </div>
             </div>
           </div>
 
-          <!-- SECTION 4: Gallery Images / Slideshow Carousel (Photography, Graphic Design, Brand Identity) -->
-          <div class="form-group" id="group-gallery-images" style="margin-top: 1.2rem; border-top: 1px solid rgba(18,18,18,0.06); padding-top: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-              <label style="margin: 0; font-weight: 700;">Project Gallery Carousel (Multiple Slides)</label>
-              <label class="btn-upload-label" style="height: 30px; padding: 0 0.8rem; font-size: 0.72rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--accent); color: #ffffff; border-radius: 4px; cursor: pointer; font-weight: bold;">
-                <span>+ Add Photo</span>
-                <input type="file" accept="image/*" id="gallery-file-uploader" style="display: none;">
-              </label>
+          <!-- Right Column (Gallery Carousel & Description) -->
+          <div style="flex: 1; min-width: 320px; display: flex; flex-direction: column; gap: 1.2rem;">
+            <!-- SECTION 4: Gallery Images / Slideshow Carousel (Photography, Graphic Design, Brand Identity) -->
+            <div class="form-group" id="group-gallery-images" style="margin: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <label style="margin: 0; font-weight: 700;">Project Gallery Carousel (Multiple Slides)</label>
+                <label class="btn-upload-label" style="height: 30px; padding: 0 0.8rem; font-size: 0.72rem; display: inline-flex; align-items: center; justify-content: center; background-color: var(--accent); color: #ffffff; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                  <span>+ Add Photo</span>
+                  <input type="file" accept="image/*" id="gallery-file-uploader" style="display: none;">
+                </label>
+              </div>
+              
+              <!-- Visual preview list of gallery images -->
+              <div id="gallery-preview-container" style="display: flex; flex-wrap: wrap; gap: 0.6rem; min-height: 80px; padding: 0.8rem; background: #faf9f6; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.06);">
+                <!-- Populated dynamically via admin.js -->
+              </div>
+              
+              <!-- Hidden text field holding JSON array -->
+              <input type="hidden" id="modal-project-gallery" value="[]">
             </div>
-            
-            <!-- Visual preview list of gallery images -->
-            <div id="gallery-preview-container" style="display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; min-height: 50px; padding: 0.6rem; background: #faf9f6; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.06);">
-              <!-- Populated dynamically via admin.js -->
-            </div>
-            
-            <!-- Hidden text field holding JSON array -->
-            <input type="hidden" id="modal-project-gallery" value="[]">
-          </div>
 
-          <div class="form-group">
-            <label for="modal-project-description">Project Description</label>
-            <textarea id="modal-project-description" required rows="4" placeholder="Explain the project scope, client details, artistic goals, etc."></textarea>
+            <div class="form-group" style="flex-grow: 1;">
+              <label for="modal-project-description">Project Description</label>
+              <textarea id="modal-project-description" required style="width: 100%; min-height: 140px; flex-grow: 1; padding: 0.85rem 1.15rem; border-radius: 0.6rem; border: 1px solid rgba(18,18,18,0.12); outline: none; background: #faf9f6; resize: vertical;" placeholder="Explain the project scope, client details, artistic goals, etc."></textarea>
+            </div>
           </div>
         </form>
       </div>
