@@ -428,8 +428,8 @@ function initImageUploaders() {
   const uploaders = document.querySelectorAll('.admin-file-uploader');
   uploaders.forEach(uploader => {
     uploader.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+      const files = Array.from(e.target.files);
+      if (files.length === 0) return;
 
       const targetId = uploader.getAttribute('data-target');
       const targetInput = document.getElementById(targetId);
@@ -443,6 +443,55 @@ function initImageUploaders() {
         labelEl.querySelector('span').textContent = 'Processing...';
       }
 
+      // Check if it's standard cover uploader AND multiple files are selected
+      if (targetId === 'modal-standard-image' && files.length > 1) {
+        showToast(`Batch uploading ${files.length} images...`);
+        try {
+          const galleryInput = document.getElementById('modal-project-gallery');
+          const gallery = JSON.parse(galleryInput.value || '[]');
+          
+          let coverUrl = '';
+          for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (labelEl) {
+              labelEl.querySelector('span').textContent = `Compress ${i+1}/${files.length}...`;
+            }
+            const compressed = await compressImage(file);
+            
+            if (labelEl) {
+              labelEl.querySelector('span').textContent = `Upload ${i+1}/${files.length}...`;
+            }
+            const url = await db.uploadImage(compressed);
+            if (url) {
+              if (i === 0) {
+                coverUrl = url;
+              }
+              gallery.push(url);
+            }
+          }
+
+          if (coverUrl) {
+            targetInput.value = coverUrl;
+          }
+          if (galleryInput) {
+            galleryInput.value = JSON.stringify(gallery);
+            renderGalleryPreviews(gallery);
+          }
+          showToast(`Successfully uploaded ${files.length} images!`);
+        } catch (err) {
+          console.error("Batch upload error:", err);
+          showToast(`Batch upload failed: ${err.message}`);
+        } finally {
+          if (labelEl) {
+            labelEl.classList.remove('uploading');
+            labelEl.querySelector('span').textContent = originalText;
+          }
+          uploader.value = '';
+        }
+        return;
+      }
+
+      const file = files[0];
       let finalFile = file;
 
       // Open cropping dialog if it's an image
