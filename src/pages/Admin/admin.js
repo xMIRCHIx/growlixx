@@ -865,7 +865,7 @@ function renderProjectsToTable(list) {
     return `
       <tr draggable="true" data-id="${item.id}" class="draggable-project-row" style="cursor: move; transition: background-color 0.2s;">
         <td>
-          <img src="${item.thumbnail || `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23121212'/><text x='50' y='55' fill='white' font-family='sans-serif' font-weight='bold' font-size='32' text-anchor='middle'>${item.title.substring(0,2).toUpperCase()}</text></svg>`}" class="table-thumb" alt="">
+          <img src="${item.thumbnail || `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23121212'/><text x='50' y='55' fill='white' font-family='sans-serif' font-weight='bold' font-size='32' text-anchor='middle'>${item.title.substring(0,2).toUpperCase()}</text></svg>`}" class="table-thumb" alt="" draggable="false">
         </td>
         <td>
           <div style="font-weight: 700; color: var(--text-primary);">${item.title}</div>
@@ -873,7 +873,7 @@ function renderProjectsToTable(list) {
         </td>
         <td><span class="status-badge draft">${item.category}</span></td>
         <td>
-          <span class="featured-icon" style="cursor: pointer;" data-id="${item.id}">
+          <span class="featured-icon" draggable="false" style="cursor: pointer; user-select: none;" data-id="${item.id}">
             ${isFeatured ? '★' : '☆'}
           </span>
         </td>
@@ -883,11 +883,11 @@ function renderProjectsToTable(list) {
           </span>
         </td>
         <td style="text-align: right; white-space: nowrap;">
-          <button class="btn-primary edit-action-btn" data-id="${item.id}" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; border-radius: 4px; display: inline-flex;">
-            <span>Edit</span>
+          <button class="btn-primary edit-action-btn" draggable="false" data-id="${item.id}" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; border-radius: 4px; display: inline-flex; cursor: pointer;">
+            <span style="pointer-events: none;">Edit</span>
           </button>
-          <button class="btn-magnetic delete-action-btn" data-id="${item.id}" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid rgba(217, 56, 56, 0.15); color: #d93838; margin-left: 0.5rem; display: inline-flex;">
-            <span>Delete</span>
+          <button class="btn-magnetic delete-action-btn" draggable="false" data-id="${item.id}" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid rgba(217, 56, 56, 0.15); color: #d93838; margin-left: 0.5rem; display: inline-flex; cursor: pointer;">
+            <span style="pointer-events: none;">Delete</span>
           </button>
         </td>
       </tr>
@@ -910,11 +910,6 @@ function renderProjectsToTable(list) {
   // Bind HTML5 drag and drop events for sorting
   let draggedId = null;
   tableBody.querySelectorAll('.draggable-project-row').forEach(row => {
-    // Disable dragging when mouse is over buttons or stars to allow clicks to register without starting a drag
-    row.querySelectorAll('button, .featured-icon').forEach(elem => {
-      elem.addEventListener('mouseenter', () => row.setAttribute('draggable', 'false'));
-      elem.addEventListener('mouseleave', () => row.setAttribute('draggable', 'true'));
-    });
 
     row.addEventListener('dragstart', (e) => {
       draggedId = row.getAttribute('data-id');
