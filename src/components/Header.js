@@ -13,6 +13,7 @@ export function renderHeader(activePage) {
   const homePath = isHomePage ? '#home' : '/index.html#home';
   const aboutPath = isHomePage ? '#about' : '/index.html#about';
   const servicesPath = isHomePage ? '#services' : '/index.html#services';
+  const pricingPath = isHomePage ? '#pricing' : '/index.html#pricing';
   const contactPath = isHomePage ? '#contact' : '/index.html#contact';
   const portfolioPath = '/portfolio.html';
   const bookingPath = isHomePage ? '#booking' : '/index.html#booking';
@@ -50,6 +51,7 @@ export function renderHeader(activePage) {
         <li><a href="${homePath}" class="nav-link ${activePage === 'home' && isHomePage ? 'active' : ''}">Home</a></li>
         <li><a href="${aboutPath}" class="nav-link ${activePage === 'about' ? 'active' : ''}">About</a></li>
         <li><a href="${servicesPath}" class="nav-link ${activePage === 'services' ? 'active' : ''}">Services</a></li>
+        <li><a href="${pricingPath}" class="nav-link ${activePage === 'pricing' ? 'active' : ''}">Pricing</a></li>
         <li><a href="${contactPath}" class="nav-link ${activePage === 'contact' ? 'active' : ''}">Contact</a></li>
         <li><a href="${portfolioPath}" class="nav-link ${activePage === 'portfolio' ? 'active' : ''}">Portfolio</a></li>
         <li class="nav-indicator" id="nav-indicator"></li>
@@ -98,6 +100,7 @@ export function renderHeader(activePage) {
       <li><a href="${homePath}" class="drawer-link ${activePage === 'home' && isHomePage ? 'active' : ''}">Home</a></li>
       <li><a href="${aboutPath}" class="drawer-link ${activePage === 'about' ? 'active' : ''}">About</a></li>
       <li><a href="${servicesPath}" class="drawer-link ${activePage === 'services' ? 'active' : ''}">Services</a></li>
+      <li><a href="${pricingPath}" class="drawer-link ${activePage === 'pricing' ? 'active' : ''}">Pricing</a></li>
       <li><a href="${contactPath}" class="drawer-link ${activePage === 'contact' ? 'active' : ''}">Contact</a></li>
       <li><a href="${portfolioPath}" class="drawer-link ${activePage === 'portfolio' ? 'active' : ''}">Portfolio</a></li>
     </ul>
@@ -204,7 +207,7 @@ function initHeaderInteractions(isHomePage) {
 
   // Scroll active section tracking on home page
   if (isHomePage) {
-    const sections = ['home', 'about', 'services', 'contact'];
+    const sections = ['home', 'about', 'services', 'pricing', 'contact'];
     
     const trackScrollActiveSection = () => {
       let currentSection = 'home';

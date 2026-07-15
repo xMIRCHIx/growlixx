@@ -4459,3 +4459,88 @@ body.lightbox-active {
   border-color: var(--accent) !important;
 }
 
+/* ==========================================================================
+   GROWLIX DIGITAL INTERACTIVE PRICING SECTION STYLES
+   ========================================================================== */
+
+.pricing-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease !important;
+}
+
+.pricing-card:hover {
+  transform: translateY(-8px) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 20px 45px rgba(184, 159, 116, 0.12) !important;
+}
+
+.pricing-card.featured:hover {
+  transform: translateY(-8px) scale(1.01) !important;
+  box-shadow: 0 25px 50px rgba(184, 159, 116, 0.18) !important;
+}
+
+.pricing-tab-btn:hover {
+  color: var(--text-primary) !important;
+}
+
+.pricing-tab-btn.active {
+  background: var(--text-primary) !important;
+  color: #ffffff !important;
+}
+
+.btn-pricing-cta {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-pricing-cta:hover {
+  background: var(--accent) !important;
+  color: #ffffff !important;
+  border-color: var(--accent) !important;
+}
+
+.pricing-card.featured .btn-pricing-cta:hover {
+  background: var(--accent-hover) !important;
+  color: #ffffff !important;
+  border-color: var(--accent-hover) !important;
+}
+
+.perfect-tag {
+  transition: border-color 0.3s ease !important;
+}
+
+.perfect-tag:hover {
+  border-color: var(--accent) !important;
+}
+
+@media (max-width: 768px) {
+  .pricing-tabs-container {
+    overflow-x: auto !important;
+    padding-bottom: 0.5rem !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+  }
+  .pricing-tabs {
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    margin: 0 auto !important;
+  }
+  .pricing-tab-btn {
+    padding: 0.5rem 1.2rem !important;
+  }
+}
+
+.pricing-container {
+  max-width: 1450px !important; 
+  margin: 0 auto !important;
+  width: 100% !important;
+  padding-left: 6% !important;
+  padding-right: 6% !important;
+}
+
+.scroll-section {
+  scroll-margin-top: 120px !important;
+}
+
+
+

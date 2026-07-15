@@ -747,7 +747,7 @@ function initTestimonialsDrag() {
       if (autoplayId) return;
       
       function step() {
-        if (!isDown && !isHovered) {
+        if (!isDown) {
           const minTranslate = -(carousel.scrollWidth - carouselWrapper.clientWidth);
           if (minTranslate < 0) {
             xTranslation -= autoplaySpeed;
@@ -776,14 +776,8 @@ function initTestimonialsDrag() {
       }, 1500);
     }
 
-    carouselWrapper.addEventListener('mouseenter', () => {
-      isHovered = true;
-      stopAutoplay();
-    });
-
     carouselWrapper.addEventListener('mouseleave', () => {
       isDown = false;
-      isHovered = false;
       carousel.classList.remove('dragging');
       applyInertia();
       requestResume();
@@ -1311,7 +1305,7 @@ function initFeaturedSliderDrag() {
     if (animationId) return;
     
     function step() {
-      if (!isDown && !isHovered) {
+      if (!isDown) {
         slider.scrollLeft += autoplaySpeed;
         
         // Loop back to start if reached the end
@@ -1349,7 +1343,6 @@ function initFeaturedSliderDrag() {
 
   slider.addEventListener('mouseleave', () => {
     isDown = false;
-    isHovered = false;
     slider.classList.remove('active');
     requestResume();
   });
@@ -1366,12 +1359,6 @@ function initFeaturedSliderDrag() {
     const x = e.pageX - slider.offsetLeft;
     const walk = (x - startX) * 1.5;
     slider.scrollLeft = scrollLeft - walk;
-  });
-
-  // Hover states to pause autoplay
-  slider.addEventListener('mouseenter', () => {
-    isHovered = true;
-    stopAutoplay();
   });
 
   // Touch events for mobile autoplay management
@@ -1405,7 +1392,7 @@ function initUgcSliderDrag() {
     if (animationId) return;
     
     function step() {
-      if (!isDown && !isHovered) {
+      if (!isDown) {
         slider.scrollLeft += autoplaySpeed;
         
         // Loop back to start if reached the end
@@ -1443,7 +1430,6 @@ function initUgcSliderDrag() {
 
   slider.addEventListener('mouseleave', () => {
     isDown = false;
-    isHovered = false;
     slider.classList.remove('active');
     requestResume();
   });
@@ -1460,12 +1446,6 @@ function initUgcSliderDrag() {
     const x = e.pageX - slider.offsetLeft;
     const walk = (x - startX) * 1.5;
     slider.scrollLeft = scrollLeft - walk;
-  });
-
-  // Hover states to pause autoplay
-  slider.addEventListener('mouseenter', () => {
-    isHovered = true;
-    stopAutoplay();
   });
 
   // Touch events for mobile autoplay management
@@ -1494,8 +1474,81 @@ window.addEventListener('DOMContentLoaded', () => {
     initAboutAccordion();
     initFeaturedSliderDrag();
     initUgcSliderDrag();
+    initPricingSection();
   });
 });
+
+function initPricingSection() {
+  const tabButtons = document.querySelectorAll('.pricing-tab-btn');
+  const tabContents = document.querySelectorAll('.pricing-tab-content');
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabId = btn.getAttribute('data-tab');
+      
+      // Update buttons active class
+      tabButtons.forEach(b => {
+        b.classList.remove('active');
+        b.style.background = 'transparent';
+        b.style.color = 'var(--text-secondary)';
+      });
+      btn.classList.add('active');
+      btn.style.background = 'var(--text-primary)';
+      btn.style.color = '#ffffff';
+
+      // Toggle content panel
+      tabContents.forEach(content => {
+        if (content.id === tabId) {
+          content.style.display = 'grid';
+          // Fade-in animation using GSAP
+          gsap.fromTo(content, 
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }
+          );
+        } else {
+          content.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // CTA button triggers
+  const ctaButtons = document.querySelectorAll('.btn-pricing-cta');
+  ctaButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const planName = button.getAttribute('data-plan');
+      
+      // Pre-fill booking scheduler goals text
+      const descTextarea = document.getElementById('booking-client-desc');
+      if (descTextarea) {
+        descTextarea.value = `Hi Growlix! I am interested in the "${planName}" and would like to schedule an appointment to discuss this further.`;
+        descTextarea.dispatchEvent(new Event('input'));
+      }
+
+      // Check relevant checkbox in the contact form
+      if (planName.toLowerCase().includes('website')) {
+        const cb = document.querySelector('input[name="interest"][value="Web Dev / App Dev"]');
+        if (cb) cb.checked = true;
+      } else if (planName.toLowerCase().includes('app')) {
+        const cb = document.querySelector('input[name="interest"][value="Web Dev / App Dev"]');
+        if (cb) cb.checked = true;
+      } else if (planName.toLowerCase().includes('smm')) {
+        const cb = document.querySelector('input[name="interest"][value="Social Media Marketing"]');
+        if (cb) cb.checked = true;
+      }
+
+      // Scroll smoothly to appointment booking scheduler
+      const bookingSection = document.getElementById('booking');
+      if (bookingSection) {
+        if (window.lenis) {
+          window.lenis.scrollTo(bookingSection);
+        } else {
+          bookingSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  });
+}
 
 function resolveProjectThumbnail(project) {
   let thumb = project.thumbnail || '';
