@@ -1535,6 +1535,9 @@ function initPricingSection() {
       } else if (planName.toLowerCase().includes('smm')) {
         const cb = document.querySelector('input[name="interest"][value="Social Media Marketing"]');
         if (cb) cb.checked = true;
+      } else if (planName.toLowerCase().includes('wedding') || planName.toLowerCase().includes('reels') || planName.toLowerCase().includes('editing')) {
+        const cb = document.querySelector('input[name="interest"][value="Video Editing"]');
+        if (cb) cb.checked = true;
       }
 
       // Scroll smoothly to appointment booking scheduler
